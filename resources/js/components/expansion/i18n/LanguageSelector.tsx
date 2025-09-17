@@ -21,25 +21,22 @@ export default function LanguageSelector({ variant = 'full' }: Props) {
   )
 
   if (variant === 'compact') {
+    // Mostrar solo el idioma activo; al hacer click alternar al otro
+    const baseBtn = 'px-2.5 py-1 rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[--ring]'
+    const active = 'bg-[--primary] text-[--primary-foreground] shadow-sm'
+    const currentLabel = locale === 'en' ? 'EN' : 'ES'
+    const next = (locale === 'en' ? 'es' : 'en') as 'en' | 'es'
+    const title = locale === 'en' ? 'Switch to Español' : 'Cambiar a English'
     return (
-      <div className="inline-flex items-center rounded-full border bg-[--background] p-0.5 text-xs" style={{ borderColor: 'var(--border)' }}>
-        <button
-          type="button"
-          aria-pressed={locale === 'en'}
-          onClick={() => setLocale('en')}
-          className={`px-2 py-1 rounded-full transition ${locale === 'en' ? 'bg-[--muted] text-foreground' : 'text-[--muted-foreground]'}`}
-        >
-          EN
-        </button>
-        <button
-          type="button"
-          aria-pressed={locale === 'es'}
-          onClick={() => setLocale('es')}
-          className={`px-2 py-1 rounded-full transition ${locale === 'es' ? 'bg-[--muted] text-foreground' : 'text-[--muted-foreground]'}`}
-        >
-          ES
-        </button>
-      </div>
+      <button
+        type="button"
+        aria-label={title}
+        title={title}
+        onClick={() => setLocale(next)}
+        className={`${baseBtn} ${active} text-xs`}
+      >
+        {currentLabel}
+      </button>
     )
   }
 
