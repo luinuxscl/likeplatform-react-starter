@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import useTheme from '@/hooks/useTheme'
+import { usePage } from '@inertiajs/react'
 
 export default function ThemeSelector() {
+  const page = usePage()
   const { currentTheme, availableThemes, setTheme, applyTheme } = useTheme()
   const [value, setValue] = useState(currentTheme)
 
@@ -11,59 +13,60 @@ export default function ThemeSelector() {
     applyTheme(currentTheme)
   }, [currentTheme, applyTheme])
 
+  useEffect(() => {
+    // Debug: verify props arrive
+    // eslint-disable-next-line no-console
+    console.log('[ThemeSelector] page.props.expansion:', (page as any).props?.expansion)
+    // eslint-disable-next-line no-console
+    console.log('[ThemeSelector] availableThemes keys:', Object.keys(availableThemes))
+  }, [page, availableThemes])
+
   const items = useMemo(
     () => Object.entries(availableThemes).map(([key, cfg]) => ({ key, name: cfg.name, colors: cfg.colors })),
     [availableThemes]
   )
 
-  if (!items.length) return null
+  if (!items.length) {
+    return (
+      <div className="rounded-lg border p-4" style={{ borderColor: 'var(--border)' }}>
+        <h3 className="mb-2 text-sm font-semibold">Theme selector</h3>
+        <p className="text-sm text-[--muted-foreground]">No themes available. Ensure config is loaded and shared via Inertia.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
-      <div>
-        <label htmlFor="theme" className="block text-sm font-medium">Theme</label>
-        <select
-          id="theme"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-[--border] bg-[--background] px-3 py-2 text-sm"
-        >
-          {items.map((item) => (
-            <option key={item.key} value={item.key}>{item.name}</option>
-          ))}
-        </select>
-      </div>
+      <h3 className="text-sm font-semibold">Theme selector</h3>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3" role="list" aria-label="Available themes">
         {items.map((item) => (
           <button
             key={item.key}
             type="button"
+            role="listitem"
+            aria-pressed={value === item.key}
             onClick={() => { setValue(item.key); setTheme(item.key) }}
-            className={`group flex flex-col items-start gap-2 rounded-lg border p-3 text-left transition hover:shadow ${value === item.key ? 'ring-2 ring-[--ring]' : ''}`}
+            className={`group flex flex-col items-start gap-2 rounded-lg border p-3 text-left transition hover:shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-[--ring] ${value === item.key ? 'ring-2 ring-[--ring]' : ''}`}
             style={{ borderColor: 'var(--border)' }}
           >
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">{item.name}</span>
               {value === item.key && <span className="text-xs text-[--muted-foreground]">(selected)</span>}
             </div>
-            <div className="flex gap-2">
-              {Object.entries(item.colors).slice(0, 6).map(([k, v]) => (
-                <span key={k} className="h-5 w-5 rounded border" style={{ backgroundColor: v, borderColor: 'var(--border)' }} title={k} />
+            <div className="flex flex-wrap gap-1 rounded-md border p-2 overflow-hidden" style={{ borderColor: 'var(--border)' }}>
+              {Object.entries(item.colors).slice(0, 10).map(([k, v]) => (
+                <span
+                  key={k}
+                  className="h-4 w-4 shrink-0 rounded border"
+                  style={{ backgroundColor: v, borderColor: 'var(--border)' }}
+                  title={k}
+                />
               ))}
             </div>
+            <span className="sr-only">Apply {item.name} theme</span>
           </button>
         ))}
-      </div>
-
-      <div>
-        <button
-          type="button"
-          onClick={() => setTheme(value)}
-          className="inline-flex items-center rounded-md bg-[--primary] px-3 py-2 text-sm font-medium text-[--primary-foreground] hover:opacity-90"
-        >
-          Apply theme
-        </button>
       </div>
     </div>
   )
