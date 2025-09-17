@@ -53,6 +53,10 @@ class HandleInertiaRequests extends Middleware
                     'default' => config('expansion.themes.default_theme'),
                 ],
             ],
+            'i18n' => [
+                'locale' => app()->getLocale(),
+                'available' => ['en', 'es'],
+            ],
         ];
     }
 }

@@ -4,6 +4,7 @@ import AppearanceTabs from '@/components/appearance-tabs';
 import HeadingSmall from '@/components/heading-small';
 import ThemeSelector from '@/components/expansion/themes/ThemeSelector';
 import ThemeLivePreview from '@/components/expansion/themes/ThemeLivePreview';
+import LanguageSelector from '@/components/expansion/i18n/LanguageSelector';
 import { type BreadcrumbItem } from '@/types';
 
 import AppLayout from '@/layouts/app-layout';
@@ -27,6 +28,7 @@ export default function Appearance() {
                     <HeadingSmall title="Appearance settings" description="Update your account's appearance settings" />
                     <ThemeSelector />
                     <ThemeLivePreview />
+                    <LanguageSelector />
                     <AppearanceTabs />
                 </div>
             </SettingsLayout>
