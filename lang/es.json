@@ -20,5 +20,12 @@
   "Click here to resend the verification email.": "Haz clic aquí para reenviar el correo de verificación.",
   "A new verification link has been sent to your email address.": "Se ha enviado un nuevo enlace de verificación a tu correo.",
   "Save": "Guardar",
-  "Saved": "Guardado"
+  "Saved": "Guardado",
+  "Password settings": "Configuración de contraseña",
+  "Update password": "Actualizar contraseña",
+  "Ensure your account is using a long, random password to stay secure": "Asegúrate de usar una contraseña larga y aleatoria para mantener tu cuenta segura",
+  "Current password": "Contraseña actual",
+  "New password": "Nueva contraseña",
+  "Confirm password": "Confirmar contraseña",
+  "Save password": "Guardar contraseña"
 }

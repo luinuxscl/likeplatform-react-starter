@@ -20,5 +20,12 @@
   "Click here to resend the verification email.": "Click here to resend the verification email.",
   "A new verification link has been sent to your email address.": "A new verification link has been sent to your email address.",
   "Save": "Save",
-  "Saved": "Saved"
+  "Saved": "Saved",
+  "Password settings": "Password settings",
+  "Update password": "Update password",
+  "Ensure your account is using a long, random password to stay secure": "Ensure your account is using a long, random password to stay secure",
+  "Current password": "Current password",
+  "New password": "New password",
+  "Confirm password": "Confirm password",
+  "Save password": "Save password"
 }
