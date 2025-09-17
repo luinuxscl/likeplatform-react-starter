@@ -670,3 +670,27 @@ php artisan boost:mcp search-docs "inertia routing"
 5. **En debugging**: Usar `browser-logs` para frontend y `read-log-entries` para backend
 
 Esta suite de herramientas integra Laravel-Boost como el núcleo del workflow de desarrollo, proporcionando debugging, testing y análisis continuo durante todo el ciclo de desarrollo del paquete.
+
+## Checklist i18n Obligatorio (añadir a cada PR)
+
+- [ ] Todos los literales visibles usan `useI18n().t('...')` (sin strings hardcodeados en UI).
+- [ ] Claves agregadas en `lang/en.json` y `lang/es.json` (orden alfabético y sin duplicados).
+- [ ] Tooltips, `sr-only`, `aria-*`, breadcrumbs y menús traducidos.
+- [ ] Mensajes del backend (validación/errores) en `lang/en/` y `lang/es/` si aplica.
+- [ ] Verificación manual cambiando EN↔ES con el selector del header.
+- [ ] Documentación actualizada o referencia a `docs/GUIA_I18N.md`.
+
+### Snippet recomendado (React)
+
+```tsx
+import { useI18n } from '@/lib/i18n/I18nProvider';
+
+export function MyButton() {
+  const { t } = useI18n();
+  return (
+    <button aria-label={t('Save')} title={t('Save')}>
+      {t('Save')}
+    </button>
+  );
+}
+```

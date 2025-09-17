@@ -13,6 +13,21 @@
 - **PROHIBIDO**: Desviarse de la estructura de directorios establecida
 - **PROHIBIDO**: Modificar archivos del starter kit original
 
+### 1.1. Requisito Obligatorio de Internacionalización (i18n)
+- **OBLIGATORIO**: Toda nueva feature debe incluir traducciones en Español (es) e Inglés (en).
+- **OBLIGATORIO**: Todos los literales visibles, tooltips, `aria-label`, textos "sr-only" y breadcrumbs deben usar `t('...')`.
+- **OBLIGATORIO**: Añadir claves en `lang/en.json` y `lang/es.json` para frontend y en `lang/en/` y `lang/es/` para backend (si aplica).
+- **OBLIGATORIO**: Actualizar/crear documentación de i18n cuando se añadan dominios de texto nuevos.
+- **REFERENCIA**: Ver `docs/GUIA_I18N.md` para proceso y buenas prácticas.
+
+Checklist i18n obligatorio por feature
+- [ ] Sin literales hardcodeados en componentes/páginas; todo usa `useI18n().t`.
+- [ ] Claves añadidas en `lang/en.json` y `lang/es.json` (orden alfabético, sin duplicados).
+- [ ] Tooltips, `sr-only`, `aria-*`, breadcrumbs y menús traducidos.
+- [ ] Mensajes backend (validación/errores) presentes en `lang/en/` y `lang/es/` si corresponde.
+- [ ] Prueba manual EN↔ES con el selector del header.
+- [ ] Documentación actualizada (sección i18n del feature o referencia a `GUIA_I18N.md`).
+
 ### 2. **Workflow de Verificación Continua**
 ```bash
 # Antes de cualquier implementación

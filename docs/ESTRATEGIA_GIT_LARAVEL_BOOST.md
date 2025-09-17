@@ -103,6 +103,7 @@ make boost-verification  # Custom boost checks
 # ✓ PHPStan level 8 clean
 # ✓ ESLint/Prettier clean
 # ✓ No browser console errors
+# ✓ i18n ES/EN completo (ver docs/GUIA_I18N.md y DIRECTRICES_AGENTES_IA.md)
 ```
 
 #### 3. **Merge to Develop Process**
@@ -127,7 +128,8 @@ git commit -m "feat(roles): implement complete role management system
 - Implement RoleController with full CRUD
 - Add React components for role management
 - Include comprehensive test suite
-- Update documentation"
+- Update documentation
+- i18n: traducciones ES y EN incluidas (frontend/back)"
 ```
 
 #### 4. **Release Preparation**
