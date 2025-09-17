@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { router, usePage } from '@inertiajs/react'
+import { router } from '@inertiajs/react'
 
 export type Translations = Record<string, string>
 
@@ -18,10 +18,7 @@ async function fetchMessages(locale: string): Promise<Translations> {
   return res.json().catch(() => ({}))
 }
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const page = usePage<{ i18n?: { locale: string; available: string[] } }>()
-  const initialLocale = page.props.i18n?.locale ?? 'en'
-
+export function I18nProvider({ children, initialLocale = 'en' }: { children: React.ReactNode; initialLocale?: 'en' | 'es' }) {
   const [locale, setLocaleState] = useState<string>(initialLocale)
   const [messages, setMessages] = useState<Translations>({})
 
