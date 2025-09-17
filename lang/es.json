@@ -43,5 +43,8 @@
   "Platform": "Plataforma",
   "Repository": "Repositorio",
   "Documentation": "Documentación",
-  "Log out": "Cerrar sesión"
+  "Log out": "Cerrar sesión",
+  "Sidebar": "Barra lateral",
+  "Displays the mobile sidebar.": "Muestra la barra lateral en dispositivos móviles.",
+  "Toggle Sidebar": "Alternar barra lateral"
 }

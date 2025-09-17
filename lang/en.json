@@ -43,5 +43,8 @@
   "Platform": "Platform",
   "Repository": "Repository",
   "Documentation": "Documentation",
-  "Log out": "Log out"
+  "Log out": "Log out",
+  "Sidebar": "Sidebar",
+  "Displays the mobile sidebar.": "Displays the mobile sidebar.",
+  "Toggle Sidebar": "Toggle Sidebar"
 }
