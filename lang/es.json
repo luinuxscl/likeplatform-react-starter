@@ -8,5 +8,17 @@
   "Language selector": "Selector de idioma",
   "English": "Inglés",
   "Spanish": "Español",
-  "Reset to defaults": "Restablecer por defecto"
+  "Reset to defaults": "Restablecer por defecto",
+  "Dashboard": "Panel",
+  "Profile settings": "Configuración de perfil",
+  "Profile information": "Información de perfil",
+  "Update your name and email address": "Actualiza tu nombre y correo electrónico",
+  "Name": "Nombre",
+  "Full name": "Nombre completo",
+  "Email address": "Correo electrónico",
+  "Your email address is unverified.": "Tu correo electrónico no está verificado.",
+  "Click here to resend the verification email.": "Haz clic aquí para reenviar el correo de verificación.",
+  "A new verification link has been sent to your email address.": "Se ha enviado un nuevo enlace de verificación a tu correo.",
+  "Save": "Guardar",
+  "Saved": "Guardado"
 }

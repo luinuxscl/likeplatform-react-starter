@@ -8,5 +8,17 @@
   "Language selector": "Language selector",
   "English": "English",
   "Spanish": "Spanish",
-  "Reset to defaults": "Reset to defaults"
+  "Reset to defaults": "Reset to defaults",
+  "Dashboard": "Dashboard",
+  "Profile settings": "Profile settings",
+  "Profile information": "Profile information",
+  "Update your name and email address": "Update your name and email address",
+  "Name": "Name",
+  "Full name": "Full name",
+  "Email address": "Email address",
+  "Your email address is unverified.": "Your email address is unverified.",
+  "Click here to resend the verification email.": "Click here to resend the verification email.",
+  "A new verification link has been sent to your email address.": "A new verification link has been sent to your email address.",
+  "Save": "Save",
+  "Saved": "Saved"
 }
