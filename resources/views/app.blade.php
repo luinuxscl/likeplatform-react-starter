@@ -30,6 +30,29 @@
             }
         </style>
 
+        {{-- SSR: Inject safe theme variables to avoid FOUC on first paint --}}
+        @php
+            $currentTheme = session('expansion.theme', config('expansion.themes.default_theme'));
+            $themes = config('expansion.themes.available_themes', []);
+            $colors = $themes[$currentTheme]['colors'] ?? [];
+            $safeKeys = ['primary', 'primary-foreground', 'accent', 'accent-foreground', 'ring'];
+
+            $toCss = function(array $map, array $keys): string {
+                $buf = '';
+                foreach ($keys as $k) {
+                    if (isset($map[$k])) {
+                        $buf .= "--{$k}: {$map[$k]};";
+                    }
+                }
+                return $buf;
+            };
+            $safeCss = $toCss($colors, $safeKeys);
+        @endphp
+        <style>
+            :root { {!! $safeCss !!} }
+            html.dark { {!! $safeCss !!} }
+        </style>
+
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <link rel="icon" href="/favicon.ico" sizes="any">
