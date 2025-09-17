@@ -16,7 +16,8 @@ class HandleAppearance
      */
     public function handle(Request $request, Closure $next): Response
     {
-        View::share('appearance', $request->cookie('appearance') ?? 'system');
+        // Default to dark mode if no cookie is set to respect project preference
+        View::share('appearance', $request->cookie('appearance') ?? 'dark');
 
         return $next($request);
     }
