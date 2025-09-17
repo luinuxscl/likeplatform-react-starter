@@ -50,6 +50,7 @@ class HandleInertiaRequests extends Middleware
                 'themes' => [
                     'current' => session('expansion.theme', config('expansion.themes.default_theme')),
                     'available' => config('expansion.themes.available_themes'),
+                    'default' => config('expansion.themes.default_theme'),
                 ],
             ],
         ];

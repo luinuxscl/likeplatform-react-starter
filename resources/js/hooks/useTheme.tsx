@@ -10,13 +10,16 @@ type UseThemeReturn = {
   availableThemes: AvailableThemes
   setTheme: (theme: string) => void
   applyTheme: (theme: string) => void
+  defaultTheme: string
+  resetDefaults: () => void
 }
 
 export function useTheme(): UseThemeReturn {
-  const page = usePage<{ expansion?: { themes?: { current: string; available: AvailableThemes } } }>()
+  const page = usePage<{ expansion?: { themes?: { current: string; available: AvailableThemes; default: string } } }>()
 
   const current = page.props.expansion?.themes?.current ?? 'zinc'
   const available = page.props.expansion?.themes?.available ?? {}
+  const defaultTheme = page.props.expansion?.themes?.default ?? 'zinc'
 
   const applyTheme = useCallback((theme: string) => {
     const cfg = available[theme]
@@ -31,16 +34,8 @@ export function useTheme(): UseThemeReturn {
     const safeKeys = new Set([
       'primary',
       'primary-foreground',
-      'secondary',
-      'secondary-foreground',
-      'muted',
-      'muted-foreground',
       'accent',
       'accent-foreground',
-      'destructive',
-      'destructive-foreground',
-      'border',
-      'input',
       'ring',
     ])
 
@@ -59,12 +54,25 @@ export function useTheme(): UseThemeReturn {
     router.patch('/expansion/themes', { theme }, { preserveScroll: true, preserveState: true })
   }, [applyTheme])
 
+  const resetDefaults = useCallback(() => {
+    try {
+      localStorage.removeItem('appearance')
+      // expire cookie
+      document.cookie = 'appearance=; Max-Age=0; path=/'
+    } catch {}
+
+    applyTheme(defaultTheme)
+    router.patch('/expansion/themes', { theme: defaultTheme }, { preserveScroll: true, preserveState: true })
+  }, [applyTheme, defaultTheme])
+
   return useMemo(() => ({
     currentTheme: current,
     availableThemes: available,
     setTheme,
     applyTheme,
-  }), [current, available, setTheme, applyTheme])
+    defaultTheme,
+    resetDefaults,
+  }), [current, available, setTheme, applyTheme, defaultTheme, resetDefaults])
 }
 
 export default useTheme

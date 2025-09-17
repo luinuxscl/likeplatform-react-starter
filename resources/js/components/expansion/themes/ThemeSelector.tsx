@@ -4,7 +4,7 @@ import { usePage } from '@inertiajs/react'
 
 export default function ThemeSelector() {
   const page = usePage()
-  const { currentTheme, availableThemes, setTheme, applyTheme } = useTheme()
+  const { currentTheme, availableThemes, setTheme, applyTheme, defaultTheme, resetDefaults } = useTheme()
   const [value, setValue] = useState(currentTheme)
 
   useEffect(() => {
@@ -67,6 +67,16 @@ export default function ThemeSelector() {
             <span className="sr-only">Apply {item.name} theme</span>
           </button>
         ))}
+      </div>
+      <div className="pt-2">
+        <button
+          type="button"
+          onClick={() => { setValue(defaultTheme); resetDefaults() }}
+          className="inline-flex items-center rounded-md border px-3 py-2 text-sm hover:bg-[--muted]"
+          style={{ borderColor: 'var(--border)' }}
+        >
+          Reset to defaults ({defaultTheme})
+        </button>
       </div>
     </div>
   )
