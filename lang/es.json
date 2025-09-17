@@ -1,5 +1,6 @@
 {
   "Settings": "Configuración",
+  "Manage your profile and account settings": "Administra la configuración de tu cuenta y perfil",
   "Appearance settings": "Apariencia",
   "Update your account's appearance settings": "Actualiza la apariencia de tu cuenta",
   "Theme selector": "Selector de tema",
@@ -27,5 +28,8 @@
   "Current password": "Contraseña actual",
   "New password": "Nueva contraseña",
   "Confirm password": "Confirmar contraseña",
-  "Save password": "Guardar contraseña"
+  "Save password": "Guardar contraseña",
+  "Profile": "Perfil",
+  "Password": "Contraseña",
+  "Appearance": "Apariencia"
 }
