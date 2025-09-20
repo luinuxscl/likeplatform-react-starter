@@ -58,10 +58,14 @@ class AppInstall extends Command
         }
 
         // Enlaces y tareas adicionales comunes
-        $this->components->task('Creando enlace de almacenamiento (storage:link)', function () {
-            $this->call('storage:link');
-            return true;
-        });
+        if (!app()->runningUnitTests()) {
+            $this->components->task('Creando enlace de almacenamiento (storage:link)', function () {
+                $this->call('storage:link');
+                return true;
+            });
+        } else {
+            $this->components->note('Omitiendo storage:link en entorno de testing');
+        }
 
         $this->components->task('Limpieza final (optimize:clear)', function () {
             $this->call('optimize:clear');
