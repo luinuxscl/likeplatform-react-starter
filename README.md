@@ -51,7 +51,8 @@ php artisan key:generate
 3) Migraciones y assets
 
 ```bash
-php artisan migrate
+# instalación rápida (modo desarrollo)
+php artisan app:install --dev
 npm run dev   # desarrollo (Vite)
 # o
 npm run build # producción
@@ -61,6 +62,36 @@ npm run build # producción
 
 ```bash
 vendor/bin/pest
+```
+
+## Instalación y mantenimiento (CLI)
+
+- Instalación de desarrollo (recrea DB y ejecuta seeders):
+
+```bash
+php artisan app:install --dev
+```
+
+- Instalación estándar (sin recrear DB):
+
+```bash
+php artisan app:install
+```
+
+Más detalles en `docs/COMANDO_APP_INSTALL.md`.
+
+## Makefile (atajos)
+
+Este repositorio incluye un `Makefile` con atajos comunes:
+
+```bash
+make help     # lista de targets
+make dev      # npm run dev
+make build    # npm run build
+make test     # vendor/bin/pest
+make install  # php artisan app:install
+make fresh    # php artisan app:install --dev
+make clear    # php artisan optimize:clear
 ```
 
 ## Sistema de Temas (resumen)

@@ -32,14 +32,26 @@ class AppInstall extends Command
         });
 
         if ($isDev) {
-            // Instalación de desarrollo: limpia y repuebla
-            $this->components->task('Ejecutando migrate:fresh --seed', function () {
-                $this->call('migrate:fresh', [
-                    '--seed' => true,
-                    '--force' => true,
-                ]);
-                return true;
-            });
+            // Instalación de desarrollo: en tests evitamos migrate:fresh por VACUUM en sqlite
+            if (app()->runningUnitTests()) {
+                $this->components->task('Entorno de tests: ejecutando migrate --seed (sin fresh)', function () {
+                    $this->call('migrate', [
+                        '--force' => true,
+                    ]);
+                    $this->call('db:seed', [
+                        '--force' => true,
+                    ]);
+                    return true;
+                });
+            } else {
+                $this->components->task('Ejecutando migrate:fresh --seed', function () {
+                    $this->call('migrate:fresh', [
+                        '--seed' => true,
+                        '--force' => true,
+                    ]);
+                    return true;
+                });
+            }
         } else {
             // Instalación normal: migra y ejecuta seeders (si aplica)
             $this->components->task('Ejecutando migraciones', function () {
@@ -64,7 +76,7 @@ class AppInstall extends Command
                 return true;
             });
         } else {
-            $this->components->note('Omitiendo storage:link en entorno de testing');
+            $this->components->info('Omitiendo storage:link en entorno de testing');
         }
 
         $this->components->task('Limpieza final (optimize:clear)', function () {
