@@ -4,6 +4,7 @@ import { type BreadcrumbItem } from '@/types'
 import { Head, Link, router, usePage } from '@inertiajs/react'
 import { useI18n } from '@/lib/i18n/I18nProvider'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { useEffect, useMemo, useState } from 'react'
 
 type UserItem = {
@@ -84,6 +85,9 @@ export default function AdminUsersIndex() {
                                 <option key={n} value={n}>{n} / {t('página')}</option>
                             ))}
                         </select>
+                        <Link href="/admin/users/create">
+                            <Button>{t('Crear usuario')}</Button>
+                        </Link>
                     </div>
                 </div>
 
@@ -98,6 +102,7 @@ export default function AdminUsersIndex() {
                                     <th className="px-4 py-3">{t('Roles')}</th>
                                     <th className="px-4 py-3">{t('Verificado')}</th>
                                     <th className="px-4 py-3">{t('Creado')}</th>
+                                    <th className="px-4 py-3 text-right">{t('Acciones')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -116,6 +121,21 @@ export default function AdminUsersIndex() {
                                         <td className="px-4 py-3">{u.roles.join(', ')}</td>
                                         <td className="px-4 py-3">{u.email_verified_at ? t('Sí') : t('No')}</td>
                                         <td className="px-4 py-3">{new Date(u.created_at).toLocaleString()}</td>
+                                        <td className="px-4 py-3 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <Link href={`/admin/users/${u.id}/edit`}>
+                                                    <Button variant="secondary" size="sm">{t('Editar')}</Button>
+                                                </Link>
+                                                <Link
+                                                    href={`/admin/users/${u.id}`}
+                                                    method="delete"
+                                                    as="button"
+                                                    onBefore={() => confirm(t('¿Confirmas eliminar este usuario?'))}
+                                                >
+                                                    <Button variant="destructive" size="sm">{t('Eliminar')}</Button>
+                                                </Link>
+                                            </div>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
