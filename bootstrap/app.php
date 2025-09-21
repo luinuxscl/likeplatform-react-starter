@@ -12,11 +12,7 @@ use Spatie\Permission\Middlewares\RoleMiddleware;
 use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
-    ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
-        health: '/up',
-    )
+    // Register middleware (and aliases) BEFORE routing, so route strings like 'role:admin' resolve to aliases.
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
@@ -34,6 +30,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);
     })
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
