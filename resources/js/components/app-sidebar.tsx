@@ -4,13 +4,15 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { BookOpen, Folder, LayoutGrid, Shield } from 'lucide-react';
+import admin from '@/routes/admin';
 import AppLogo from './app-logo';
 import { useI18n } from '@/lib/i18n/I18nProvider';
 
 export function AppSidebar() {
     const { t } = useI18n();
+    const page = usePage();
 
     const mainNavItems: NavItem[] = [
         {
@@ -19,6 +21,28 @@ export function AppSidebar() {
             icon: LayoutGrid,
         },
     ];
+
+    // Mostrar links de Administración solo si el usuario tiene rol admin
+    const roles: string[] | undefined = (page.props as any)?.auth?.roles;
+    if (Array.isArray(roles) && roles.includes('admin')) {
+        mainNavItems.push(
+            {
+                title: t('Usuarios'),
+                href: '/admin/users',
+                icon: Shield,
+            },
+            {
+                title: t('Roles'),
+                href: '/admin/roles',
+                icon: Shield,
+            },
+            {
+                title: t('Permisos'),
+                href: '/admin/permissions',
+                icon: Shield,
+            },
+        );
+    }
 
     const footerNavItems: NavItem[] = [
         {

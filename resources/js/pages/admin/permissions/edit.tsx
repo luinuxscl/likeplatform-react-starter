@@ -1,0 +1,50 @@
+import AppLayout from '@/layouts/app-layout'
+import { type BreadcrumbItem } from '@/types'
+import { Head, Link, useForm } from '@inertiajs/react'
+import { useI18n } from '@/lib/i18n/I18nProvider'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { useMemo } from 'react'
+
+type PermissionPayload = {
+    id: number
+    name: string
+}
+
+export default function AdminPermissionsEdit({ permission }: { permission: PermissionPayload }) {
+    const { t } = useI18n()
+    const { data, setData, put, processing, errors } = useForm({
+        name: permission.name,
+    })
+
+    const breadcrumbs: BreadcrumbItem[] = useMemo(() => [
+        { title: t('Administración'), href: '/admin/users' },
+        { title: t('Permisos'), href: '/admin/permissions' },
+        { title: t('Editar'), href: `/admin/permissions/${permission.id}/edit` },
+    ], [t, permission.id])
+
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault()
+        put(`/admin/permissions/${permission.id}`)
+    }
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title={t('Editar permiso')} />
+            <form onSubmit={submit} className="flex flex-col gap-4 p-4">
+                <div className="grid gap-4 sm:grid-cols-1">
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="name">{t('Nombre')}</Label>
+                        <Input id="name" value={data.name} onChange={(e) => setData('name', e.target.value)} />
+                        {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+                    </div>
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                    <Button type="submit" disabled={processing}>{t('Guardar')}</Button>
+                    <Link href="/admin/permissions" className="text-sm text-muted-foreground hover:underline">{t('Cancelar')}</Link>
+                </div>
+            </form>
+        </AppLayout>
+    )
+}
