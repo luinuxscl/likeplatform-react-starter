@@ -14,8 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Usuario de prueba existente
         User::firstOrCreate(
             ['email' => 'test@example.com'],
             [
@@ -24,5 +23,12 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        // Permisos y Rol admin
+        $this->call([
+            PermissionSeeder::class,
+            AdminRoleSeeder::class,
+            AdminUserSeeder::class,
+        ]);
     }
 }
