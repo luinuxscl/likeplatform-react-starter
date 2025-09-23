@@ -46,29 +46,37 @@ export default function AdminDashboardIndex() {
         {/* KPIs */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm">{t('Usuarios totales')}</CardTitle></CardHeader>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">{t('Usuarios totales')}</CardTitle>
+            </CardHeader>
             <CardContent className="text-2xl font-semibold">{kpis.total_users}</CardContent>
           </Card>
           <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm">{t('Nuevos 7 días')}</CardTitle></CardHeader>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">{t('Nuevos 7 días')}</CardTitle>
+            </CardHeader>
             <CardContent className="text-2xl font-semibold">{kpis.new_users_7d}</CardContent>
           </Card>
           <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm">{t('Verificados')}</CardTitle></CardHeader>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">{t('Verificados')}</CardTitle>
+            </CardHeader>
             <CardContent className="text-2xl font-semibold">{kpis.verified_users}</CardContent>
           </Card>
           <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm">{t('Roles')}</CardTitle></CardHeader>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">{t('Roles')}</CardTitle>
+            </CardHeader>
             <CardContent className="text-2xl font-semibold">{kpis.roles_count}</CardContent>
           </Card>
         </div>
 
         {/* Accesos rápidos */}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Link href="/admin/users"><Button className="w-full" variant="secondary">{t('Gestionar usuarios')}</Button></Link>
-          <Link href="/admin/roles"><Button className="w-full" variant="secondary">{t('Gestionar roles')}</Button></Link>
-          <Link href="/admin/permissions"><Button className="w-full" variant="secondary">{t('Gestionar permisos')}</Button></Link>
-          <Link href="/admin/options"><Button className="w-full" variant="secondary">{t('Opciones de la app')}</Button></Link>
+          <Link href="/admin/users"><Button className="w-full" variant="default">{t('Gestionar usuarios')}</Button></Link>
+          <Link href="/admin/roles"><Button className="w-full" variant="default">{t('Gestionar roles')}</Button></Link>
+          <Link href="/admin/permissions"><Button className="w-full" variant="default">{t('Gestionar permisos')}</Button></Link>
+          <Link href="/admin/options"><Button className="w-full" variant="default">{t('Opciones de la app')}</Button></Link>
         </div>
 
         {/* Usuarios recientes */}
@@ -93,10 +101,10 @@ export default function AdminDashboardIndex() {
                     </tr>
                   )}
                   {recent_users.map(u => (
-                    <tr key={u.id} className="border-t border-border">
+                    <tr key={u.id} className="border-t border-border hover:bg-accent/50">
                       <td className="px-4 py-3">{u.id}</td>
                       <td className="px-4 py-3">{u.name}</td>
-                      <td className="px-4 py-3">{u.email}</td>
+                      <td className="px-4 py-3"><a className="text-primary hover:underline" href={`mailto:${u.email}`}>{u.email}</a></td>
                       <td className="px-4 py-3">{u.email_verified_at ? t('Sí') : t('No')}</td>
                       <td className="px-4 py-3">{new Date(u.created_at).toLocaleString()}</td>
                     </tr>
