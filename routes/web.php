@@ -16,6 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';
 
 // i18n
 Route::patch('locale', [LanguageController::class, 'update'])->name('locale.update');
