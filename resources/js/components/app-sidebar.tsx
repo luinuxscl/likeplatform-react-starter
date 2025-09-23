@@ -25,6 +25,7 @@ export function AppSidebar() {
     // Mostrar links de Administración solo si el usuario tiene rol admin
     const roles: string[] | undefined = (page.props as any)?.auth?.roles;
     if (Array.isArray(roles) && roles.includes('admin')) {
+        const perms: string[] | undefined = (page.props as any)?.auth?.permissions;
         mainNavItems.push(
             {
                 title: t('Usuarios'),
@@ -41,11 +42,11 @@ export function AppSidebar() {
                 href: admin.permissions.index(),
                 icon: Shield,
             },
-            {
+            ...(Array.isArray(perms) && perms.includes('options.view') ? [{
                 title: t('Opciones'),
                 href: '/admin/options',
                 icon: Shield,
-            },
+            }] as any : []),
         );
     }
 

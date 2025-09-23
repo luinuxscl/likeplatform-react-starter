@@ -30,7 +30,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::put('/permissions/{permission}', [PermissionsController::class, 'update'])->name('permissions.update');
     Route::delete('/permissions/{permission}', [PermissionsController::class, 'destroy'])->name('permissions.destroy');
 
-    // Options
-    Route::get('/options', [OptionsController::class, 'index'])->name('options.index');
-    Route::put('/options', [OptionsController::class, 'update'])->name('options.update');
+    // Options (permisos finos)
+    Route::get('/options', [OptionsController::class, 'index'])
+        ->middleware('permission:options.view')
+        ->name('options.index');
+    Route::put('/options', [OptionsController::class, 'update'])
+        ->middleware('permission:options.update')
+        ->name('options.update');
 });
