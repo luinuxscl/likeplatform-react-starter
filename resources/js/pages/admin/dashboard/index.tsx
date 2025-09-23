@@ -5,6 +5,7 @@ import { useI18n } from '@/lib/i18n/I18nProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import ThemeSwitcherMini from '@/components/theme/theme-switcher-mini'
+import { StatCard } from '@/components/ui/stat-card'
 
 type RecentUser = {
   id: number
@@ -43,32 +44,32 @@ export default function AdminDashboardIndex() {
           <div />
           <ThemeSwitcherMini />
         </div>
-        {/* KPIs */}
+        {/* KPIs (shadcn-inspired) */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">{t('Usuarios totales')}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-2xl font-semibold">{kpis.total_users}</CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">{t('Nuevos 7 días')}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-2xl font-semibold">{kpis.new_users_7d}</CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">{t('Verificados')}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-2xl font-semibold">{kpis.verified_users}</CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">{t('Roles')}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-2xl font-semibold">{kpis.roles_count}</CardContent>
-          </Card>
+          <StatCard
+            title={t('Usuarios totales')}
+            value={kpis.total_users}
+            trend={{ direction: 'up', value: '+12.5%' }}
+            helper={t('Tendencia mensual positiva')}
+          />
+          <StatCard
+            title={t('Nuevos 7 días')}
+            value={kpis.new_users_7d}
+            trend={{ direction: 'down', value: '-2.0%' }}
+            helper={t('Variación semanal')}
+          />
+          <StatCard
+            title={t('Verificados')}
+            value={kpis.verified_users}
+            trend={{ direction: 'up', value: '+8.1%' }}
+            helper={t('Retención de usuarios')}
+          />
+          <StatCard
+            title={t('Roles')}
+            value={kpis.roles_count}
+            trend={{ direction: 'flat', value: '0%' }}
+            helper={t('Sin cambios recientes')}
+          />
         </div>
 
         {/* Accesos rápidos */}
