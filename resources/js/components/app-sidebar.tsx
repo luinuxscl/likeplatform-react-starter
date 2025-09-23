@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Shield } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2 } from 'lucide-react';
 import admin from '@/routes/admin';
 import AppLogo from './app-logo';
 import { useI18n } from '@/lib/i18n/I18nProvider';
@@ -14,7 +14,7 @@ export function AppSidebar() {
     const { t } = useI18n();
     const page = usePage();
 
-    const mainNavItems: NavItem[] = [
+    const platformItems: NavItem[] = [
         {
             title: t('Dashboard'),
             href: dashboard(),
@@ -24,35 +24,38 @@ export function AppSidebar() {
 
     // Mostrar links de Administración solo si el usuario tiene rol admin
     const roles: string[] | undefined = (page.props as any)?.auth?.roles;
+    const adminItems: NavItem[] = [];
     if (Array.isArray(roles) && roles.includes('admin')) {
         const perms: string[] | undefined = (page.props as any)?.auth?.permissions;
-        mainNavItems.push(
+        adminItems.push(
             {
                 title: t('Dashboard admin'),
                 href: '/admin/dashboard',
-                icon: LayoutGrid,
+                icon: LayoutDashboard,
             },
             {
                 title: t('Usuarios'),
                 href: admin.users.index(),
-                icon: Shield,
+                icon: Users,
             },
             {
                 title: t('Roles'),
                 href: admin.roles.index(),
-                icon: Shield,
+                icon: BadgeCheck,
             },
             {
                 title: t('Permisos'),
                 href: admin.permissions.index(),
-                icon: Shield,
+                icon: KeyRound,
             },
-            ...(Array.isArray(perms) && perms.includes('options.view') ? [{
+        );
+        if (Array.isArray(perms) && perms.includes('options.view')) {
+            adminItems.push({
                 title: t('Opciones'),
                 href: '/admin/options',
-                icon: Shield,
-            }] as any : []),
-        );
+                icon: Settings2,
+            });
+        }
     }
 
     const footerNavItems: NavItem[] = [
@@ -82,7 +85,10 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={platformItems} label={t('Plataforma')} />
+                {adminItems.length > 0 && (
+                    <NavMain items={adminItems} label={t('Administración')} />
+                )}
             </SidebarContent>
 
             <SidebarFooter>
