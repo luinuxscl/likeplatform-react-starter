@@ -41,12 +41,22 @@ class AppInstall extends Command
                     $this->call('db:seed', [
                         '--force' => true,
                     ]);
+                    // Datos de ejemplo de desarrollo adicionales
+                    $this->call('db:seed', [
+                        '--class' => \Database\Seeders\DevSampleDataSeeder::class,
+                        '--force' => true,
+                    ]);
                     return true;
                 });
             } else {
                 $this->components->task('Ejecutando migrate:fresh --seed', function () {
                     $this->call('migrate:fresh', [
                         '--seed' => true,
+                        '--force' => true,
+                    ]);
+                    // Datos de ejemplo de desarrollo adicionales
+                    $this->call('db:seed', [
+                        '--class' => \Database\Seeders\DevSampleDataSeeder::class,
                         '--force' => true,
                     ]);
                     return true;
