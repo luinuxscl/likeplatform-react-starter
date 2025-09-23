@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\PermissionsController;
+use App\Http\Controllers\Admin\OptionsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -28,4 +29,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/permissions/{permission}/edit', [PermissionsController::class, 'edit'])->name('permissions.edit');
     Route::put('/permissions/{permission}', [PermissionsController::class, 'update'])->name('permissions.update');
     Route::delete('/permissions/{permission}', [PermissionsController::class, 'destroy'])->name('permissions.destroy');
+
+    // Options
+    Route::get('/options', [OptionsController::class, 'index'])->name('options.index');
+    Route::put('/options', [OptionsController::class, 'update'])->name('options.update');
 });

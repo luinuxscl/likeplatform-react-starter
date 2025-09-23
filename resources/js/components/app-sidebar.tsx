@@ -41,6 +41,11 @@ export function AppSidebar() {
                 href: admin.permissions.index(),
                 icon: Shield,
             },
+            {
+                title: t('Opciones'),
+                href: '/admin/options',
+                icon: Shield,
+            },
         );
     }
 
