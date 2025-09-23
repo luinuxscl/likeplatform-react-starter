@@ -15,8 +15,20 @@ use App\Http\Requests\Admin\UpdateUserRequest;
 
 class UsersController extends Controller
 {
+    private function isLastAdmin(User $user): bool
+    {
+        if (! $user->hasRole('admin')) {
+            return false;
+        }
+
+        // Count how many users have the admin role
+        $adminCount = User::role('admin')->count();
+        return $adminCount === 1; // this user is the only admin
+    }
+
     public function index(Request $request): Response
     {
+        $this->authorize('viewAny', User::class);
         $search = (string) $request->string('search');
         $perPage = (int) $request->integer('perPage', 10);
 
@@ -53,6 +65,7 @@ class UsersController extends Controller
 
     public function create(): Response
     {
+        $this->authorize('create', User::class);
         $roles = Role::query()->orderBy('name')->pluck('name');
 
         return Inertia::render('admin/users/create', [
@@ -62,6 +75,7 @@ class UsersController extends Controller
 
     public function store(StoreUserRequest $request)
     {
+        $this->authorize('create', User::class);
         $data = $request->validated();
 
         $user = User::create([
@@ -80,6 +94,7 @@ class UsersController extends Controller
 
     public function edit(User $user): Response
     {
+        $this->authorize('update', $user);
         $roles = Role::query()->orderBy('name')->pluck('name');
 
         return Inertia::render('admin/users/edit', [
@@ -96,6 +111,7 @@ class UsersController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
+        $this->authorize('update', $user);
         $data = $request->validated();
 
         $user->name = $data['name'];
@@ -105,6 +121,14 @@ class UsersController extends Controller
         }
         $user->email_verified_at = $request->boolean('verified') ? ($user->email_verified_at ?? now()) : null;
         $user->save();
+
+        // Prevent removing admin role from the last admin
+        if ($this->isLastAdmin($user)) {
+            $roles = $data['roles'] ?? [];
+            if (! in_array('admin', $roles, true)) {
+                return back()->with('error', __('No puedes quitar el rol administrador del único usuario administrador.'));
+            }
+        }
 
         $user->syncRoles($data['roles'] ?? []);
 
@@ -117,6 +141,14 @@ class UsersController extends Controller
         if ($request->user()->id === $user->id) {
             return back()->with('error', __('No puedes eliminar tu propio usuario.'));
         }
+
+        // Evitar eliminar al único usuario con rol admin
+        if ($this->isLastAdmin($user)) {
+            return back()->with('error', __('No puedes eliminar al único usuario con rol administrador.'));
+        }
+
+        // Autorización formal (policies)
+        $this->authorize('delete', $user);
 
         $user->delete();
 

@@ -8,6 +8,8 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Policies\RolePolicy;
 use App\Policies\PermissionPolicy;
+use App\Models\User;
+use App\Policies\UserPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
         // Registrar policies para modelos de terceros
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Permission::class, PermissionPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
     }
 }

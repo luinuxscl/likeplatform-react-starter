@@ -28,17 +28,17 @@ export function AppSidebar() {
         mainNavItems.push(
             {
                 title: t('Usuarios'),
-                href: '/admin/users',
+                href: admin.users.index(),
                 icon: Shield,
             },
             {
                 title: t('Roles'),
-                href: '/admin/roles',
+                href: admin.roles.index(),
                 icon: Shield,
             },
             {
                 title: t('Permisos'),
-                href: '/admin/permissions',
+                href: admin.permissions.index(),
                 icon: Shield,
             },
         );

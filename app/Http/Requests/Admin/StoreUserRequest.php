@@ -8,8 +8,9 @@ class StoreUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // Ya está protegido por middleware role:admin; se puede refinar con policies si se desea
-        return $this->user()?->can('users.create') ?? true;
+        $user = $this->user();
+        if (! $user) return false;
+        return $user->hasRole('admin') || $user->can('users.create');
     }
 
     public function rules(): array
