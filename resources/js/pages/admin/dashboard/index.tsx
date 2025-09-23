@@ -4,6 +4,7 @@ import { Head, Link, usePage } from '@inertiajs/react'
 import { useI18n } from '@/lib/i18n/I18nProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import ThemeSwitcherMini from '@/components/theme/theme-switcher-mini'
 
 type RecentUser = {
   id: number
@@ -38,6 +39,10 @@ export default function AdminDashboardIndex() {
       <Head title={t('Administración - Dashboard')} />
 
       <div className="flex flex-col gap-6 p-4">
+        <div className="flex items-center justify-between">
+          <div />
+          <ThemeSwitcherMini />
+        </div>
         {/* KPIs */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Card>
@@ -72,7 +77,7 @@ export default function AdminDashboardIndex() {
           <CardContent>
             <div className="relative w-full overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-neutral-100/50 text-xs uppercase dark:bg-neutral-800/40">
+                <thead className="bg-muted text-xs uppercase">
                   <tr>
                     <th className="px-4 py-3">{t('ID')}</th>
                     <th className="px-4 py-3">{t('Nombre')}</th>
@@ -88,7 +93,7 @@ export default function AdminDashboardIndex() {
                     </tr>
                   )}
                   {recent_users.map(u => (
-                    <tr key={u.id} className="border-t border-sidebar-border/60">
+                    <tr key={u.id} className="border-t border-border">
                       <td className="px-4 py-3">{u.id}</td>
                       <td className="px-4 py-3">{u.name}</td>
                       <td className="px-4 py-3">{u.email}</td>
