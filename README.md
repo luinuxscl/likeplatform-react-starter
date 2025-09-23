@@ -1,38 +1,24 @@
-# Laravel 12 + React 19 Starter Kit (Extensión)
+# LikePlatform React Starter
 
-Proyecto base Laravel 12 con Inertia 2, React 19 y Tailwind 4, extendido con un sistema de temas (shadcn/ui) y utilidades de desarrollo.
+Starter kit moderno con Laravel 12 + React 19 (Inertia v2), Tailwind 4 y shadcn/ui. Incluye dashboard admin, roles/permisos (spatie), theming y comando de instalación para desarrollo.
 
-## Tecnologías
+## Stack
 
-- Laravel 12 (PHP 8.3)
-- Inertia 2 + React 19 (TypeScript)
-- Tailwind CSS 4 + shadcn/ui + Radix UI
-- Pest 4 para testing
+- PHP 8.3 · Laravel 12
+- Inertia v2 · React 19 · TypeScript
+- Tailwind CSS 4 · shadcn/ui · Radix UI
+- Pest 4 (tests)
 
-## Estructura relevante
+## Características
 
-- `config/expansion.php`: configuración de la capa de expansión (temas, etc.)
-- `app/Http/Middleware/HandleInertiaRequests.php`: comparte props de Inertia (incluye `expansion.themes`)
-- `app/Http/Middleware/HandleAppearance.php`: gestiona modo `light/dark/system` (por defecto: `dark`)
-- `app/Http/Controllers/Expansion/ThemeController.php`: endpoint `PATCH /expansion/themes`
-- `resources/views/app.blade.php`: inyección SSR de variables seguras del tema
-- Frontend
-  - `resources/js/hooks/use-appearance.tsx`: modo claro/oscuro (starter)
-  - `resources/js/hooks/useTheme.tsx`: aplica tokens de tema (seguros) y `resetDefaults()`
-  - `resources/js/components/expansion/themes/ThemeSelector.tsx`: selector de tema (click-to-apply)
-  - `resources/js/components/expansion/themes/ThemeLivePreview.tsx`: vista previa en vivo
-  - `resources/js/pages/settings/appearance.tsx`: integra selector + preview
-- Tests
-  - `tests/Feature/ThemeManagementTest.php`
+- Dashboard Admin con cards estilo shadcn (theme-aware) en `resources/js/pages/admin/dashboard/index.tsx`.
+- Gestión de usuarios, roles y permisos con `spatie/laravel-permission`.
+- Menú con secciones Plataforma y Administración en `resources/js/components/app-sidebar.tsx`.
+- Theming y transición suave de colores vía `.theme-transition` en `resources/css/app.css` y `ThemeSwitcherMini`.
+- Seeders de desarrollo realistas: 500 usuarios distribuidos no-uniformemente en 12 meses, 5 admins aleatorios.
+- Comando de instalación integral (`app:install`) para producción y desarrollo.
 
-## Documentación
-
-- `docs/GUIA_TEMAS.md`: guía breve del sistema de temas y cómo extenderlo
-- `docs/DIRECTRICES_AGENTES_IA.md`: directrices para trabajo con agentes de IA
-- `docs/ESTRATEGIA_GIT_LARAVEL_BOOST.md` / `docs/ESTRATEGIA_GIT_MVP_LOCAL.md`: flujos de trabajo y ramas
-- `docs/ROADMAP_*`: prioridades y roadmap
-
-## Puesta en marcha
+## Instalación rápida
 
 1) Dependencias
 
@@ -41,79 +27,53 @@ composer install
 npm ci
 ```
 
-2) Variables de entorno
+2) Entorno
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-3) Migraciones y assets
+3) Base de datos y assets
 
 ```bash
-# instalación rápida (modo desarrollo)
+# Desarrollo (recrea DB, ejecuta seeders base + datos de ejemplo)
 php artisan app:install --dev
-npm run dev   # desarrollo (Vite)
+
+# Frontend
+npm run dev   # desarrollo
 # o
 npm run build # producción
 ```
 
-4) Testing
+4) Tests
 
 ```bash
 vendor/bin/pest
 ```
 
-## Instalación y mantenimiento (CLI)
+## Estructura relevante
 
-- Instalación de desarrollo (recrea DB y ejecuta seeders):
+- Backend
+  - `app/Console/Commands/AppInstall.php` · flujo de instalación (incluye `--dev`).
+  - `database/seeders/DevSampleDataSeeder.php` · 500 usuarios, 5 admins, distribución no uniforme 12 meses.
+  - `database/seeders/{PermissionSeeder,AdminRoleSeeder,AdminUserSeeder}.php` · permisos/rol/admin inicial.
+- Frontend
+  - `resources/js/pages/admin/dashboard/index.tsx` · dashboard estilo shadcn.
+  - `resources/js/components/ui/{card.tsx,badge.tsx}` · componentes base extendidos (CardAction/Badge).
+  - `resources/js/components/app-sidebar.tsx` · sidebar con secciones y iconografía.
 
-```bash
-php artisan app:install --dev
-```
+## Convenciones de UI
 
-- Instalación estándar (sin recrear DB):
+- Usar tokens/theme de Tailwind y shadcn/ui: `bg-muted`, `text-muted-foreground`, `border-border`, `text-primary`, etc.
+- Evitar colores hardcodeados.
+- Preferir componentes shadcn/ui para respetar el tema activo.
 
-```bash
-php artisan app:install
-```
+## Autor
 
-Más detalles en `docs/COMANDO_APP_INSTALL.md`.
+- Luis Sepúlveda (luinuxSCL)
+- GitHub: https://github.com/luinuxscl
 
-## Makefile (atajos)
+## Licencia
 
-Este repositorio incluye un `Makefile` con atajos comunes:
-
-```bash
-make help     # lista de targets
-make dev      # npm run dev
-make build    # npm run build
-make test     # vendor/bin/pest
-make install  # php artisan app:install
-make fresh    # php artisan app:install --dev
-make clear    # php artisan optimize:clear
-```
-
-## Sistema de Temas (resumen)
-
-- Temas definidos en `config/expansion.php` → `themes.available_themes`
-- Props compartidas: `expansion.themes.{current, available, default}`
-- Cambiar tema: `PATCH /expansion/themes` (sesión)
-- El hook `useTheme` aplica solo variables seguras: `--primary`, `--primary-foreground`, `--accent`, `--accent-foreground`, `--ring` para no interferir con `light/dark`.
-- `Reset to defaults` limpia preferencias de cliente y restablece el tema por defecto.
-
-## Comandos útiles
-
-- Desarrollo: `npm run dev`
-- Build: `npm run build`
-- Tests: `vendor/bin/pest`
-- Limpiar cachés Laravel:
-
-```bash
-php artisan config:clear && php artisan route:clear && php artisan view:clear
-```
-
-## Notas
-
-- No se modifican archivos del starter base; la extensión se implementa de forma no intrusiva.
-- Si agregas nuevos temas, sigue la guía en `docs/GUIA_TEMAS.md`.
+MIT
