@@ -37,17 +37,17 @@ export function StatCard({ title, value, trend, helper, className }: StatCardPro
   }
 
   return (
-    <Card className={cn('rounded-xl border-border/80 shadow-sm', className)}>
+    <Card className={cn('rounded-2xl border border-border bg-card shadow-sm', className)}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xs font-medium text-muted-foreground">{title}</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
           {renderTrend()}
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-semibold text-foreground">{value}</div>
+        <div className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{value}</div>
         {helper && (
-          <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="mt-2 text-xs text-muted-foreground">
             {helper}
           </div>
         )}
