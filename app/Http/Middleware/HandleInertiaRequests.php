@@ -38,6 +38,8 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $options = app(\App\Services\Options::class);
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -46,6 +48,13 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'roles' => $request->user()?->getRoleNames()?->toArray(),
                 'permissions' => $request->user()?->getAllPermissions()?->pluck('name')?->toArray(),
+            ],
+            'app' => [
+                'name' => $options->get('app.name', config('app.name')),
+                'description' => $options->get('app.description'),
+                'logo_url' => $options->get('app.logo_url'),
+                'date_format' => $options->get('app.date_format', 'dd/mm/YYYY'),
+                'timezone' => $options->get('app.timezone', config('app.timezone')),
             ],
             'flash' => [
                 'success' => fn () => session('success'),
