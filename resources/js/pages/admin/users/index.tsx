@@ -77,7 +77,7 @@ export default function AdminUsersIndex() {
                             placeholder={t('Buscar por nombre o email...')}
                         />
                         <select
-                            className="h-9 rounded-md border bg-transparent px-2 text-sm"
+                            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
                             value={perPage}
                             onChange={(e) => setPerPage(Number(e.target.value))}
                         >
@@ -86,15 +86,15 @@ export default function AdminUsersIndex() {
                             ))}
                         </select>
                         <Link href="/admin/users/create">
-                            <Button>{t('Crear usuario')}</Button>
+                            <Button variant="default">{t('Crear usuario')}</Button>
                         </Link>
                     </div>
                 </div>
 
-                <div className="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                <div className="relative overflow-hidden rounded-xl border border-border">
                     <div className="relative w-full overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-neutral-100/50 text-xs uppercase dark:bg-neutral-800/40">
+                            <thead className="bg-muted text-xs uppercase">
                                 <tr>
                                     <th className="px-4 py-3">{t('ID')}</th>
                                     <th className="px-4 py-3">{t('Nombre')}</th>
@@ -114,17 +114,17 @@ export default function AdminUsersIndex() {
                                     </tr>
                                 )}
                                 {users.data.map((u) => (
-                                    <tr key={u.id} className="border-t border-sidebar-border/60">
+                                    <tr key={u.id} className="border-t border-border">
                                         <td className="px-4 py-3">{u.id}</td>
                                         <td className="px-4 py-3">{u.name}</td>
-                                        <td className="px-4 py-3">{u.email}</td>
+                                        <td className="px-4 py-3"><a className="text-primary hover:underline" href={`mailto:${u.email}`}>{u.email}</a></td>
                                         <td className="px-4 py-3">{u.roles.join(', ')}</td>
                                         <td className="px-4 py-3">{u.email_verified_at ? t('Sí') : t('No')}</td>
                                         <td className="px-4 py-3">{new Date(u.created_at).toLocaleString()}</td>
                                         <td className="px-4 py-3 text-right">
                                             <div className="flex items-center justify-end gap-2">
                                                 <Link href={`/admin/users/${u.id}/edit`}>
-                                                    <Button variant="secondary" size="sm">{t('Editar')}</Button>
+                                                    <Button variant="default" size="sm">{t('Editar')}</Button>
                                                 </Link>
                                                 <Link
                                                     href={`/admin/users/${u.id}`}
@@ -141,7 +141,7 @@ export default function AdminUsersIndex() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="flex items-center justify-between gap-2 border-t border-sidebar-border/60 p-3 text-sm">
+                    <div className="flex items-center justify-between gap-2 border-t border-border p-3 text-sm">
                         <div className="text-muted-foreground">
                             {users.from ?? 0}-{users.to ?? 0} / {users.total}
                         </div>
@@ -154,7 +154,7 @@ export default function AdminUsersIndex() {
                                     preserveScroll
                                     className={[
                                         'rounded-md px-2 py-1',
-                                        link.active ? 'bg-neutral-200 dark:bg-neutral-800' : 'hover:bg-neutral-100 dark:hover:bg-neutral-800/60',
+                                        link.active ? 'bg-primary text-primary-foreground' : 'hover:bg-muted',
                                         !link.url ? 'pointer-events-none opacity-50' : '',
                                     ].join(' ')}
                                     dangerouslySetInnerHTML={{ __html: link.label }}

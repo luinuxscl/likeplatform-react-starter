@@ -65,8 +65,11 @@ export default function AdminOptionsIndex({ schema, values }: { schema: Field[];
       <Head title={t('Administración - Opciones')} />
       <form onSubmit={submit} className="flex flex-col gap-6 p-4">
         {Object.entries(grouped).map(([group, fields]) => (
-          <div key={group} className="rounded-xl border border-sidebar-border/70 p-4 dark:border-sidebar-border">
-            <div className="mb-3 text-sm font-medium uppercase opacity-70">{t(group)}</div>
+          <div key={group} className="rounded-xl border border-border p-4">
+            <div className="mb-3 flex items-center gap-2 text-sm font-medium uppercase">
+              <span className="inline-block h-2 w-2 rounded-full bg-primary" />
+              <span className="text-primary/90">{t(group)}</span>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {fields.map((f) => (
                 <div key={f.key}>{renderField(f)}</div>
@@ -75,7 +78,7 @@ export default function AdminOptionsIndex({ schema, values }: { schema: Field[];
           </div>
         ))}
         <div className="mt-2 flex items-center gap-2">
-          <Button type="submit" disabled={processing}>{t('Guardar')}</Button>
+          <Button type="submit" variant="default" disabled={processing}>{t('Guardar')}</Button>
           <Link href="/admin/users" className="text-sm text-muted-foreground hover:underline">{t('Cancelar')}</Link>
         </div>
       </form>

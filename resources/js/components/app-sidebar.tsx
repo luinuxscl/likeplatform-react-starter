@@ -28,6 +28,11 @@ export function AppSidebar() {
         const perms: string[] | undefined = (page.props as any)?.auth?.permissions;
         mainNavItems.push(
             {
+                title: t('Dashboard admin'),
+                href: '/admin/dashboard',
+                icon: LayoutGrid,
+            },
+            {
                 title: t('Usuarios'),
                 href: admin.users.index(),
                 icon: Shield,
