@@ -31,6 +31,11 @@ export default function AdminDashboardIndex() {
   const page = usePage<{ props: DashboardProps }>()
   const { kpis, recent_users } = page.props as unknown as DashboardProps
 
+  const formatNumber = (n: number) => new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(n)
+  const trends = (page.props as any)?.trends as
+    | { total_users?: string; new_users_7d?: string; verified_users?: string; roles_count?: string }
+    | undefined
+
   const breadcrumbs: BreadcrumbItem[] = [
     { title: t('Administración'), href: '/admin/dashboard' },
     { title: t('Dashboard'), href: '/admin/dashboard' },
@@ -46,17 +51,21 @@ export default function AdminDashboardIndex() {
           <ThemeSwitcherMini />
         </div>
         {/* KPIs (shadcn example pattern) */}
-        <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 lg:grid-cols-4">
+        <div className="*:data-[slot=card]:from-primary/3 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 lg:grid-cols-4">
           <Card className="@container/card rounded-2xl">
             <CardHeader>
-              <CardDescription>{t('Usuarios totales')}</CardDescription>
-              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{kpis.total_users}</CardTitle>
-              <CardAction>
-                <Badge variant="outline">
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                  +12.5%
-                </Badge>
-              </CardAction>
+              <div className="flex items-baseline gap-2">
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <CardDescription>{t('Usuarios totales')}</CardDescription>
+                  <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{formatNumber(kpis.total_users)}</CardTitle>
+                </div>
+                <CardAction className="self-start">
+                  <Badge variant="outline" aria-label={t('Tendencia: +12.5%')}>
+                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    {trends?.total_users ?? '+12.5%'}
+                  </Badge>
+                </CardAction>
+              </div>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1.5 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
@@ -68,14 +77,18 @@ export default function AdminDashboardIndex() {
 
           <Card className="@container/card rounded-2xl">
             <CardHeader>
-              <CardDescription>{t('Nuevos 7 días')}</CardDescription>
-              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{kpis.new_users_7d}</CardTitle>
-              <CardAction>
-                <Badge variant="outline">
-                  <ArrowDownRight className="h-3.5 w-3.5" />
-                  -2.0%
-                </Badge>
-              </CardAction>
+              <div className="flex items-baseline gap-2">
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <CardDescription>{t('Nuevos 7 días')}</CardDescription>
+                  <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{formatNumber(kpis.new_users_7d)}</CardTitle>
+                </div>
+                <CardAction className="self-start">
+                  <Badge variant="outline" aria-label={t('Tendencia: -2.0%')}>
+                    <ArrowDownRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    {trends?.new_users_7d ?? '-2.0%'}
+                  </Badge>
+                </CardAction>
+              </div>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1.5 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
@@ -87,14 +100,18 @@ export default function AdminDashboardIndex() {
 
           <Card className="@container/card rounded-2xl">
             <CardHeader>
-              <CardDescription>{t('Verificados')}</CardDescription>
-              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{kpis.verified_users}</CardTitle>
-              <CardAction>
-                <Badge variant="outline">
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                  +8.1%
-                </Badge>
-              </CardAction>
+              <div className="flex items-baseline gap-2">
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <CardDescription>{t('Verificados')}</CardDescription>
+                  <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{formatNumber(kpis.verified_users)}</CardTitle>
+                </div>
+                <CardAction className="self-start">
+                  <Badge variant="outline" aria-label={t('Tendencia: +8.1%')}>
+                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    {trends?.verified_users ?? '+8.1%'}
+                  </Badge>
+                </CardAction>
+              </div>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1.5 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
@@ -106,11 +123,15 @@ export default function AdminDashboardIndex() {
 
           <Card className="@container/card rounded-2xl">
             <CardHeader>
-              <CardDescription>{t('Roles')}</CardDescription>
-              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{kpis.roles_count}</CardTitle>
-              <CardAction>
-                <Badge variant="outline">0%</Badge>
-              </CardAction>
+              <div className="flex items-baseline gap-2">
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <CardDescription>{t('Roles')}</CardDescription>
+                  <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{formatNumber(kpis.roles_count)}</CardTitle>
+                </div>
+                <CardAction className="self-start">
+                  <Badge variant="outline" aria-label={t('Tendencia: 0%')}>{trends?.roles_count ?? '0%'}</Badge>
+                </CardAction>
+              </div>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1.5 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
