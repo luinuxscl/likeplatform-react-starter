@@ -29,7 +29,6 @@
   "Ensure your account is using a long, random password to stay secure": "Ensure your account is using a long, random password to stay secure",
   "Current password": "Current password",
   "New password": "New password",
-  "Confirm password": "Confirm password",
   "Save password": "Save password",
   "Profile": "Profile",
   "Password": "Password",
@@ -79,5 +78,9 @@
   "Let's get started": "Let's get started",
   "Read the": "Read the",
   "Watch video tutorials at": "Watch video tutorials at",
-  "Deploy now": "Deploy now"
+  "Deploy now": "Deploy now",
+  "Users": "Users",
+  "Permissions": "Permissions",
+  "Roles": "Roles",
+  "Options": "Options"
 }

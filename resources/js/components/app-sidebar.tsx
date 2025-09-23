@@ -29,12 +29,12 @@ export function AppSidebar() {
         const perms: string[] | undefined = (page.props as any)?.auth?.permissions;
         adminItems.push(
             {
-                title: t('Dashboard admin'),
+                title: t('Dashboard'),
                 href: '/admin/dashboard',
                 icon: LayoutDashboard,
             },
             {
-                title: t('Usuarios'),
+                title: t('Users'),
                 href: admin.users.index(),
                 icon: Users,
             },
@@ -44,14 +44,14 @@ export function AppSidebar() {
                 icon: BadgeCheck,
             },
             {
-                title: t('Permisos'),
+                title: t('Permissions'),
                 href: admin.permissions.index(),
                 icon: KeyRound,
             },
         );
         if (Array.isArray(perms) && perms.includes('options.view')) {
             adminItems.push({
-                title: t('Opciones'),
+                title: t('Options'),
                 href: '/admin/options',
                 icon: Settings2,
             });
