@@ -14,6 +14,10 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'version' => env('APP_VERSION', '0.1.0-dev'),
+    'about' => [
+        'description' => env('APP_DESCRIPTION', 'Starter kit moderno con Laravel 12 + React 19 (Inertia v2), Tailwind 4 y shadcn/ui. Incluye dashboard admin, roles/permisos (spatie), theming y comando de instalación para desarrollo.'),
+    ],
 
     /*
     |--------------------------------------------------------------------------

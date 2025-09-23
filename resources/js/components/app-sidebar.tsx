@@ -5,14 +5,16 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2 } from 'lucide-react';
+import { BookOpen, Folder, Info, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2 } from 'lucide-react';
 import admin from '@/routes/admin';
 import AppLogo from './app-logo';
+import { useAbout } from '@/components/about';
 import { useI18n } from '@/lib/i18n/I18nProvider';
 
 export function AppSidebar() {
     const { t } = useI18n();
     const page = usePage();
+    const { showAbout } = useAbout();
 
     const platformItems: NavItem[] = [
         {
@@ -61,12 +63,12 @@ export function AppSidebar() {
     const footerNavItems: NavItem[] = [
         {
             title: t('Repository'),
-            href: 'https://github.com/laravel/react-starter-kit',
+            href: 'https://github.com/luinuxscl/likeplatform-react-starter',
             icon: Folder,
         },
         {
-            title: t('Documentation'),
-            href: 'https://laravel.com/docs/starter-kits#react',
+            title: t('Changelog'),
+            href: '/changelog',
             icon: BookOpen,
         },
     ];
@@ -93,6 +95,12 @@ export function AppSidebar() {
 
             <SidebarFooter>
                 <NavFooter items={footerNavItems} className="mt-auto" />
+                <div className="px-2 pb-2">
+                    <button onClick={showAbout} className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground hover:bg-muted">
+                        <Info className="h-4 w-4" />
+                        <span>{t('Acerca de')}</span>
+                    </button>
+                </div>
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

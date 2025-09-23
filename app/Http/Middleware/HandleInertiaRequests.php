@@ -43,6 +43,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            'version' => config('app.version'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
@@ -51,7 +52,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'app' => [
                 'name' => $options->get('app.name', config('app.name')),
-                'description' => $options->get('app.description'),
+                'description' => $options->get('app.description', config('app.about.description')),
                 'logo_url' => $options->get('app.logo_url'),
                 'date_format' => $options->get('app.date_format', 'dd/mm/YYYY'),
                 'timezone' => $options->get('app.timezone', config('app.timezone')),

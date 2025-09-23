@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\I18n\LanguageController;
+use App\Http\Controllers\ChangelogController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -12,6 +13,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+
+    Route::get('changelog', [ChangelogController::class, 'index'])->name('changelog');
 });
 
 require __DIR__.'/settings.php';
