@@ -2,10 +2,11 @@ import AppLayout from '@/layouts/app-layout'
 import { type BreadcrumbItem } from '@/types'
 import { Head, Link, usePage } from '@inertiajs/react'
 import { useI18n } from '@/lib/i18n/I18nProvider'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import ThemeSwitcherMini from '@/components/theme/theme-switcher-mini'
-import { StatCard } from '@/components/ui/stat-card'
+import { Badge } from '@/components/ui/badge'
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react'
 
 type RecentUser = {
   id: number
@@ -44,32 +45,80 @@ export default function AdminDashboardIndex() {
           <div />
           <ThemeSwitcherMini />
         </div>
-        {/* KPIs (shadcn-inspired) */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            title={t('Usuarios totales')}
-            value={kpis.total_users}
-            trend={{ direction: 'up', value: '+12.5%' }}
-            helper={t('Tendencia mensual positiva')}
-          />
-          <StatCard
-            title={t('Nuevos 7 días')}
-            value={kpis.new_users_7d}
-            trend={{ direction: 'down', value: '-2.0%' }}
-            helper={t('Variación semanal')}
-          />
-          <StatCard
-            title={t('Verificados')}
-            value={kpis.verified_users}
-            trend={{ direction: 'up', value: '+8.1%' }}
-            helper={t('Retención de usuarios')}
-          />
-          <StatCard
-            title={t('Roles')}
-            value={kpis.roles_count}
-            trend={{ direction: 'flat', value: '0%' }}
-            helper={t('Sin cambios recientes')}
-          />
+        {/* KPIs (shadcn example pattern) */}
+        <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 lg:grid-cols-4">
+          <Card className="@container/card rounded-2xl">
+            <CardHeader>
+              <CardDescription>{t('Usuarios totales')}</CardDescription>
+              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{kpis.total_users}</CardTitle>
+              <CardAction>
+                <Badge variant="outline">
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                  +12.5%
+                </Badge>
+              </CardAction>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="line-clamp-1 flex gap-2 font-medium">
+                {t('Tendencia mensual positiva')} <ArrowUpRight className="size-4" />
+              </div>
+              <div className="text-muted-foreground">{t('Últimos 6 meses')}</div>
+            </CardFooter>
+          </Card>
+
+          <Card className="@container/card rounded-2xl">
+            <CardHeader>
+              <CardDescription>{t('Nuevos 7 días')}</CardDescription>
+              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{kpis.new_users_7d}</CardTitle>
+              <CardAction>
+                <Badge variant="outline">
+                  <ArrowDownRight className="h-3.5 w-3.5" />
+                  -2.0%
+                </Badge>
+              </CardAction>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="line-clamp-1 flex gap-2 font-medium">
+                {t('Variación semanal')} <ArrowDownRight className="size-4" />
+              </div>
+              <div className="text-muted-foreground">{t('Requiere atención')}</div>
+            </CardFooter>
+          </Card>
+
+          <Card className="@container/card rounded-2xl">
+            <CardHeader>
+              <CardDescription>{t('Verificados')}</CardDescription>
+              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{kpis.verified_users}</CardTitle>
+              <CardAction>
+                <Badge variant="outline">
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                  +8.1%
+                </Badge>
+              </CardAction>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="line-clamp-1 flex gap-2 font-medium">
+                {t('Retención de usuarios')} <ArrowUpRight className="size-4" />
+              </div>
+              <div className="text-muted-foreground">{t('Supera objetivo')}</div>
+            </CardFooter>
+          </Card>
+
+          <Card className="@container/card rounded-2xl">
+            <CardHeader>
+              <CardDescription>{t('Roles')}</CardDescription>
+              <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{kpis.roles_count}</CardTitle>
+              <CardAction>
+                <Badge variant="outline">0%</Badge>
+              </CardAction>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="line-clamp-1 flex gap-2 font-medium">
+                {t('Sin cambios recientes')}
+              </div>
+              <div className="text-muted-foreground">{t('Estable')}</div>
+            </CardFooter>
+          </Card>
         </div>
 
         {/* Accesos rápidos */}
