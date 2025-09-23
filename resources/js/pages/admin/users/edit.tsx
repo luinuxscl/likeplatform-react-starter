@@ -73,7 +73,7 @@ export default function AdminUsersEdit({ user, roles }: { user: UserPayload; rol
                                             else setData('roles', data.roles.filter((x) => x !== r))
                                         }}
                                     />
-                                    <span>{r}</span>
+                                    <span className="text-primary/90">{r}</span>
                                 </label>
                             ))}
                         </div>
@@ -81,7 +81,7 @@ export default function AdminUsersEdit({ user, roles }: { user: UserPayload; rol
                     </div>
                 </div>
                 <div className="mt-2 flex items-center gap-2">
-                    <Button type="submit" disabled={processing}>{t('Guardar')}</Button>
+                    <Button type="submit" variant="default" disabled={processing}>{t('Guardar')}</Button>
                     <Link href="/admin/users" className="text-sm text-muted-foreground hover:underline">{t('Cancelar')}</Link>
                 </div>
             </form>

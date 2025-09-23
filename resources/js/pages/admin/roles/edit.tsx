@@ -54,7 +54,7 @@ export default function AdminRolesEdit({ role, permissions }: { role: RolePayloa
                                             else setData('permissions', data.permissions.filter((x) => x !== p))
                                         }}
                                     />
-                                    <span>{p}</span>
+                                    <span className="text-primary/90">{p}</span>
                                 </label>
                             ))}
                         </div>
@@ -62,7 +62,7 @@ export default function AdminRolesEdit({ role, permissions }: { role: RolePayloa
                     </div>
                 </div>
                 <div className="mt-2 flex items-center gap-2">
-                    <Button type="submit" disabled={processing}>{t('Guardar')}</Button>
+                    <Button type="submit" variant="default" disabled={processing}>{t('Guardar')}</Button>
                     <Link href="/admin/roles" className="text-sm text-muted-foreground hover:underline">{t('Cancelar')}</Link>
                 </div>
             </form>
