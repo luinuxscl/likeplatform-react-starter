@@ -40,6 +40,12 @@ class DevSampleDataSeeder extends Seeder
 
             $start = now()->copy()->subMonths($monthOffset)->startOfMonth();
             $end = now()->copy()->subMonths($monthOffset)->endOfMonth();
+            if ($end->greaterThan(now())) {
+                $end = now();
+            }
+            if ($start->greaterThan($end)) {
+                $start = $end->copy()->subDays(1);
+            }
 
             $user = User::factory()
                 ->state([
@@ -108,7 +114,12 @@ class DevSampleDataSeeder extends Seeder
                         break;
                 }
 
-                $timestamp = Carbon::instance(fake()->dateTimeBetween($user->created_at ?? now()->subMonths(6), now()))->setTimezone('UTC');
+                $baseCreated = $user->created_at instanceof Carbon ? $user->created_at : Carbon::parse($user->created_at ?? now()->subMonths(6));
+                if ($baseCreated->greaterThan(now())) {
+                    $baseCreated = now()->copy()->subDays(1);
+                }
+
+                $timestamp = Carbon::instance(fake()->dateTimeBetween($baseCreated, now()))->setTimezone('UTC');
 
                 AuditLog::create([
                     'user_id' => $actor->id,
