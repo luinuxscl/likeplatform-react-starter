@@ -4,6 +4,7 @@ use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
+use function Pest\Laravel\actingAs;
 
 uses(RefreshDatabase::class);
 
