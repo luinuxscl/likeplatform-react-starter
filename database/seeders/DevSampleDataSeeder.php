@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\AuditLog;
 use App\Models\UserSession;
+use App\Models\PersonalAccessToken;
+use App\Services\ApiKeys\ApiKeyManager;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -169,6 +171,80 @@ class DevSampleDataSeeder extends Seeder
                     'created_at' => $loginAt,
                     'updated_at' => $lastActivity,
                 ]);
+            }
+        }
+
+        // Generar API keys de ejemplo (modo híbrido: administradores y usuarios finales)
+        $apiKeyManager = app(ApiKeyManager::class);
+        $allowedAbilities = config('sanctum.user_abilities', ['read']);
+
+        if ($admins->isNotEmpty() && $created->count() > 5) {
+            $adminIssuedUsers = $created->shuffle()->take(min(15, $created->count()));
+
+            foreach ($adminIssuedUsers as $user) {
+                $issuer = $admins->random();
+                $expiresAt = fake()->boolean(60) ? now()->addDays(random_int(30, 180)) : null;
+
+                $result = $apiKeyManager->createToken(
+                    $user,
+                    'Integración '.$user->id.'-'.Str::upper(Str::random(4)),
+                    fake()->sentence(6),
+                    ['*'],
+                    $expiresAt,
+                    $issuer,
+                    false,
+                );
+
+                $tokenModel = PersonalAccessToken::find($result['id']);
+
+                if ($tokenModel) {
+                    $lastUsedAt = fake()->boolean(70) ? Carbon::instance(fake()->dateTimeBetween('-30 days', 'now')) : null;
+                    $tokenModel->forceFill([
+                        'last_used_at' => $lastUsedAt,
+                        'last_used_ip' => fake()->ipv4(),
+                        'last_used_user_agent' => fake()->userAgent(),
+                    ])->save();
+                }
+            }
+        }
+
+        if ($created->isNotEmpty()) {
+            $selfManagedUsers = $created->shuffle()->take(min(25, $created->count()));
+
+            foreach ($selfManagedUsers as $user) {
+                $abilityPool = collect($allowedAbilities);
+                if ($abilityPool->isEmpty()) {
+                    $abilityPool = collect(['read']);
+                }
+
+                $abilities = $abilityPool
+                    ->shuffle()
+                    ->take(min(max(1, $abilityPool->count()), random_int(1, max(1, $abilityPool->count()))))
+                    ->values()
+                    ->all();
+
+                $expiresAt = fake()->boolean(40) ? now()->addDays(random_int(15, 120)) : null;
+
+                $result = $apiKeyManager->createToken(
+                    $user,
+                    'Clave personal '.Str::upper(Str::random(5)),
+                    fake()->sentence(8),
+                    $abilities,
+                    $expiresAt,
+                    $user,
+                    true,
+                );
+
+                $tokenModel = PersonalAccessToken::find($result['id']);
+
+                if ($tokenModel && fake()->boolean(65)) {
+                    $lastUsedAt = Carbon::instance(fake()->dateTimeBetween('-20 days', 'now'));
+                    $tokenModel->forceFill([
+                        'last_used_at' => $lastUsedAt,
+                        'last_used_ip' => fake()->ipv4(),
+                        'last_used_user_agent' => fake()->userAgent(),
+                    ])->save();
+                }
             }
         }
     }

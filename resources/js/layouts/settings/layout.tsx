@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
+import { index as apiKeysIndex } from '@/routes/settings/api-keys';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
@@ -24,6 +25,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
         { title: t('Profile'), href: edit(), icon: null },
         { title: t('Password'), href: editPassword(), icon: null },
         { title: t('Appearance'), href: editAppearance(), icon: null },
+        { title: t('API Keys'), href: apiKeysIndex(), icon: null },
     ];
 
     const currentPath = window.location.pathname;

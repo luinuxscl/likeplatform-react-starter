@@ -2,6 +2,12 @@
 
 Todas las novedades y cambios relevantes del proyecto.
 
+## [Unreleased]
+
+- Added hybrid API key management with Laravel Sanctum, including admin panel, self-service UI, audit logging, and sample seed data.
+- Added feature and settings tests for API key creation/revocation flows.
+- Documented API key workflows and configuration in `docs/api-keys.md`.
+
 ## 0.2.0 - 2025-09-23
 
 - Diseño de Dashboard admin inspirado en shadcn/ui con cards theme-aware.
