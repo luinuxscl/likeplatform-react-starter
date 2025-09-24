@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AuditLogsController;
 use App\Http\Controllers\Admin\AuditSessionsController;
+use App\Http\Controllers\Admin\ApiKeysController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -47,4 +48,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     // Auditoría
     Route::get('/audit/logs', [AuditLogsController::class, 'index'])->name('audit.logs.index');
     Route::get('/audit/sessions', [AuditSessionsController::class, 'index'])->name('audit.sessions.index');
+
+    // API Keys
+    Route::get('/api-keys', [ApiKeysController::class, 'index'])->name('api-keys.index');
+    Route::post('/api-keys', [ApiKeysController::class, 'store'])->name('api-keys.store');
+    Route::delete('/api-keys/{token}', [ApiKeysController::class, 'destroy'])->name('api-keys.destroy');
 });

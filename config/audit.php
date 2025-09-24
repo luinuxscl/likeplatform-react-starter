@@ -13,6 +13,7 @@ return [
     */
     'models' => [
         App\Models\User::class,
+        App\Models\PersonalAccessToken::class,
     ],
 
     /*
@@ -27,6 +28,7 @@ return [
     'exclude' => [
         'password',
         'remember_token',
+        'token',
     ],
 
     /*

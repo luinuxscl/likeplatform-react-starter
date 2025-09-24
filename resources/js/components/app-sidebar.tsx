@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, Info, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2, ClipboardList, ActivitySquare } from 'lucide-react';
+import { BookOpen, Folder, Info, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2, ClipboardList, ActivitySquare, KeySquare } from 'lucide-react';
 import admin from '@/routes/admin';
 import AppLogo from './app-logo';
 import { AboutDialog } from '@/components/about-dialog';
@@ -70,6 +70,11 @@ export function AppSidebar() {
                 title: t('Auditoría - Sesiones'),
                 href: '/admin/audit/sessions',
                 icon: ActivitySquare,
+            },
+            {
+                title: t('API Keys'),
+                href: '/admin/api-keys',
+                icon: KeySquare,
             },
         );
     }

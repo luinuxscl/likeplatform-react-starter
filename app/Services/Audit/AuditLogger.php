@@ -16,6 +16,10 @@ class AuditLogger
         $old = Arr::except($oldValues, $exclude);
         $new = Arr::except($newValues, $exclude);
 
+        if (isset($metadata['token'])) {
+            unset($metadata['token']);
+        }
+
         AuditLog::create([
             'user_id' => Auth::id(),
             'action' => $action,
