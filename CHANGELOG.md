@@ -4,9 +4,13 @@ Todas las novedades y cambios relevantes del proyecto.
 
 ## [Unreleased]
 
+- (pendiente)
+
+## 0.3.0 - 2025-09-24
+
 - Added hybrid API key management with Laravel Sanctum, including admin panel, self-service UI, audit logging, and sample seed data.
 - Added feature and settings tests for API key creation/revocation flows.
-- Documented API key workflows and configuration in `docs/api-keys.md`.
+- Documented API key workflows and configuration en `docs/api-keys.md`.
 
 ## 0.2.0 - 2025-09-23
 
