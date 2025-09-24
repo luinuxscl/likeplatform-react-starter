@@ -3,11 +3,13 @@
 use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
 it('registra auditoría para el ciclo de vida de usuarios', function () {
     $admin = User::factory()->create();
+    Role::findOrCreate('admin');
     $admin->assignRole('admin');
     actingAs($admin);
 
