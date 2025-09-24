@@ -2,7 +2,7 @@
 
 Todas las novedades y cambios relevantes del proyecto.
 
-## 0.1.0-dev - 2025-09-23
+## 0.2.0 - 2025-09-23
 
 - Diseño de Dashboard admin inspirado en shadcn/ui con cards theme-aware.
 - Sidebar reestructurado en secciones: Plataforma y Administración.
