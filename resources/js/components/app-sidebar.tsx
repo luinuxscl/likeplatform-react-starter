@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, Info, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2 } from 'lucide-react';
+import { BookOpen, Folder, Info, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2, ClipboardList, ActivitySquare } from 'lucide-react';
 import admin from '@/routes/admin';
 import AppLogo from './app-logo';
 import { AboutDialog } from '@/components/about-dialog';
@@ -59,6 +59,19 @@ export function AppSidebar() {
                 icon: Settings2,
             });
         }
+
+        adminItems.push(
+            {
+                title: t('Auditoría - Registros'),
+                href: '/admin/audit/logs',
+                icon: ClipboardList,
+            },
+            {
+                title: t('Auditoría - Sesiones'),
+                href: '/admin/audit/sessions',
+                icon: ActivitySquare,
+            },
+        );
     }
 
     const footerNavItems: NavItem[] = [

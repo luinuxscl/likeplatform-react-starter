@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\PermissionsController;
 use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AuditLogsController;
+use App\Http\Controllers\Admin\AuditSessionsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -41,4 +43,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::put('/options', [OptionsController::class, 'update'])
         ->middleware('permission:options.update')
         ->name('options.update');
+
+    // Auditoría
+    Route::get('/audit/logs', [AuditLogsController::class, 'index'])->name('audit.logs.index');
+    Route::get('/audit/sessions', [AuditSessionsController::class, 'index'])->name('audit.sessions.index');
 });
