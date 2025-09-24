@@ -3,7 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\AuditLog;
+use App\Models\UserSession;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class DevSampleDataSeeder extends Seeder
@@ -49,12 +52,112 @@ class DevSampleDataSeeder extends Seeder
             $created->push($user);
         }
 
-        // Asignar rol admin a 5 de esos 100 usuarios
+        // Asignar rol admin a 5 de esos usuarios
         // (sin tocar al admin principal ya creado por AdminUserSeeder)
         $adminCandidates = $created->random(min(5, $created->count()));
         foreach ($adminCandidates as $u) {
             if (!$u->hasRole('admin')) {
                 $u->assignRole('admin');
+            }
+        }
+
+        // Registrar logs de auditoría ficticios
+        $admins = User::role('admin')->get();
+        if ($admins->isNotEmpty() && $created->isNotEmpty()) {
+            $actions = collect(['profile_updated', 'role_assigned', 'password_reset', 'status_disabled', 'status_enabled']);
+            $sampleSize = min(60, $created->count());
+            $sampledUsers = $created->take($sampleSize);
+
+            foreach ($sampledUsers as $user) {
+                $actor = $admins->random();
+                $action = $actions->random();
+
+                $oldValues = [];
+                $newValues = [];
+
+                switch ($action) {
+                    case 'profile_updated':
+                        $oldValues = [
+                            'name' => $user->name,
+                            'phone' => null,
+                        ];
+                        $newValues = [
+                            'name' => $user->name.' '.fake()->lastName(),
+                            'phone' => fake()->e164PhoneNumber(),
+                        ];
+                        break;
+                    case 'role_assigned':
+                        $oldValues = [
+                            'roles' => $user->roles->pluck('name')->toArray(),
+                        ];
+                        $newValues = [
+                            'roles' => array_values(array_unique(array_merge($oldValues['roles'], [fake()->randomElement(['editor', 'manager', 'viewer'])]))),
+                        ];
+                        break;
+                    case 'password_reset':
+                        $oldValues = ['must_change_password' => false];
+                        $newValues = ['must_change_password' => true];
+                        break;
+                    case 'status_disabled':
+                        $oldValues = ['status' => 'active'];
+                        $newValues = ['status' => 'disabled'];
+                        break;
+                    case 'status_enabled':
+                        $oldValues = ['status' => 'disabled'];
+                        $newValues = ['status' => 'active'];
+                        break;
+                }
+
+                $timestamp = Carbon::instance(fake()->dateTimeBetween($user->created_at ?? now()->subMonths(6), now()))->setTimezone('UTC');
+
+                AuditLog::create([
+                    'user_id' => $actor->id,
+                    'action' => $action,
+                    'auditable_type' => User::class,
+                    'auditable_id' => $user->id,
+                    'old_values' => $oldValues,
+                    'new_values' => $newValues,
+                    'metadata' => [
+                        'channel' => fake()->randomElement(['web', 'api', 'admin']),
+                        'request_id' => (string) Str::uuid(),
+                    ],
+                    'ip_address' => fake()->ipv4(),
+                    'user_agent' => fake()->userAgent(),
+                    'url' => fake()->url(),
+                    'created_at' => $timestamp,
+                    'updated_at' => $timestamp,
+                ]);
+            }
+        }
+
+        // Registrar sesiones ficticias
+        if ($created->isNotEmpty()) {
+            $sessionSample = min(80, $created->count());
+            $sessionUsers = $created->take($sessionSample);
+
+            foreach ($sessionUsers as $user) {
+                $loginAt = Carbon::instance(fake()->dateTimeBetween('-45 days', '-1 days'));
+                $lastActivity = (clone $loginAt)->addMinutes(random_int(10, 360));
+                $logoutAt = fake()->boolean(55) ? (clone $lastActivity)->addMinutes(random_int(5, 90)) : null;
+
+                UserSession::create([
+                    'user_id' => $user->id,
+                    'session_id' => (string) Str::uuid(),
+                    'ip_address' => fake()->ipv4(),
+                    'user_agent' => fake()->userAgent(),
+                    'device' => fake()->randomElement(['Desktop', 'Mobile', 'Tablet']),
+                    'platform' => fake()->randomElement(['Windows', 'macOS', 'Linux', 'Android', 'iOS']),
+                    'browser' => fake()->randomElement(['Chrome', 'Firefox', 'Safari', 'Edge']),
+                    'login_at' => $loginAt,
+                    'last_activity_at' => $lastActivity,
+                    'logout_at' => $logoutAt,
+                    'metadata' => [
+                        'locale' => fake()->locale(),
+                        'timezone' => fake()->timezone(),
+                    ],
+                    'created_at' => $loginAt,
+                    'updated_at' => $lastActivity,
+                ]);
             }
         }
     }
