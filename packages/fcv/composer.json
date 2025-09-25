@@ -6,8 +6,12 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Like\\Fcv\\": "src/"
-    }
+      "Like\\Fcv\\": "src/",
+      "Like\\Fcv\\Database\\": "database/"
+    },
+    "classmap": [
+      "database/Seeders"
+    ]
   },
   "extra": {
     "laravel": {
