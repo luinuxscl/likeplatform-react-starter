@@ -2,6 +2,7 @@
   "name": "like/fcv-access",
   "description": "Paquete FCV: control de acceso (alumnos, funcionarios, vehículos, eventos) para Fundación Cristo Vive.",
   "type": "library",
+  "version": "0.1.0",
   "license": "MIT",
   "autoload": {
     "psr-4": {
