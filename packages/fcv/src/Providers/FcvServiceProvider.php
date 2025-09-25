@@ -22,8 +22,9 @@ class FcvServiceProvider extends ServiceProvider
             __DIR__.'/../../config/fcv.php' => config_path('fcv.php'),
         ], 'fcv-config');
 
+        // Publicar componentes React a la carpeta de Pages del host para que Inertia los resuelva
         $this->publishes([
-            __DIR__.'/../../resources/js' => resource_path('js/vendor/fcv'),
+            __DIR__.'/../../resources/js' => resource_path('js/pages/fcv'),
         ], 'fcv-js');
     }
 }
