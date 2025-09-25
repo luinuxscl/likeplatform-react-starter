@@ -13,7 +13,7 @@ Route::middleware(['web', 'auth'])
     ->group(function () {
         Route::get('/guard', [DashboardController::class, 'index'])->name('guard');
         Route::post('/verify', [VerificationController::class, 'verify'])->name('verify');
-        Route::post('/search', [SearchController::class, 'search'])->name('search');
+        Route::get('/search', [SearchController::class, 'search'])->name('search');
         Route::post('/access', [AccessController::class, 'store'])->name('access.store');
         Route::get('/access/recent', [AccessQueryController::class, 'recent'])->name('access.recent');
         Route::get('/health', function () {

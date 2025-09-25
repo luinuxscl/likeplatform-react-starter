@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import AppLayout from '@/layouts/app-layout'
+import type { ReactNode } from 'react'
 
 // Guardia UI (Inertia page name: "fcv/guard/index")
 // Requisitos: búsqueda rápida por RUT/Nombre, una sola pantalla, alto contraste, fuente escalable
@@ -11,6 +13,15 @@ type Person = {
   memberships: Array<{
     role: string
     organization: { id: number; name: string; access_rule_preset: string }
+
+// Integrar layout de la app + breadcrumbs
+;(GuardDashboard as any).layout = (page: ReactNode) => (
+  <AppLayout breadcrumbs={[{ label: 'FCV', href: '/fcv/guard' }, { label: 'Portería', href: '/fcv/guard', active: true }]}>
+    {page}
+  </AppLayout>
+)
+
+export default GuardDashboard
   }>
 }
 
@@ -22,8 +33,27 @@ type VerifyResponse = {
   organization?: { id: number; name: string; access_rule_preset: string }
 }
 
+type RecentItem = {
+  id: number
+  occurred_at: string
+  direction: 'entrada' | 'salida'
+  status: 'permitido' | 'denegado'
+  reason?: string | null
+  person: { id: number; name: string; rut: string } | null
+}
+
 function classNames(...xs: Array<string | false | undefined>) {
   return xs.filter(Boolean).join(' ')
+}
+
+function normalizeRut(raw: string) {
+  const only = (raw || '').replace(/[^0-9kK]/g, '')
+  return only.toLowerCase()
+}
+
+function looksLikeRut(raw: string) {
+  const s = normalizeRut(raw)
+  return s.length >= 6 && /^(\d{6,8}[0-9k])$/.test(s)
 }
 
 function useDebounced<T>(value: T, delay = 250) {
@@ -42,7 +72,7 @@ const FONT_SIZES = [
   { label: '2XL', value: 'text-2xl' },
 ]
 
-export default function GuardDashboard() {
+function GuardDashboard() {
   const [query, setQuery] = useState('')
   const debouncedQuery = useDebounced(query)
   const [searching, setSearching] = useState(false)
@@ -54,6 +84,12 @@ export default function GuardDashboard() {
   const [fontIdx, setFontIdx] = useState(1) // default L
   const fontClass = useMemo(() => FONT_SIZES[fontIdx]?.value ?? 'text-base', [fontIdx])
 
+  const [highContrast, setHighContrast] = useState(false)
+  const borderStrong = highContrast ? 'border-foreground' : 'border-border'
+  const cardBg = highContrast ? 'bg-background' : 'bg-card'
+
+  const [recent, setRecent] = useState<RecentItem[]>([])
+
   // Buscar por nombre o RUT
   useEffect(() => {
     let active = true
@@ -64,10 +100,11 @@ export default function GuardDashboard() {
       }
       setSearching(true)
       try {
-        const res = await fetch('/fcv/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-          body: JSON.stringify({ q: debouncedQuery }),
+        const term = looksLikeRut(debouncedQuery) ? normalizeRut(debouncedQuery) : debouncedQuery
+        const url = `/fcv/search?q=${encodeURIComponent(term)}`
+        const res = await fetch(url, {
+          method: 'GET',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
         })
         if (!active) return
         if (res.ok) {
@@ -88,14 +125,51 @@ export default function GuardDashboard() {
     }
   }, [debouncedQuery])
 
+  // Accesos recientes (polling cada 10s)
+  useEffect(() => {
+    let active = true
+    let timer: number | undefined
+    async function fetchRecent() {
+      try {
+        const res = await fetch('/fcv/access/recent?limit=20', {
+          method: 'GET',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
+        if (!active) return
+        if (res.ok) {
+          const data = await res.json()
+          setRecent(data.items ?? [])
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    fetchRecent()
+    timer = window.setInterval(fetchRecent, 10000)
+    return () => {
+      active = false
+      if (timer) window.clearInterval(timer)
+    }
+  }, [])
+
+  function getCsrfToken() {
+    const el = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null
+    return el?.content || ''
+  }
+
   async function handleVerify(rut: string) {
     setVerifyLoading(true)
     setVerifyResult(null)
     try {
       const res = await fetch('/fcv/verify', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-TOKEN': getCsrfToken(),
+        },
         body: JSON.stringify({ rut }),
+        credentials: 'same-origin',
       })
       if (res.ok) {
         const data: VerifyResponse = await res.json()
@@ -109,16 +183,29 @@ export default function GuardDashboard() {
   async function handleAccess(direction: 'entrada' | 'salida', status: 'permitido' | 'denegado', rut?: string) {
     const res = await fetch('/fcv/access', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': getCsrfToken(),
+      },
       body: JSON.stringify({ rut: rut ?? null, direction, status }),
+      credentials: 'same-origin',
     })
     if (!res.ok) return
+    // refrescar recientes al registrar
+    try {
+      const r = await fetch('/fcv/access/recent?limit=20', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      if (r.ok) {
+        const data = await r.json()
+        setRecent(data.items ?? [])
+      }
+    } catch {}
   }
 
   return (
     <div className={classNames('min-h-[calc(100vh-4rem)] bg-background text-foreground', fontClass)}>
       <div className="mx-auto max-w-7xl px-4 py-4 space-y-4">
-        {/* Barra Superior: Búsqueda + Controles de tamaño */}
+        {/* Barra Superior: Búsqueda + Controles de tamaño + Alto contraste */}
         <div className="flex flex-col gap-3 md:flex-row md:items-center">
           <div className="flex-1">
             <label className="block text-sm text-muted-foreground mb-1">Buscar por nombre o RUT</label>
@@ -126,13 +213,31 @@ export default function GuardDashboard() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.shiftKey) {
+                  // Shift+Enter = registrar entrada (permitido)
+                  e.preventDefault()
+                  const rut = looksLikeRut(query) ? normalizeRut(query) : undefined
+                  void handleAccess('entrada', 'permitido', rut)
+                } else if (e.key === 'Enter' && e.altKey) {
+                  // Alt+Enter = registrar salida (permitido)
+                  e.preventDefault()
+                  const rut = looksLikeRut(query) ? normalizeRut(query) : undefined
+                  void handleAccess('salida', 'permitido', rut)
+                } else if (e.key === 'Enter') {
+                  // Enter = verificar
+                  e.preventDefault()
+                  const rut = looksLikeRut(query) ? normalizeRut(query) : query
+                  void handleVerify(rut)
+                }
+              }}
               placeholder="Ej: 12345678k o Juan Pérez"
-              className="w-full rounded-md border border-border bg-background px-3 py-2 outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+              className={classNames('w-full rounded-md border bg-background px-3 py-2 outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
             />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Tamaño</span>
-            <div className="flex rounded-md border border-border overflow-hidden">
+            <div className={classNames('flex rounded-md border overflow-hidden', borderStrong)}>
               {FONT_SIZES.map((fs, i) => (
                 <button
                   key={fs.label}
@@ -146,17 +251,24 @@ export default function GuardDashboard() {
                 </button>
               ))}
             </div>
+            <button
+              className={classNames('rounded-md px-3 py-2 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong, highContrast ? 'bg-yellow-500 text-black' : 'bg-background')}
+              onClick={() => setHighContrast((v) => !v)}
+              title="Alto contraste"
+            >
+              {highContrast ? 'Contraste: ON' : 'Contraste: OFF'}
+            </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Columna 1: Resultados de búsqueda */}
-          <section className="lg:col-span-2 rounded-lg border border-border bg-card">
-            <div className="border-b border-border p-3">
+          <section className={classNames('lg:col-span-2 rounded-lg border', borderStrong, cardBg)}>
+            <div className={classNames('border-b p-3', borderStrong)}>
               <h2 className="font-semibold">Resultados</h2>
               {searching && <p className="text-sm text-muted-foreground">Buscando…</p>}
             </div>
-            <div className="divide-y divide-border">
+            <div className={classNames('divide-y', borderStrong)}>
               {results.length === 0 && (
                 <div className="p-4 text-sm text-muted-foreground">Sin resultados</div>
               )}
@@ -165,13 +277,13 @@ export default function GuardDashboard() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{p.name}</span>
-                      <span className="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground border border-border">{p.rut}</span>
+                      <span className={classNames('rounded-md px-2 py-0.5 text-xs text-muted-foreground border', borderStrong)}> {p.rut} </span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {p.memberships.map((m, idx) => (
                         <span
                           key={idx}
-                          className="rounded-md border border-border bg-background px-2 py-0.5 text-xs"
+                          className={classNames('rounded-md px-2 py-0.5 text-xs border', borderStrong)}
                           title={`Regla: ${m.organization.access_rule_preset}`}
                         >
                           {m.role} · {m.organization.name}
@@ -181,21 +293,21 @@ export default function GuardDashboard() {
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <button
-                      className="rounded-md border border-border bg-primary/90 text-primary-foreground px-3 py-2 hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className={classNames('rounded-md border px-3 py-2 hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong, 'bg-primary/90 text-primary-foreground')}
                       onClick={() => handleVerify(p.rut)}
                     >
                       Verificar
                     </button>
                     <div className="flex items-center gap-1">
                       <button
-                        className="rounded-md border border-border bg-background px-2 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className={classNames('rounded-md border px-2 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
                         onClick={() => handleAccess('entrada', 'permitido', p.rut)}
                         title="Registrar entrada"
                       >
                         ⬅︎
                       </button>
                       <button
-                        className="rounded-md border border-border bg-background px-2 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className={classNames('rounded-md border px-2 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
                         onClick={() => handleAccess('salida', 'permitido', p.rut)}
                         title="Registrar salida"
                       >
@@ -208,12 +320,12 @@ export default function GuardDashboard() {
             </div>
           </section>
 
-          {/* Columna 2: Panel de verificación / resultado */}
-          <aside className="rounded-lg border border-border bg-card p-3 space-y-3">
+          {/* Columna 2: Panel de verificación / resultado + recientes */}
+          <aside className={classNames('rounded-lg border p-3 space-y-3', borderStrong, cardBg)}>
             <h2 className="font-semibold">Verificación</h2>
             <div className="space-y-2">
               <button
-                className="w-full rounded-md border border-border bg-primary/90 text-primary-foreground px-3 py-2 hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className={classNames('w-full rounded-md border px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong, 'bg-primary/90 text-primary-foreground hover:bg-primary')}
                 onClick={() => {
                   if (query) handleVerify(query)
                 }}
@@ -244,13 +356,13 @@ export default function GuardDashboard() {
                   )}
                   <div className="mt-3 flex items-center gap-2">
                     <button
-                      className="rounded-md border border-border bg-background px-3 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className={classNames('rounded-md border px-3 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
                       onClick={() => handleAccess('entrada', verifyResult.allowed ? 'permitido' : 'denegado', verifyResult.person?.rut)}
                     >
                       Registrar Entrada
                     </button>
                     <button
-                      className="rounded-md border border-border bg-background px-3 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className={classNames('rounded-md border px-3 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
                       onClick={() => handleAccess('salida', verifyResult.allowed ? 'permitido' : 'denegado', verifyResult.person?.rut)}
                     >
                       Registrar Salida
@@ -260,10 +372,29 @@ export default function GuardDashboard() {
               )}
             </div>
 
-            <div className="pt-2 border-t border-border">
-              <p className="text-sm text-muted-foreground">
-                Consejo: usa el campo de búsqueda para filtrar por RUT o nombre. Ajusta el tamaño de fuente para mejorar la legibilidad en condiciones de luz.
-              </p>
+            <div className={classNames('pt-2 border-t', borderStrong)}>
+              <h3 className="font-semibold mb-2">Accesos recientes</h3>
+              <div className="max-h-72 overflow-auto divide-y">
+                {recent.length === 0 && (
+                  <div className="text-sm text-muted-foreground">Sin registros</div>
+                )}
+                {recent.map((item) => (
+                  <div key={item.id} className="py-2 text-sm flex items-center justify-between gap-3">
+                    <div>
+                      <div className="font-medium">
+                        {item.person ? item.person.name : '—'}
+                      </div>
+                      <div className="text-muted-foreground">
+                        {item.person ? item.person.rut : 'Sin RUT'} · {new Date(item.occurred_at).toLocaleTimeString()}
+                      </div>
+                    </div>
+                    <div className="shrink-0 flex items-center gap-2">
+                      <span className={classNames('rounded-md px-2 py-0.5 border text-xs', borderStrong)}>{item.direction}</span>
+                      <span className={classNames('rounded-md px-2 py-0.5 border text-xs', item.status === 'permitido' ? 'border-green-600' : 'border-red-600')}>{item.status}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </aside>
         </div>
