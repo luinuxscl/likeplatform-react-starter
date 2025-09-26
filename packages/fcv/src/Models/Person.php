@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Like\Fcv\Database\Factories\PersonFactory;
 
 class Person extends Model
 {
@@ -45,5 +46,10 @@ class Person extends Model
     public function accessLogs(): HasMany
     {
         return $this->hasMany(AccessLog::class, 'person_id');
+    }
+
+    protected static function newFactory(): PersonFactory
+    {
+        return PersonFactory::new();
     }
 }

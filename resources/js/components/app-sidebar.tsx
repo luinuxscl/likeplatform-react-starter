@@ -25,6 +25,11 @@ export function AppSidebar() {
         },
     ];
 
+    // Items expuestos por paquetes/extensiones vía Inertia::share
+    const extensionItems: NavItem[] = Array.isArray((page.props as any)?.extensions?.nav)
+        ? ((page.props as any).extensions.nav as Array<{ title: string; href: string; icon?: any }>)
+        : [];
+
     // Mostrar links de Administración solo si el usuario tiene rol admin
     const roles: string[] | undefined = (page.props as any)?.auth?.roles;
     const adminItems: NavItem[] = [];
@@ -107,6 +112,9 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={platformItems} label={t('Plataforma')} />
+                {extensionItems.length > 0 && (
+                    <NavMain items={extensionItems} label={t('Operación')} />
+                )}
                 {adminItems.length > 0 && (
                     <NavMain items={adminItems} label={t('Administración')} />
                 )}

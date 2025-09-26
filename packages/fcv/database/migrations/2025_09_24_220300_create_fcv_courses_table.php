@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->foreignId('organization_id')->constrained('fcv_organizations')->cascadeOnDelete();
             $table->string('name');
             $table->string('code')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
             $table->unique(['organization_id', 'name']);
         });

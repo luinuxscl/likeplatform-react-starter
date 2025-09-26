@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import AppLayout from '@/layouts/app-layout'
-import type { ReactNode } from 'react'
+import type { BreadcrumbItem } from '@/types'
+import { Head } from '@inertiajs/react'
+import { useI18n } from '@/lib/i18n/I18nProvider'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 
 // Guardia UI (Inertia page name: "fcv/guard/index")
 // Requisitos: búsqueda rápida por RUT/Nombre, una sola pantalla, alto contraste, fuente escalable
@@ -13,15 +18,6 @@ type Person = {
   memberships: Array<{
     role: string
     organization: { id: number; name: string; access_rule_preset: string }
-
-// Integrar layout de la app + breadcrumbs
-;(GuardDashboard as any).layout = (page: ReactNode) => (
-  <AppLayout breadcrumbs={[{ label: 'FCV', href: '/fcv/guard' }, { label: 'Portería', href: '/fcv/guard', active: true }]}>
-    {page}
-  </AppLayout>
-)
-
-export default GuardDashboard
   }>
 }
 
@@ -72,7 +68,8 @@ const FONT_SIZES = [
   { label: '2XL', value: 'text-2xl' },
 ]
 
-function GuardDashboard() {
+export default function GuardDashboard() {
+  const { t } = useI18n()
   const [query, setQuery] = useState('')
   const debouncedQuery = useDebounced(query)
   const [searching, setSearching] = useState(false)
@@ -202,14 +199,20 @@ function GuardDashboard() {
     } catch {}
   }
 
+  const breadcrumbs: BreadcrumbItem[] = [
+    { title: t('FCV'), href: '/fcv/guard' },
+    { title: t('Portería'), href: '/fcv/guard' },
+  ]
+
   return (
-    <div className={classNames('min-h-[calc(100vh-4rem)] bg-background text-foreground', fontClass)}>
-      <div className="mx-auto max-w-7xl px-4 py-4 space-y-4">
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title={t('Portería')} />
+      <div className={classNames('flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4', fontClass)}>
         {/* Barra Superior: Búsqueda + Controles de tamaño + Alto contraste */}
         <div className="flex flex-col gap-3 md:flex-row md:items-center">
           <div className="flex-1">
             <label className="block text-sm text-muted-foreground mb-1">Buscar por nombre o RUT</label>
-            <input
+            <Input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -232,32 +235,31 @@ function GuardDashboard() {
                 }
               }}
               placeholder="Ej: 12345678k o Juan Pérez"
-              className={classNames('w-full rounded-md border bg-background px-3 py-2 outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
+              className={classNames('w-full', borderStrong)}
             />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Tamaño</span>
             <div className={classNames('flex rounded-md border overflow-hidden', borderStrong)}>
               {FONT_SIZES.map((fs, i) => (
-                <button
+                <Button
                   key={fs.label}
-                  className={classNames(
-                    'px-3 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                    i === fontIdx && 'bg-muted'
-                  )}
+                  variant={i === fontIdx ? 'secondary' : 'outline'}
+                  className="px-3 py-2"
                   onClick={() => setFontIdx(i)}
                 >
                   {fs.label}
-                </button>
+                </Button>
               ))}
             </div>
-            <button
-              className={classNames('rounded-md px-3 py-2 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong, highContrast ? 'bg-yellow-500 text-black' : 'bg-background')}
+            <Button
+              variant={highContrast ? 'destructive' : 'outline'}
+              className={classNames('px-3 py-2', borderStrong)}
               onClick={() => setHighContrast((v) => !v)}
               title="Alto contraste"
             >
               {highContrast ? 'Contraste: ON' : 'Contraste: OFF'}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -277,42 +279,47 @@ function GuardDashboard() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{p.name}</span>
-                      <span className={classNames('rounded-md px-2 py-0.5 text-xs text-muted-foreground border', borderStrong)}> {p.rut} </span>
+                      <Badge variant="secondary" className={classNames('text-xs', borderStrong)}> {p.rut} </Badge>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {p.memberships.map((m, idx) => (
-                        <span
-                          key={idx}
-                          className={classNames('rounded-md px-2 py-0.5 text-xs border', borderStrong)}
-                          title={`Regla: ${m.organization.access_rule_preset}`}
-                        >
-                          {m.role} · {m.organization.name}
+                        <span key={idx} className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-xs capitalize">{m.role}</Badge>
+                          <Badge
+                            variant={m.organization.access_rule_preset === 'acceso_total' ? 'default' : m.organization.access_rule_preset === 'horario_flexible' ? 'secondary' : 'outline'}
+                            className="text-xs"
+                            title={`Regla: ${m.organization.access_rule_preset}`}
+                          >
+                            {m.organization.name}
+                          </Badge>
                         </span>
                       ))}
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    <button
-                      className={classNames('rounded-md border px-3 py-2 hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong, 'bg-primary/90 text-primary-foreground')}
+                    <Button
                       onClick={() => handleVerify(p.rut)}
+                      className={classNames('', borderStrong)}
                     >
                       Verificar
-                    </button>
+                    </Button>
                     <div className="flex items-center gap-1">
-                      <button
-                        className={classNames('rounded-md border px-2 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
+                      <Button
+                        variant="outline"
+                        className={classNames('px-2 py-2', borderStrong)}
                         onClick={() => handleAccess('entrada', 'permitido', p.rut)}
                         title="Registrar entrada"
                       >
                         ⬅︎
-                      </button>
-                      <button
-                        className={classNames('rounded-md border px-2 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className={classNames('px-2 py-2', borderStrong)}
                         onClick={() => handleAccess('salida', 'permitido', p.rut)}
                         title="Registrar salida"
                       >
                         ➝
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </article>
@@ -324,14 +331,14 @@ function GuardDashboard() {
           <aside className={classNames('rounded-lg border p-3 space-y-3', borderStrong, cardBg)}>
             <h2 className="font-semibold">Verificación</h2>
             <div className="space-y-2">
-              <button
-                className={classNames('w-full rounded-md border px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong, 'bg-primary/90 text-primary-foreground hover:bg-primary')}
+              <Button
+                className={classNames('w-full', borderStrong)}
                 onClick={() => {
                   if (query) handleVerify(query)
                 }}
               >
                 {verifyLoading ? 'Verificando…' : 'Verificar RUT/NOMBRE actual'}
-              </button>
+              </Button>
               {verifyResult && (
                 <div
                   className={classNames(
@@ -355,18 +362,20 @@ function GuardDashboard() {
                     </div>
                   )}
                   <div className="mt-3 flex items-center gap-2">
-                    <button
-                      className={classNames('rounded-md border px-3 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
+                    <Button
+                      variant="outline"
+                      className={classNames('', borderStrong)}
                       onClick={() => handleAccess('entrada', verifyResult.allowed ? 'permitido' : 'denegado', verifyResult.person?.rut)}
                     >
                       Registrar Entrada
-                    </button>
-                    <button
-                      className={classNames('rounded-md border px-3 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', borderStrong)}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className={classNames('', borderStrong)}
                       onClick={() => handleAccess('salida', verifyResult.allowed ? 'permitido' : 'denegado', verifyResult.person?.rut)}
                     >
                       Registrar Salida
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -399,6 +408,6 @@ function GuardDashboard() {
           </aside>
         </div>
       </div>
-    </div>
+    </AppLayout>
   )
 }

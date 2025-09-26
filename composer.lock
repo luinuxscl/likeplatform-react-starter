@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dcede9b4048b9b973102b9a52e9682fe",
+    "content-hash": "b9b01d0e756b7ebd6fc765d83bfe3fcd",
     "packages": [
         {
             "name": "brick/math",
@@ -2206,6 +2206,44 @@
                 }
             ],
             "time": "2024-12-08T08:18:47+00:00"
+        },
+        {
+            "name": "like/fcv-access",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "packages/fcv",
+                "reference": "454abe103b5a1df7819e09aeff0bef1f0c17c8d3"
+            },
+            "require": {
+                "illuminate/support": "^12.0",
+                "php": ">=8.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Like\\Fcv\\Providers\\FcvServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Like\\Fcv\\": "src/",
+                    "Like\\Fcv\\Database\\": "database/"
+                },
+                "classmap": [
+                    "database/Seeders"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Paquete FCV: control de acceso (alumnos, funcionarios, vehículos, eventos) para Fundación Cristo Vive.",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "monolog/monolog",
