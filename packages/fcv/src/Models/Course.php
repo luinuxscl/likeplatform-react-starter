@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'fcv_courses';
 
@@ -18,6 +20,17 @@ class Course extends Model
         'organization_id',
         'name',
         'code',
+        'description',
+        'valid_from',
+        'valid_until',
+        'entry_tolerance_mode',
+        'entry_tolerance_minutes',
+    ];
+
+    protected $casts = [
+        'valid_from' => 'date',
+        'valid_until' => 'date',
+        'entry_tolerance_minutes' => 'integer',
     ];
 
     public function organization(): BelongsTo

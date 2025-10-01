@@ -15,20 +15,20 @@ class FcvBaseSeeder extends Seeder
         $organizationsConfig = [
             'fundacion' => [
                 'name' => 'Fundación Cristo Vive, Formación Laboral',
+                'acronym' => 'FCV',
                 'type' => 'interna',
-                'access_rule_preset' => 'horario_estricto',
                 'description' => 'Organización principal de formación laboral FCV.',
             ],
             'cruz_andes' => [
                 'name' => 'Cruz de los Andes',
+                'acronym' => 'CDA',
                 'type' => 'interna',
-                'access_rule_preset' => 'horario_flexible',
                 'description' => 'Programas educativos complementarios de FCV.',
             ],
             'gore' => [
                 'name' => 'GORE Metropolitano',
+                'acronym' => 'GORE',
                 'type' => 'convenio',
-                'access_rule_preset' => 'horario_estricto',
                 'description' => 'Cursos financiados en convenio con el Gobierno Regional.',
             ],
         ];
@@ -78,15 +78,37 @@ class FcvBaseSeeder extends Seeder
             }
 
             foreach ($courses as $courseName) {
-                Course::query()->updateOrCreate(
+                /** @var Course $course */
+                $course = Course::query()->updateOrCreate(
                     [
                         'organization_id' => $organization->id,
                         'name' => $courseName,
                     ],
                     [
                         'description' => null,
+                        'entry_tolerance_mode' => '20',
+                        'entry_tolerance_minutes' => 20,
+                        'valid_from' => now()->subWeek()->toDateString(),
+                        'valid_until' => now()->addMonths(2)->toDateString(),
                     ]
                 );
+
+                if ($course->wasRecentlyCreated || $course->schedules()->count() === 0) {
+                    $course->schedules()->delete();
+
+                    $course->schedules()->createMany([
+                        [
+                            'day_of_week' => 1,
+                            'start_time' => '09:00',
+                            'end_time' => '12:00',
+                        ],
+                        [
+                            'day_of_week' => 3,
+                            'start_time' => '09:00',
+                            'end_time' => '12:00',
+                        ],
+                    ]);
+                }
             }
         }
 

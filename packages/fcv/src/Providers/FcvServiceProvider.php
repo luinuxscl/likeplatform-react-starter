@@ -38,11 +38,21 @@ class FcvServiceProvider extends ServiceProvider
         if (config('fcv.show_guard_nav', true)) {
             Inertia::share([
                 'extensions' => [
-                    'fcv_nav' => [
+                    'nav' => [
                         [
                             'title' => 'Portería',
                             'href' => '/fcv/guard',
                             'icon' => 'shield-check',
+                        ],
+                        [
+                            'title' => 'Cursos',
+                            'href' => '/fcv/courses',
+                            'icon' => 'book-open',
+                        ],
+                        [
+                            'title' => 'Organizaciones',
+                            'href' => '/fcv/organizations',
+                            'icon' => 'building-2',
                         ],
                     ],
                 ],

@@ -6,9 +6,20 @@ import { useI18n } from '@/lib/i18n/I18nProvider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 // Guardia UI (Inertia page name: "fcv/guard/index")
 // Requisitos: búsqueda rápida por RUT/Nombre, una sola pantalla, alto contraste, fuente escalable
+
+const formatTolerance = (course?: VerifyResponse['course']) => {
+  if (!course) return null
+  if (course.entry_tolerance_mode === 'none') return 'Acceso sin restricción de horario'
+
+  const tol = course.entry_tolerance_minutes ?? Number(course.entry_tolerance_mode)
+  const minutes = Number.isFinite(tol) ? tol : 20
+
+  return `Tolerancia de entrada: ${minutes} minutos`
+}
 
 type Person = {
   id: number
@@ -17,8 +28,9 @@ type Person = {
   status: string
   memberships: Array<{
     role: string
-    organization: { id: number; name: string; access_rule_preset: string }
+    organization: { id: number; name: string; acronym: string | null }
   }>
+  courses: string[]
 }
 
 type VerifyResponse = {
@@ -26,7 +38,13 @@ type VerifyResponse = {
   status: 'permitido' | 'denegado'
   reason?: string
   person?: { id: number; rut: string; name: string }
-  organization?: { id: number; name: string; access_rule_preset: string }
+  organization?: { id: number; name: string; acronym: string | null }
+  course?: {
+    id: number
+    name: string
+    entry_tolerance_mode: string
+    entry_tolerance_minutes: number | null
+  }
 }
 
 type RecentItem = {
@@ -86,6 +104,38 @@ export default function GuardDashboard() {
   const cardBg = highContrast ? 'bg-background' : 'bg-card'
 
   const [recent, setRecent] = useState<RecentItem[]>([])
+  const [personDialogOpen, setPersonDialogOpen] = useState(false)
+  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
+
+  const resolveAccessStatus = (person: Person) => {
+    if (!person.memberships || person.memberships.length === 0) return 'unknown'
+    if (person.status && person.status !== 'active') return 'denied'
+    return 'allowed'
+  }
+
+  const resolveType = (person: Person) => {
+    const roles = person.memberships?.map((m) => m.role.toLowerCase()) ?? []
+    if (roles.includes('alumno')) return 'A'
+    if (roles.includes('funcionario')) return 'F'
+    return '-'
+  }
+
+  const primaryOrganization = (person: Person): string => {
+    if (!person.memberships || person.memberships.length === 0) return '—'
+    const org = person.memberships[0]?.organization
+    if (!org) return '—'
+    return org.acronym ? `${org.acronym} · ${org.name}` : org.name
+  }
+
+  const firstCourse = (person: Person): string => {
+    if (!person.courses || person.courses.length === 0) return '—'
+    return person.courses[0] ?? '—'
+  }
+
+  const handleRowClick = (person: Person) => {
+    setSelectedPerson(person)
+    setPersonDialogOpen(true)
+  }
 
   // Buscar por nombre o RUT
   useEffect(() => {
@@ -93,13 +143,14 @@ export default function GuardDashboard() {
     async function run() {
       if (!debouncedQuery) {
         setResults([])
+        setSearching(false)
         return
       }
+
       setSearching(true)
       try {
         const term = looksLikeRut(debouncedQuery) ? normalizeRut(debouncedQuery) : debouncedQuery
-        const url = `/fcv/search?q=${encodeURIComponent(term)}`
-        const res = await fetch(url, {
+        const res = await fetch(`/fcv/search?q=${encodeURIComponent(term)}`, {
           method: 'GET',
           headers: { 'X-Requested-With': 'XMLHttpRequest' },
         })
@@ -207,7 +258,7 @@ export default function GuardDashboard() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title={t('Portería')} />
-      <div className={classNames('flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4', fontClass)}>
+      <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
         {/* Barra Superior: Búsqueda + Controles de tamaño + Alto contraste */}
         <div className="flex flex-col gap-3 md:flex-row md:items-center">
           <div className="flex-1">
@@ -270,60 +321,105 @@ export default function GuardDashboard() {
               <h2 className="font-semibold">Resultados</h2>
               {searching && <p className="text-sm text-muted-foreground">Buscando…</p>}
             </div>
-            <div className={classNames('divide-y', borderStrong)}>
-              {results.length === 0 && (
-                <div className="p-4 text-sm text-muted-foreground">Sin resultados</div>
-              )}
-              {results.map((p) => (
-                <article key={p.id} className="p-3 flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{p.name}</span>
-                      <Badge variant="secondary" className={classNames('text-xs', borderStrong)}> {p.rut} </Badge>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {p.memberships.map((m, idx) => (
-                        <span key={idx} className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-xs capitalize">{m.role}</Badge>
-                          <Badge
-                            variant={m.organization.access_rule_preset === 'acceso_total' ? 'default' : m.organization.access_rule_preset === 'horario_flexible' ? 'secondary' : 'outline'}
-                            className="text-xs"
-                            title={`Regla: ${m.organization.access_rule_preset}`}
-                          >
-                            {m.organization.name}
-                          </Badge>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <Button
-                      onClick={() => handleVerify(p.rut)}
-                      className={classNames('', borderStrong)}
-                    >
-                      Verificar
-                    </Button>
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="outline"
-                        className={classNames('px-2 py-2', borderStrong)}
-                        onClick={() => handleAccess('entrada', 'permitido', p.rut)}
-                        title="Registrar entrada"
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead className={classNames('text-left uppercase text-xs text-muted-foreground border-b', borderStrong)}>
+                  <tr>
+                    <th className="px-3 py-2"></th>
+                    <th className="px-3 py-2">RUT</th>
+                    <th className="px-3 py-2">Tipo</th>
+                    <th className="px-3 py-2">Nombre</th>
+                    <th className="px-3 py-2">Organización</th>
+                    <th className="px-3 py-2">Curso</th>
+                    <th className="px-3 py-2 text-right"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {results.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">
+                        Sin resultados
+                      </td>
+                    </tr>
+                  )}
+                  {results.map((p) => {
+                    const accessStatus = resolveAccessStatus(p)
+                    const indicatorColor =
+                      accessStatus === 'allowed'
+                        ? 'bg-emerald-500'
+                        : accessStatus === 'denied'
+                          ? 'bg-red-500'
+                          : 'bg-muted-foreground'
+
+                    return (
+                      <tr
+                        key={p.id}
+                        className="hover:bg-muted/40 cursor-pointer"
+                        onClick={() => handleRowClick(p)}
                       >
-                        ⬅︎
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className={classNames('px-2 py-2', borderStrong)}
-                        onClick={() => handleAccess('salida', 'permitido', p.rut)}
-                        title="Registrar salida"
-                      >
-                        ➝
-                      </Button>
-                    </div>
-                  </div>
-                </article>
-              ))}
+                        <td className="px-3 py-3">
+                          <span className={classNames('inline-flex h-3 w-3 rounded-full', indicatorColor)} aria-hidden />
+                          <span className="sr-only">{accessStatus}</span>
+                        </td>
+                        <td className="px-3 py-3 font-mono text-xs uppercase">{p.rut}</td>
+                        <td className="px-3 py-3 font-semibold">{resolveType(p)}</td>
+                        <td className="px-3 py-3">
+                          <div className="flex flex-col gap-1">
+                            <span className="font-medium">{p.name}</span>
+                            {p.status !== 'active' && (
+                              <span className="text-xs text-muted-foreground">Estado: {p.status}</span>
+                            )}
+                            {p.memberships.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {p.memberships.map((m, idx) => (
+                                  <span
+                                    key={`${m.organization.id}-${idx}`}
+                                    className="rounded-md border border-border bg-background px-2 py-0.5 text-xs"
+                                  >
+                                    {m.role} · {m.organization.acronym
+                                      ? `${m.organization.acronym} · ${m.organization.name}`
+                                      : m.organization.name}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-3 py-3 text-sm">{primaryOrganization(p)}</td>
+                        <td className="px-3 py-3 text-sm">{resolveType(p) === 'A' ? firstCourse(p) : '—'}</td>
+                        <td
+                          className="px-3 py-3"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                          }}
+                        >
+                          <div className="flex items-center justify-end gap-2">
+                            <Button size="sm" variant="outline" className={borderStrong} onClick={() => handleRowClick(p)}>
+                              Ver
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={borderStrong}
+                              onClick={() => handleAccess('entrada', 'permitido', p.rut)}
+                            >
+                              Entrada
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={borderStrong}
+                              onClick={() => handleAccess('salida', 'permitido', p.rut)}
+                            >
+                              Salida
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
           </section>
 
@@ -349,7 +445,16 @@ export default function GuardDashboard() {
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{verifyResult.status.toUpperCase()}</span>
                     {verifyResult.organization && (
-                      <span className="text-xs text-muted-foreground">{verifyResult.organization.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {verifyResult.organization.acronym
+                          ? `${verifyResult.organization.acronym} · ${verifyResult.organization.name}`
+                          : verifyResult.organization.name}
+                      </span>
+                    )}
+                    {verifyResult.course && (
+                      <span className="text-xs text-muted-foreground">
+                        Curso: {verifyResult.course.name}
+                      </span>
                     )}
                   </div>
                   <div className="text-sm text-muted-foreground mt-1">
@@ -361,18 +466,34 @@ export default function GuardDashboard() {
                       <div className="text-muted-foreground">{verifyResult.person.rut}</div>
                     </div>
                   )}
+                  {verifyResult.course && (
+                    <div className="mt-2 text-sm space-y-1">
+                      <div>
+                        <span className="font-semibold">Curso:</span> {verifyResult.course.name}
+                      </div>
+                      {formatTolerance(verifyResult.course) && (
+                        <div className="text-muted-foreground">{formatTolerance(verifyResult.course)}</div>
+                      )}
+                    </div>
+                  )}
                   <div className="mt-3 flex items-center gap-2">
                     <Button
                       variant="outline"
                       className={classNames('', borderStrong)}
-                      onClick={() => handleAccess('entrada', verifyResult.allowed ? 'permitido' : 'denegado', verifyResult.person?.rut)}
+                      disabled={!verifyResult.allowed}
+                      onClick={() =>
+                        handleAccess('entrada', verifyResult.allowed ? 'permitido' : 'denegado', verifyResult.person?.rut)
+                      }
                     >
                       Registrar Entrada
                     </Button>
                     <Button
                       variant="outline"
                       className={classNames('', borderStrong)}
-                      onClick={() => handleAccess('salida', verifyResult.allowed ? 'permitido' : 'denegado', verifyResult.person?.rut)}
+                      disabled={!verifyResult.allowed}
+                      onClick={() =>
+                        handleAccess('salida', verifyResult.allowed ? 'permitido' : 'denegado', verifyResult.person?.rut)
+                      }
                     >
                       Registrar Salida
                     </Button>
@@ -407,6 +528,77 @@ export default function GuardDashboard() {
             </div>
           </aside>
         </div>
+
+        <Dialog open={personDialogOpen} onOpenChange={setPersonDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Detalle de persona</DialogTitle>
+            </DialogHeader>
+            {selectedPerson ? (
+              <div className="space-y-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-muted-foreground uppercase text-xs">Nombre</div>
+                    <div className="font-medium">{selectedPerson.name}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground uppercase text-xs">RUT</div>
+                    <div className="font-mono text-xs">{selectedPerson.rut}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground uppercase text-xs">Estado</div>
+                    <div>{selectedPerson.status}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground uppercase text-xs">Tipo</div>
+                    <div>{resolveType(selectedPerson)}</div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-muted-foreground uppercase text-xs mb-2">Membresías</div>
+                  <div className="space-y-2">
+                    {selectedPerson.memberships.length === 0 && <div className="text-muted-foreground">Sin membresías</div>}
+                    {selectedPerson.memberships.map((m, idx) => (
+                      <div key={`${m.organization.id}-${idx}`} className="flex flex-wrap items-center gap-2">
+                        <Badge variant="outline" className="text-xs capitalize">{m.role}</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          {m.organization.acronym
+                            ? `${m.organization.acronym} · ${m.organization.name}`
+                            : m.organization.name}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-muted-foreground uppercase text-xs mb-2">Cursos</div>
+                  {selectedPerson.courses.length === 0 && <div className="text-muted-foreground">Sin cursos asignados</div>}
+                  <ul className="list-disc list-inside space-y-1">
+                    {selectedPerson.courses.map((course) => (
+                      <li key={course}>{course}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => selectedPerson && handleVerify(selectedPerson.rut)}>
+                    Verificar
+                  </Button>
+                  <Button variant="outline" onClick={() => selectedPerson && handleAccess('entrada', 'permitido', selectedPerson.rut)}>
+                    Registrar Entrada
+                  </Button>
+                  <Button variant="outline" onClick={() => selectedPerson && handleAccess('salida', 'permitido', selectedPerson.rut)}>
+                    Registrar Salida
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-muted-foreground">Sin datos.</div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </AppLayout>
   )

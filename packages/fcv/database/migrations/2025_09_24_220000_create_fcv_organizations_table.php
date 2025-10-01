@@ -10,8 +10,8 @@ return new class extends Migration {
         Schema::create('fcv_organizations', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('acronym', 20)->nullable();
             $table->string('type')->index(); // interna | convenio | externa
-            $table->string('access_rule_preset')->index(); // horario_estricto | horario_flexible | acceso_total
             $table->text('description')->nullable();
             $table->timestamps();
         });

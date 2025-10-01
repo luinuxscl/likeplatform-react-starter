@@ -20,7 +20,7 @@ class SearchController extends Controller
         $normRut = strtolower(preg_replace('/[^0-9kK]/', '', $q));
 
         $query = Person::query()
-            ->with(['memberships.organization'])
+            ->with(['memberships.organization', 'courses:fcv_courses.id,name'])
             ->when($q !== '', function ($qb) use ($q, $normRut) {
                 $qb->where(function ($w) use ($q, $normRut) {
                     $w->where('name', 'like', "%{$q}%")
@@ -41,10 +41,11 @@ class SearchController extends Controller
                         'organization' => [
                             'id' => $m->organization->id,
                             'name' => $m->organization->name,
-                            'access_rule_preset' => $m->organization->access_rule_preset,
+                            'acronym' => $m->organization->acronym,
                         ],
                     ];
                 })->values(),
+                'courses' => $p->courses->pluck('name')->values(),
             ];
         });
 

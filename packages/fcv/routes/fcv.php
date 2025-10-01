@@ -6,6 +6,8 @@ use Like\Fcv\Http\Controllers\AccessController;
 use Like\Fcv\Http\Controllers\Guard\DashboardController;
 use Like\Fcv\Http\Controllers\SearchController;
 use Like\Fcv\Http\Controllers\AccessQueryController;
+use Like\Fcv\Http\Controllers\CourseController;
+use Like\Fcv\Http\Controllers\OrganizationController;
 
 Route::middleware(['web', 'auth'])
     ->prefix('fcv')
@@ -16,6 +18,10 @@ Route::middleware(['web', 'auth'])
         Route::get('/search', [SearchController::class, 'search'])->name('search');
         Route::post('/access', [AccessController::class, 'store'])->name('access.store');
         Route::get('/access/recent', [AccessQueryController::class, 'recent'])->name('access.recent');
+        Route::resource('courses', CourseController::class)->except(['create', 'edit', 'show']);
+        Route::put('courses/{course}/restore', [CourseController::class, 'restore'])->name('courses.restore');
+        Route::resource('organizations', OrganizationController::class)->except(['create', 'edit', 'show']);
+        Route::put('organizations/{organization}/restore', [OrganizationController::class, 'restore'])->name('organizations.restore');
         Route::get('/health', function () {
             return response()->json([
                 'ok' => true,

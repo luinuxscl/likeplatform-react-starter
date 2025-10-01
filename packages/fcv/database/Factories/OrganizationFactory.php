@@ -13,8 +13,8 @@ class OrganizationFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->company(),
+            'acronym' => strtoupper($this->faker->lexify('???')),
             'type' => $this->faker->randomElement(['interna', 'convenio', 'externa']),
-            'access_rule_preset' => $this->faker->randomElement(['horario_estricto', 'horario_flexible', 'acceso_total']),
             'description' => $this->faker->optional()->sentence(),
         ];
     }

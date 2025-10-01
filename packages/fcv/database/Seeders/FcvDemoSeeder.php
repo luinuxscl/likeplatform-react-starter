@@ -17,6 +17,13 @@ class FcvDemoSeeder extends Seeder
         $courses = Course::with('organization')->get();
 
         foreach ($courses as $course) {
+            if (! $course->entry_tolerance_mode) {
+                $course->update([
+                    'entry_tolerance_mode' => '20',
+                    'entry_tolerance_minutes' => 20,
+                ]);
+            }
+
             $students = Person::factory()
                 ->count(20)
                 ->create();
