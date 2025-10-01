@@ -329,6 +329,13 @@ export default function CoursesIndex({ courses, organizations, toleranceOptions 
                         <Button
                           variant="outline"
                           size="sm"
+                          onClick={() => router.visit(`/fcv/courses/${course.id}`)}
+                        >
+                          Ver detalle
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
                           onClick={() => openEditDialog(course)}
                         >
                           Editar
