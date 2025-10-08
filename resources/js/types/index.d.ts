@@ -41,6 +41,13 @@ export interface PackageTheme {
     };
 }
 
+export interface PackageSettings {
+    name: string;
+    schema: any;
+    settings: Record<string, any>;
+    hasSettings: boolean;
+}
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
@@ -50,6 +57,7 @@ export interface SharedData {
         menus: PackageMenus;
     };
     themes?: Record<string, PackageTheme>;
+    packageSettings?: Record<string, PackageSettings>;
     [key: string]: unknown;
 }
 
