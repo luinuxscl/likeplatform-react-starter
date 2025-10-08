@@ -5,6 +5,7 @@ namespace Like\Fcv\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Process;
 use Like\Fcv\Database\Seeders\FcvBaseSeeder;
 use Like\Fcv\Database\Seeders\FcvDemoSeeder;
 use Spatie\Permission\Models\Role;
@@ -48,31 +49,64 @@ class InstallCommand extends Command
 
     protected function publishConfig(): void
     {
-        if (file_exists(config_path('fcv.php'))) {
-            return;
-        }
-
         $this->components?->task('Publicando configuración', function () {
             $this->call('vendor:publish', [
                 '--tag' => 'fcv-config',
-                '--force' => false,
+                '--force' => true,
             ]);
         });
     }
 
     protected function publishFrontend(): void
     {
-        $target = resource_path('js/pages/fcv');
-        if (is_dir($target) && count(glob($target.'/*')) > 0) {
-            return;
-        }
-
-        $this->components?->task('Publicando componentes Inertia (guardia)', function () {
+        // Publicar assets de JavaScript/TypeScript
+        $this->components?->task('Publicando componentes React/Inertia', function () {
             $this->call('vendor:publish', [
                 '--tag' => 'fcv-js',
-                '--force' => false,
+                '--force' => true,
             ]);
         });
+
+        // Publicar vistas Blade (si existen)
+        $this->components?->task('Publicando vistas Blade', function () {
+            $this->call('vendor:publish', [
+                '--tag' => 'fcv-views',
+                '--force' => true,
+            ]);
+        });
+
+        // Publicar assets públicos (CSS, JS, imágenes, etc.)
+        $this->components?->task('Publicando assets públicos', function () {
+            $this->call('vendor:publish', [
+                '--tag' => 'fcv-assets',
+                '--force' => true,
+            ]);
+        });
+
+        // Ejecutar npm install y compilación de assets (si es necesario)
+        if ($this->confirm('¿Desea instalar las dependencias de NPM y compilar los assets?', true)) {
+            $this->components?->task('Instalando dependencias de NPM', function () {
+                $this->executeCommand('npm install', base_path());
+            });
+
+            $this->components?->task('Compilando assets', function () {
+                $this->executeCommand('npm run build', base_path());
+            });
+        }
+    }
+
+    /**
+     * Ejecuta un comando en el directorio especificado
+     */
+    protected function executeCommand(string $command, string $directory): bool
+    {
+        $process = Process::path($directory)
+            ->tty()
+            ->run($command, function (string $type, string $output) {
+                $this->output->write($output);
+            });
+
+        return $process->successful();
     }
 
     protected function ensureDefaultRoles(): void

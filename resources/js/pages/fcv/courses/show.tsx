@@ -146,7 +146,7 @@ export default function CourseShow({ course, students }: PageProps) {
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-semibold">{course.name}</h1>
+              <h1 className="text-2xl font-semibold uppercase">{course.name}</h1>
               <Badge variant={statusBadge.variant}>{statusBadge.label}</Badge>
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">

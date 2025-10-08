@@ -327,7 +327,7 @@ export default function CoursesIndex({ courses, organizations, toleranceOptions 
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-2">
                         <Button
-                          variant="outline"
+                          variant="default"
                           size="sm"
                           onClick={() => router.visit(`/fcv/courses/${course.id}`)}
                         >
