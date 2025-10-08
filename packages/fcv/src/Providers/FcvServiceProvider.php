@@ -60,30 +60,9 @@ class FcvServiceProvider extends ServiceProvider
         // Registrar componentes de Inertia
         $this->registerInertiaComponents();
 
-        // Compartir datos con todas las vistas de Inertia
-        if (config('fcv.show_guard_nav', true)) {
-            Inertia::share([
-                'extensions' => [
-                    'nav' => [
-                        [
-                            'title' => 'Portería',
-                            'href' => '/fcv/guard',
-                            'icon' => 'shield-check',
-                        ],
-                        [
-                            'title' => 'Cursos',
-                            'href' => '/fcv/courses',
-                            'icon' => 'book-open',
-                        ],
-                        [
-                            'title' => 'Organizaciones',
-                            'href' => '/fcv/organizations',
-                            'icon' => 'building-2',
-                        ],
-                    ],
-                ],
-            ]);
-        }
+        // Los menús ahora se gestionan a través del sistema de packages
+        // Ver: packages/fcv/config/menu.php
+        // El sistema de auto-discovery los carga automáticamente
     }
 
     /**
