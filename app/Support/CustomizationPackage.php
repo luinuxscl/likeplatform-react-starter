@@ -3,11 +3,14 @@
 namespace App\Support;
 
 use App\Contracts\CustomizationPackageInterface;
+use App\Contracts\ThemeablePackageInterface;
 
 /**
  * Clase base abstracta para facilitar la creación de packages de personalización
  */
-abstract class CustomizationPackage implements CustomizationPackageInterface
+abstract class CustomizationPackage implements 
+    CustomizationPackageInterface,
+    ThemeablePackageInterface
 {
     /**
      * Path base del package
@@ -111,5 +114,39 @@ abstract class CustomizationPackage implements CustomizationPackageInterface
     public function getBasePath(): string
     {
         return $this->basePath;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTheme(): array
+    {
+        $themePath = $this->basePath.'/config/theme.php';
+        
+        if (file_exists($themePath)) {
+            return require $themePath;
+        }
+
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getThemeMode(): string
+    {
+        $theme = $this->getTheme();
+
+        return $theme['mode'] ?? config('themes.default_mode', 'auto');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasCustomTheme(): bool
+    {
+        $themePath = $this->basePath.'/config/theme.php';
+
+        return file_exists($themePath);
     }
 }

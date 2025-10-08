@@ -31,6 +31,16 @@ export interface PackageMenus {
     operation: NavItem[];
 }
 
+export interface PackageTheme {
+    name: string;
+    hasCustomTheme: boolean;
+    mode: 'light' | 'dark' | 'auto';
+    colors: {
+        light: Record<string, string>;
+        dark: Record<string, string>;
+    };
+}
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
@@ -39,6 +49,7 @@ export interface SharedData {
     packages?: {
         menus: PackageMenus;
     };
+    themes?: Record<string, PackageTheme>;
     [key: string]: unknown;
 }
 

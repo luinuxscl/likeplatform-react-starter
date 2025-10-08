@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Services\MenuService;
 use App\Services\PackageDiscoveryService;
+use App\Services\ThemeService;
+use App\Support\ThemeCompiler;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
@@ -21,11 +23,18 @@ class CustomizationServiceProvider extends ServiceProvider
         // Registrar servicios como singletons
         $this->app->singleton(PackageDiscoveryService::class);
         $this->app->singleton(MenuService::class);
+        $this->app->singleton(ThemeCompiler::class);
+        $this->app->singleton(ThemeService::class);
 
         // Merge configuración
         $this->mergeConfigFrom(
             __DIR__.'/../../config/customization.php',
             'customization'
+        );
+        
+        $this->mergeConfigFrom(
+            __DIR__.'/../../config/themes.php',
+            'themes'
         );
     }
 
@@ -38,12 +47,19 @@ class CustomizationServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../config/customization.php' => config_path('customization.php'),
         ], 'customization-config');
+        
+        $this->publishes([
+            __DIR__.'/../../config/themes.php' => config_path('themes.php'),
+        ], 'themes-config');
 
         // Descubrir y registrar packages
         $this->discoverAndRegisterPackages();
 
         // Compartir menús con Inertia
         $this->shareMenusWithInertia();
+        
+        // Compartir themes con Inertia
+        $this->shareThemesWithInertia();
     }
 
     /**
@@ -105,6 +121,18 @@ class CustomizationServiceProvider extends ServiceProvider
                     'operation' => $menuService->getMenuItemsForSection('operation'),
                 ],
             ];
+        });
+    }
+
+    /**
+     * Comparte los themes de packages con Inertia
+     */
+    private function shareThemesWithInertia(): void
+    {
+        Inertia::share('themes', function () {
+            $themeService = $this->app->make(ThemeService::class);
+
+            return $themeService->getThemesForFrontend();
         });
     }
 }

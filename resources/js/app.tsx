@@ -5,6 +5,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 import { I18nProvider } from './lib/i18n/I18nProvider';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -18,7 +19,9 @@ createInertiaApp({
 
         root.render(
             <I18nProvider initialLocale={initialLocale}>
-                <App {...props} />
+                <ThemeProvider>
+                    <App {...props} />
+                </ThemeProvider>
             </I18nProvider>
         );
     },
