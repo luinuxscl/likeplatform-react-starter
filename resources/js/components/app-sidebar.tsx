@@ -17,7 +17,8 @@ export function AppSidebar() {
     const page = usePage();
     const [aboutOpen, setAboutOpen] = useState(false);
 
-    const platformItems: NavItem[] = [
+    // Items base de plataforma
+    const basePlatformItems: NavItem[] = [
         {
             title: t('Dashboard'),
             href: dashboard(),
@@ -25,17 +26,26 @@ export function AppSidebar() {
         },
     ];
 
-    // Items expuestos por paquetes/extensiones vía Inertia::share
+    // Items de packages desde Inertia props
+    const packageMenus = (page.props as any)?.packages?.menus || { platform: [], admin: [], operation: [] };
+
+    // Combinar items base con items de packages
+    const platformItems: NavItem[] = [...basePlatformItems, ...packageMenus.platform];
+
+    // Items de operación (solo desde packages)
+    const operationItems: NavItem[] = packageMenus.operation || [];
+
+    // Items expuestos por paquetes/extensiones vía Inertia::share (legacy)
     const extensionItems: NavItem[] = Array.isArray((page.props as any)?.extensions?.nav)
         ? ((page.props as any).extensions.nav as Array<{ title: string; href: string; icon?: any }>)
         : [];
 
     // Mostrar links de Administración solo si el usuario tiene rol admin
     const roles: string[] | undefined = (page.props as any)?.auth?.roles;
-    const adminItems: NavItem[] = [];
+    const baseAdminItems: NavItem[] = [];
     if (Array.isArray(roles) && roles.includes('admin')) {
         const perms: string[] | undefined = (page.props as any)?.auth?.permissions;
-        adminItems.push(
+        baseAdminItems.push(
             {
                 title: t('Dashboard'),
                 href: '/admin/dashboard',
@@ -58,14 +68,14 @@ export function AppSidebar() {
             },
         );
         if (Array.isArray(perms) && perms.includes('options.view')) {
-            adminItems.push({
+            baseAdminItems.push({
                 title: t('Options'),
                 href: '/admin/options',
                 icon: Settings2,
             });
         }
 
-        adminItems.push(
+        baseAdminItems.push(
             {
                 title: t('Auditoría - Registros'),
                 href: '/admin/audit/logs',
@@ -83,6 +93,9 @@ export function AppSidebar() {
             },
         );
     }
+
+    // Combinar items de admin base con items de packages
+    const adminItems: NavItem[] = [...baseAdminItems, ...packageMenus.admin];
 
     const footerNavItems: NavItem[] = [
         {
@@ -112,8 +125,11 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={platformItems} label={t('Plataforma')} />
+                {operationItems.length > 0 && (
+                    <NavMain items={operationItems} label={t('Operación')} />
+                )}
                 {extensionItems.length > 0 && (
-                    <NavMain items={extensionItems} label={t('Operación')} />
+                    <NavMain items={extensionItems} label={t('Extensiones')} />
                 )}
                 {adminItems.length > 0 && (
                     <NavMain items={adminItems} label={t('Administración')} />

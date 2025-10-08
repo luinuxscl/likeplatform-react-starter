@@ -18,8 +18,17 @@ export interface NavGroup {
 export interface NavItem {
     title: string;
     href: NonNullable<InertiaLinkProps['href']>;
-    icon?: LucideIcon | null;
+    icon?: LucideIcon | string | null;
     isActive?: boolean;
+    permission?: string | null;
+    order?: number;
+    active?: boolean;
+}
+
+export interface PackageMenus {
+    platform: NavItem[];
+    admin: NavItem[];
+    operation: NavItem[];
 }
 
 export interface SharedData {
@@ -27,6 +36,9 @@ export interface SharedData {
     quote: { message: string; author: string };
     auth: Auth;
     sidebarOpen: boolean;
+    packages?: {
+        menus: PackageMenus;
+    };
     [key: string]: unknown;
 }
 
