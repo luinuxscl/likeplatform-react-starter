@@ -5,6 +5,10 @@ import { NumberField } from './fields/NumberField';
 import { BooleanField } from './fields/BooleanField';
 import { SelectField } from './fields/SelectField';
 import { ColorField } from './fields/ColorField';
+import { DateField } from './fields/DateField';
+import { TimeField } from './fields/TimeField';
+import { FileField } from './fields/FileField';
+import { JsonField } from './fields/JsonField';
 
 export interface FieldRendererProps {
   name: string;
@@ -27,7 +31,7 @@ export function FieldRenderer({ name, field, value, onChange, error, className }
           value={value ?? ''}
           textarea={field.type === 'textarea'}
           rows={field.rows}
-          onChange={(v) => onChange(name, v)}
+          onChange={(v: string) => onChange(name, v)}
           className={className}
         />
       );
@@ -39,7 +43,7 @@ export function FieldRenderer({ name, field, value, onChange, error, className }
           min={field.min}
           max={field.max}
           step={field.step}
-          onChange={(v) => onChange(name, v)}
+          onChange={(v: number) => onChange(name, v)}
           className={className}
         />
       );
@@ -48,7 +52,7 @@ export function FieldRenderer({ name, field, value, onChange, error, className }
         <BooleanField
           {...common}
           checked={Boolean(value ?? field.default ?? false)}
-          onChange={(v) => onChange(name, v)}
+          onChange={(v: boolean) => onChange(name, v)}
           className={className}
         />
       );
@@ -58,7 +62,7 @@ export function FieldRenderer({ name, field, value, onChange, error, className }
           {...common}
           value={value ?? field.default ?? ''}
           options={field.options || {}}
-          onChange={(v) => onChange(name, v)}
+          onChange={(v: string) => onChange(name, v)}
           className={className}
         />
       );
@@ -67,7 +71,50 @@ export function FieldRenderer({ name, field, value, onChange, error, className }
         <ColorField
           {...common}
           value={value ?? field.default ?? '#000000'}
-          onChange={(v) => onChange(name, v)}
+          onChange={(v: string) => onChange(name, v)}
+          className={className}
+        />
+      );
+    case 'date':
+      return (
+        <DateField
+          {...common}
+          value={value ?? field.default ?? ''}
+          min={field.min?.toString()}
+          max={field.max?.toString()}
+          onChange={(v: string) => onChange(name, v)}
+          className={className}
+        />
+      );
+    case 'time':
+      return (
+        <TimeField
+          {...common}
+          value={value ?? field.default ?? ''}
+          min={field.min?.toString()}
+          max={field.max?.toString()}
+          step={field.step}
+          onChange={(v: string) => onChange(name, v)}
+          className={className}
+        />
+      );
+    case 'file':
+      return (
+        <FileField
+          {...common}
+          value={value ?? field.default ?? ''}
+          accept={field.accept}
+          onChange={(v: string) => onChange(name, v)}
+          className={className}
+        />
+      );
+    case 'json':
+      return (
+        <JsonField
+          {...common}
+          value={value ?? field.default ?? {}}
+          rows={field.rows}
+          onChange={(v: any) => onChange(name, v)}
           className={className}
         />
       );
