@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Repositories\SettingsRepository;
 use App\Services\MenuService;
 use App\Services\PackageDiscoveryService;
+use App\Services\SettingsService;
 use App\Services\ThemeService;
 use App\Support\ThemeCompiler;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +27,8 @@ class CustomizationServiceProvider extends ServiceProvider
         $this->app->singleton(MenuService::class);
         $this->app->singleton(ThemeCompiler::class);
         $this->app->singleton(ThemeService::class);
+        $this->app->singleton(SettingsRepository::class);
+        $this->app->singleton(SettingsService::class);
 
         // Merge configuración
         $this->mergeConfigFrom(
