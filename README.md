@@ -1,6 +1,18 @@
 # LikePlatform React Starter
 
-Starter kit moderno con Laravel 12 + React 19 (Inertia v2), Tailwind 4 y shadcn/ui. Incluye dashboard admin, roles/permisos (spatie), theming y comando de instalación para desarrollo.
+Starter kit moderno con Laravel 12 + React 19 (Inertia v2), Tailwind 4 y shadcn/ui. Incluye dashboard admin, roles/permisos (spatie), sistema de packages extensible, theming y comando de instalación para desarrollo.
+
+## 📚 Documentación
+
+**[Ver documentación completa →](docs/README.md)**
+
+### Documentación destacada
+
+- **[Guía rápida de Packages](docs/guias/packages-rapida.md)** - Crear packages de expansión
+- **[Sistema de Packages](docs/sistemas/packages-personalizacion.md)** - Documentación completa
+- **[Guía de Temas](docs/guias/temas.md)** - Personalización de temas
+- **[Sistema de Settings](docs/sistemas/settings-final.md)** - Configuración de packages
+- **[Laravel Boost Guidelines](docs/desarrollo/laravel-boost-guidelines.md)** - Directrices de desarrollo
 
 ## Stack
 
@@ -11,12 +23,25 @@ Starter kit moderno con Laravel 12 + React 19 (Inertia v2), Tailwind 4 y shadcn/
 
 ## Características
 
-- Dashboard Admin con cards estilo shadcn (theme-aware) en `resources/js/pages/admin/dashboard/index.tsx`.
-- Gestión de usuarios, roles y permisos con `spatie/laravel-permission`.
-- Menú con secciones Plataforma y Administración en `resources/js/components/app-sidebar.tsx`.
-- Theming y transición suave de colores vía `.theme-transition` en `resources/css/app.css` y `ThemeSwitcherMini`.
-- Seeders de desarrollo realistas: 500 usuarios distribuidos no-uniformemente en 12 meses, 5 admins aleatorios.
-- Comando de instalación integral (`app:install`) para producción y desarrollo.
+### Core
+- Dashboard Admin con cards estilo shadcn (theme-aware)
+- Gestión de usuarios, roles y permisos con `spatie/laravel-permission`
+- Menú dinámico con secciones Plataforma, Operación y Administración
+- Sistema de auditoría completo con logs y sesiones
+- API Keys con Laravel Sanctum
+
+### Sistemas Extensibles
+- **Sistema de Packages**: Auto-discovery, menús dinámicos, permisos
+- **Sistema de Settings**: Configuración UI auto-generada desde schemas
+- **Sistema de Temas**: Personalización por package con light/dark mode
+- **Internacionalización**: Soporte multi-idioma (ES/EN)
+
+### Developer Experience
+- Comando de instalación integral (`app:install --dev`)
+- Seeders de desarrollo realistas (500 usuarios, distribución 12 meses)
+- Tests completos con Pest 4
+- Hot reload con Vite
+- Laravel Boost MCP integration
 
 ## Instalación rápida
 

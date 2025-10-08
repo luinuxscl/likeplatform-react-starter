@@ -4,7 +4,12 @@ Todas las novedades y cambios relevantes del proyecto.
 
 ## [Unreleased]
 
-- (pendiente)
+### Documentación
+- Reorganización completa de documentación en `/docs` con estructura de subcarpetas
+- Nuevo índice general en `docs/README.md`
+- Categorización en: guías, sistemas, desarrollo e implementaciones
+- Estandarización de nombres de archivos en kebab-case
+- README.md principal actualizado con enlaces a documentación
 
 ## 0.3.0 - 2025-09-24
 

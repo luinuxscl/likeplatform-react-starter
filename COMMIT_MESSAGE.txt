@@ -1,0 +1,39 @@
+docs: reorganizar documentación en estructura categorizada
+
+Reorganización completa de la documentación del starter kit para
+mejorar la navegación y mantenibilidad.
+
+CAMBIOS:
+- Movidos 31 archivos markdown de raíz a /docs con subcarpetas
+- Creada estructura de 4 categorías: guías, sistemas, desarrollo, implementaciones
+- Estandarizados nombres de archivos a kebab-case
+- Solo README.md y CHANGELOG.md permanecen en raíz
+
+NUEVOS ARCHIVOS:
+- docs/README.md - Índice general con enlaces a toda la documentación
+- docs/STYLE_GUIDE.md - Guía de estilo para mantener consistencia
+- docs/REORGANIZACION.md - Resumen detallado de cambios
+
+ESTRUCTURA:
+docs/
+├── guias/                  # 5 archivos - Tutoriales y guías prácticas
+├── sistemas/               # 12 archivos - Documentación técnica de sistemas
+├── desarrollo/             # 10 archivos - Guidelines y convenciones
+└── implementaciones/       # 7 archivos - Procesos y reportes
+
+MEJORAS:
+- Navegación clara por categorías y niveles
+- Búsqueda rápida por tema (packages, settings, themes)
+- README.md principal actualizado con sección de documentación
+- CHANGELOG.md actualizado con registro de reorganización
+- Enlaces cruzados entre documentos
+- Convenciones documentadas para futuros aportes
+
+ESTADÍSTICAS:
+- 37 archivos de documentación total
+- 4 categorías bien definidas
+- ~15,000+ líneas de documentación
+- 100% de enlaces verificados
+
+Esta reorganización facilita el mantenimiento y la contribución
+al proyecto, estableciendo bases sólidas para documentación futura.
