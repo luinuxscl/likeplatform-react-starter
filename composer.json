@@ -20,6 +20,7 @@
         "spatie/laravel-permission": "^6.21"
     },
     "require-dev": {
+        "ejemplo/mi-modulo": "@dev",
         "fakerphp/faker": "^1.23",
         "laravel/boost": "^1.1",
         "laravel/pail": "^1.2.2",
@@ -81,6 +82,13 @@
         {
             "type": "path",
             "url": "packages/fcv",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "packages/ejemplo/mi-modulo",
             "options": {
                 "symlink": true
             }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48114c665f9423e1fbbdd34c3fa307fb",
+    "content-hash": "28f98a25ac682ea453f2575a0b931f6a",
     "packages": [
         {
             "name": "brick/math",
@@ -6728,6 +6728,46 @@
             "time": "2025-04-07T20:06:18+00:00"
         },
         {
+            "name": "ejemplo/mi-modulo",
+            "version": "dev-feat/auto-menus",
+            "dist": {
+                "type": "path",
+                "url": "packages/ejemplo/mi-modulo",
+                "reference": "44ac0731d78244886b59bc865e6a273d43b53805"
+            },
+            "require": {
+                "laravel/framework": "^12.0",
+                "php": "^8.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ejemplo\\MiModulo\\MiModuloServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ejemplo\\MiModulo\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tu Nombre",
+                    "email": "tu@email.com"
+                }
+            ],
+            "description": "Package de ejemplo para demostrar el sistema de personalización",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "fakerphp/faker",
             "version": "v1.24.1",
             "source": {
@@ -9992,7 +10032,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "ejemplo/mi-modulo": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
