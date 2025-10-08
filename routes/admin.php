@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AuditLogsController;
 use App\Http\Controllers\Admin\AuditSessionsController;
 use App\Http\Controllers\Admin\ApiKeysController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -53,4 +54,13 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/api-keys', [ApiKeysController::class, 'index'])->name('api-keys.index');
     Route::post('/api-keys', [ApiKeysController::class, 'store'])->name('api-keys.store');
     Route::delete('/api-keys/{token}', [ApiKeysController::class, 'destroy'])->name('api-keys.destroy');
+
+    // Package Settings
+    Route::get('/package-settings', [SettingsController::class, 'index'])->name('package-settings.index');
+    Route::get('/package-settings/{package}', [SettingsController::class, 'show'])->name('package-settings.show');
+    Route::put('/package-settings/{package}', [SettingsController::class, 'update'])->name('package-settings.update');
+    Route::post('/package-settings/{package}/reset', [SettingsController::class, 'reset'])->name('package-settings.reset');
+    Route::get('/package-settings/{package}/export', [SettingsController::class, 'export'])->name('package-settings.export');
+    Route::post('/package-settings/{package}/import', [SettingsController::class, 'import'])->name('package-settings.import');
+    Route::post('/package-settings/cache/clear', [SettingsController::class, 'clearCache'])->name('package-settings.cache.clear');
 });

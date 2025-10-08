@@ -15,15 +15,20 @@ export default function PackagesSettingsPage({ packages }: PackagesSettingsPageP
     const packageList = Object.values(packages);
     const [activeTab, setActiveTab] = useState(packageList[0]?.name || '');
 
+    const breadcrumbs = [
+        { title: 'Admin', href: '/admin' },
+        { title: 'Package Settings', href: '/admin/package-settings' },
+    ];
+
     if (packageList.length === 0) {
         return (
-            <AppLayout>
+            <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Package Settings" />
                 <div className="space-y-6">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Package Settings</h1>
                         <p className="text-muted-foreground">
-                            Configure your installed packages
+                            Configure application-wide package settings
                         </p>
                     </div>
 
@@ -42,13 +47,13 @@ export default function PackagesSettingsPage({ packages }: PackagesSettingsPageP
     }
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Package Settings" />
             <div className="space-y-6">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Package Settings</h1>
                     <p className="text-muted-foreground">
-                        Configure your installed packages
+                        Configure application-wide package settings
                     </p>
                 </div>
 

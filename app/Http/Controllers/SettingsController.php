@@ -23,7 +23,7 @@ class SettingsController extends Controller
     {
         $packages = $this->settingsService->getSettingsForFrontend();
 
-        return Inertia::render('settings/packages/index', [
+        return Inertia::render('admin/package-settings/index', [
             'packages' => $packages,
         ]);
     }

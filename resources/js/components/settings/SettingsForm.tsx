@@ -36,7 +36,7 @@ export function SettingsForm({ pkg }: SettingsFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    put(route('settings.packages.update', { package: pkg.name }), {
+    put(route('admin.package-settings.update', { package: pkg.name }), {
       preserveScroll: true,
     });
   };
@@ -44,7 +44,7 @@ export function SettingsForm({ pkg }: SettingsFormProps) {
   const handleReset = () => {
     // POST to reset
     window.axios
-      .post(route('settings.packages.reset', { package: pkg.name }))
+      .post(route('admin.package-settings.reset', { package: pkg.name }))
       .then(() => {
         // After reset, reload page via Inertia to fetch defaults again
         window.location.reload();

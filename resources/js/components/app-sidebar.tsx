@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, Info, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2, ClipboardList, ActivitySquare, KeySquare } from 'lucide-react';
+import { BookOpen, Folder, Info, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2, ClipboardList, ActivitySquare, KeySquare, Package } from 'lucide-react';
 import admin from '@/routes/admin';
 import AppLogo from './app-logo';
 import { AboutDialog } from '@/components/about-dialog';
@@ -76,6 +76,11 @@ export function AppSidebar() {
         }
 
         baseAdminItems.push(
+            {
+                title: t('Package Settings'),
+                href: '/admin/package-settings',
+                icon: Package,
+            },
             {
                 title: t('Auditoría - Registros'),
                 href: '/admin/audit/logs',
