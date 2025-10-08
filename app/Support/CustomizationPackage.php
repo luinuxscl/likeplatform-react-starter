@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Contracts\ConfigurablePackageInterface;
 use App\Contracts\CustomizationPackageInterface;
 use App\Contracts\ThemeablePackageInterface;
 
@@ -10,7 +11,8 @@ use App\Contracts\ThemeablePackageInterface;
  */
 abstract class CustomizationPackage implements 
     CustomizationPackageInterface,
-    ThemeablePackageInterface
+    ThemeablePackageInterface,
+    ConfigurablePackageInterface
 {
     /**
      * Path base del package
@@ -148,5 +150,63 @@ abstract class CustomizationPackage implements
         $themePath = $this->basePath.'/config/theme.php';
 
         return file_exists($themePath);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSettingsSchema(): array
+    {
+        $settingsPath = $this->basePath.'/config/settings.php';
+
+        if (file_exists($settingsPath)) {
+            return require $settingsPath;
+        }
+
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultSettings(): array
+    {
+        $schema = $this->getSettingsSchema();
+
+        $defaults = [];
+        foreach ($schema['schema'] ?? [] as $key => $field) {
+            if (isset($field['default'])) {
+                $defaults[$key] = $field['default'];
+            }
+        }
+
+        return $defaults;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateSettings(array $settings): bool
+    {
+        // La validación se delega al SettingsService
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function onSettingsUpdated(array $settings): void
+    {
+        // Hook vacío por defecto
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasSettings(): bool
+    {
+        $settingsPath = $this->basePath.'/config/settings.php';
+
+        return file_exists($settingsPath);
     }
 }
