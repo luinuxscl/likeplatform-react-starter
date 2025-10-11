@@ -9,10 +9,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Like\Fcv\Database\Factories\CourseFactory;
 
 class Course extends Model
 {
     use HasFactory, HasAuditLogs, SoftDeletes;
+
+    protected static function newFactory(): CourseFactory
+    {
+        return CourseFactory::new();
+    }
 
     protected $table = 'fcv_courses';
 

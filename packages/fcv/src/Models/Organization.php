@@ -8,10 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Like\Fcv\Database\Factories\OrganizationFactory;
 
 class Organization extends Model
 {
     use HasFactory, HasAuditLogs, SoftDeletes;
+
+    protected static function newFactory(): OrganizationFactory
+    {
+        return OrganizationFactory::new();
+    }
 
     protected $table = 'fcv_organizations';
 

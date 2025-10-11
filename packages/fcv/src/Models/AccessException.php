@@ -9,10 +9,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Like\Fcv\Database\Factories\AccessExceptionFactory;
 
 class AccessException extends Model
 {
     use HasFactory, HasAuditLogs;
+
+    protected static function newFactory(): AccessExceptionFactory
+    {
+        return AccessExceptionFactory::new();
+    }
 
     protected $table = 'fcv_access_exceptions';
 
