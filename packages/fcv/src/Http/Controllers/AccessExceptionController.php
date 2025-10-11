@@ -13,9 +13,29 @@ use Like\Fcv\Models\Person;
 class AccessExceptionController extends Controller
 {
     /**
-     * Lista de excepciones
+     * Lista de excepciones (Inertia)
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
+    {
+        if ($request->wantsJson()) {
+            return $this->indexJson($request);
+        }
+
+        $query = AccessException::query()
+            ->with(['person:id,rut,name', 'creator:id,name', 'approver:id,name'])
+            ->orderByDesc('created_at');
+
+        $exceptions = $query->paginate(15);
+
+        return inertia('FCV/Exceptions/Index', [
+            'exceptions' => $exceptions,
+        ]);
+    }
+
+    /**
+     * Lista de excepciones (JSON)
+     */
+    protected function indexJson(Request $request): JsonResponse
     {
         $filters = $request->validate([
             'person_id' => ['sometimes', 'integer', 'exists:fcv_persons,id'],
@@ -52,9 +72,17 @@ class AccessExceptionController extends Controller
     }
 
     /**
+     * Mostrar formulario de creación
+     */
+    public function create()
+    {
+        return inertia('FCV/Exceptions/Create');
+    }
+
+    /**
      * Crear nueva excepción
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         $data = $request->validate([
             'person_id' => ['required', 'integer', 'exists:fcv_persons,id'],
@@ -76,16 +104,54 @@ class AccessExceptionController extends Controller
 
         $exception->load(['person:id,rut,name', 'creator:id,name']);
 
-        return response()->json([
-            'message' => 'Excepción creada exitosamente',
-            'exception' => $exception,
-        ], 201);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Excepción creada exitosamente',
+                'exception' => $exception,
+            ], 201);
+        }
+
+        return redirect()->route('fcv.access-exceptions.index')
+            ->with('success', 'Excepción creada exitosamente');
     }
 
     /**
      * Ver detalle de excepción
      */
-    public function show(AccessException $exception): JsonResponse
+    public function show(AccessException $exception)
+    {
+        $exception->load(['person:id,rut,name', 'creator:id,name', 'approver:id,name']);
+
+        if (request()->wantsJson()) {
+            return response()->json($exception);
+        }
+
+        return inertia('FCV/Exceptions/Show', [
+            'exception' => $exception,
+        ]);
+    }
+
+    /**
+     * Mostrar formulario de edición
+     */
+    public function edit(AccessException $exception)
+    {
+        if (!$exception->isPending()) {
+            return redirect()->route('fcv.access-exceptions.index')
+                ->with('error', 'Solo se pueden editar excepciones pendientes');
+        }
+
+        $exception->load(['person:id,rut,name']);
+
+        return inertia('FCV/Exceptions/Edit', [
+            'exception' => $exception,
+        ]);
+    }
+
+    /**
+     * Ver detalle de excepción (JSON)
+     */
+    protected function showJson(AccessException $exception): JsonResponse
     {
         $exception->load(['person:id,rut,name', 'creator:id,name', 'approver:id,name']);
 
@@ -95,12 +161,16 @@ class AccessExceptionController extends Controller
     /**
      * Actualizar excepción (solo si está pendiente)
      */
-    public function update(Request $request, AccessException $exception): JsonResponse
+    public function update(Request $request, AccessException $exception)
     {
         if (!$exception->isPending()) {
-            return response()->json([
-                'message' => 'Solo se pueden editar excepciones pendientes',
-            ], 422);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Solo se pueden editar excepciones pendientes',
+                ], 422);
+            }
+            return redirect()->route('fcv.access-exceptions.index')
+                ->with('error', 'Solo se pueden editar excepciones pendientes');
         }
 
         $data = $request->validate([
@@ -121,59 +191,86 @@ class AccessExceptionController extends Controller
         $exception->update($data);
         $exception->load(['person:id,rut,name', 'creator:id,name']);
 
-        return response()->json([
-            'message' => 'Excepción actualizada exitosamente',
-            'exception' => $exception,
-        ]);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Excepción actualizada exitosamente',
+                'exception' => $exception,
+            ]);
+        }
+
+        return redirect()->route('fcv.access-exceptions.index')
+            ->with('success', 'Excepción actualizada exitosamente');
     }
 
     /**
      * Eliminar excepción (solo si está pendiente)
      */
-    public function destroy(AccessException $exception): JsonResponse
+    public function destroy(AccessException $exception)
     {
         if (!$exception->isPending()) {
-            return response()->json([
-                'message' => 'Solo se pueden eliminar excepciones pendientes',
-            ], 422);
+            if (request()->wantsJson()) {
+                return response()->json([
+                    'message' => 'Solo se pueden eliminar excepciones pendientes',
+                ], 422);
+            }
+            return redirect()->route('fcv.access-exceptions.index')
+                ->with('error', 'Solo se pueden eliminar excepciones pendientes');
         }
 
         $exception->delete();
 
-        return response()->json([
-            'message' => 'Excepción eliminada exitosamente',
-        ]);
+        if (request()->wantsJson()) {
+            return response()->json([
+                'message' => 'Excepción eliminada exitosamente',
+            ]);
+        }
+
+        return redirect()->route('fcv.access-exceptions.index')
+            ->with('success', 'Excepción eliminada exitosamente');
     }
 
     /**
      * Aprobar excepción
      */
-    public function approve(Request $request, AccessException $exception): JsonResponse
+    public function approve(Request $request, AccessException $exception)
     {
         if (!$exception->isPending()) {
-            return response()->json([
-                'message' => 'Solo se pueden aprobar excepciones pendientes',
-            ], 422);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Solo se pueden aprobar excepciones pendientes',
+                ], 422);
+            }
+            return redirect()->route('fcv.access-exceptions.index')
+                ->with('error', 'Solo se pueden aprobar excepciones pendientes');
         }
 
         $exception->approve($request->user());
         $exception->load(['person:id,rut,name', 'creator:id,name', 'approver:id,name']);
 
-        return response()->json([
-            'message' => 'Excepción aprobada exitosamente',
-            'exception' => $exception,
-        ]);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Excepción aprobada exitosamente',
+                'exception' => $exception,
+            ]);
+        }
+
+        return redirect()->route('fcv.access-exceptions.index')
+            ->with('success', 'Excepción aprobada exitosamente');
     }
 
     /**
      * Rechazar excepción
      */
-    public function reject(Request $request, AccessException $exception): JsonResponse
+    public function reject(Request $request, AccessException $exception)
     {
         if (!$exception->isPending()) {
-            return response()->json([
-                'message' => 'Solo se pueden rechazar excepciones pendientes',
-            ], 422);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Solo se pueden rechazar excepciones pendientes',
+                ], 422);
+            }
+            return redirect()->route('fcv.access-exceptions.index')
+                ->with('error', 'Solo se pueden rechazar excepciones pendientes');
         }
 
         $data = $request->validate([
@@ -183,10 +280,15 @@ class AccessExceptionController extends Controller
         $exception->reject($request->user(), $data['rejection_reason']);
         $exception->load(['person:id,rut,name', 'creator:id,name', 'approver:id,name']);
 
-        return response()->json([
-            'message' => 'Excepción rechazada',
-            'exception' => $exception,
-        ]);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Excepción rechazada',
+                'exception' => $exception,
+            ]);
+        }
+
+        return redirect()->route('fcv.access-exceptions.index')
+            ->with('success', 'Excepción rechazada');
     }
 
     /**

@@ -97,8 +97,10 @@ Route::middleware(['web', 'auth'])
         // Excepciones de Acceso
         Route::prefix('access-exceptions')->name('access-exceptions.')->group(function () {
             Route::get('/', [AccessExceptionController::class, 'index'])->name('index');
+            Route::get('/create', [AccessExceptionController::class, 'create'])->name('create');
             Route::post('/', [AccessExceptionController::class, 'store'])->name('store');
             Route::get('/{exception}', [AccessExceptionController::class, 'show'])->name('show');
+            Route::get('/{exception}/edit', [AccessExceptionController::class, 'edit'])->name('edit');
             Route::put('/{exception}', [AccessExceptionController::class, 'update'])->name('update');
             Route::delete('/{exception}', [AccessExceptionController::class, 'destroy'])->name('destroy');
             Route::post('/{exception}/approve', [AccessExceptionController::class, 'approve'])->name('approve');
