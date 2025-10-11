@@ -68,19 +68,38 @@ class AnalyticsService
      */
     public function getTrends(string $actionPrefix, Carbon $from, Carbon $to, string $groupBy = 'day'): Collection
     {
-        $dateFormat = match ($groupBy) {
-            'hour' => '%Y-%m-%d %H:00:00',
-            'day' => '%Y-%m-%d',
-            'week' => '%Y-%u',
-            'month' => '%Y-%m',
-            default => '%Y-%m-%d',
+        $driver = DB::connection()->getDriverName();
+        
+        // Formato de fecha según el driver
+        $periodExpression = match ($driver) {
+            'sqlite' => match ($groupBy) {
+                'hour' => "strftime('%Y-%m-%d %H:00:00', created_at)",
+                'day' => "strftime('%Y-%m-%d', created_at)",
+                'week' => "strftime('%Y-%W', created_at)",
+                'month' => "strftime('%Y-%m', created_at)",
+                default => "strftime('%Y-%m-%d', created_at)",
+            },
+            'pgsql' => match ($groupBy) {
+                'hour' => "TO_CHAR(created_at, 'YYYY-MM-DD HH24:00:00')",
+                'day' => "TO_CHAR(created_at, 'YYYY-MM-DD')",
+                'week' => "TO_CHAR(created_at, 'IYYY-IW')",
+                'month' => "TO_CHAR(created_at, 'YYYY-MM')",
+                default => "TO_CHAR(created_at, 'YYYY-MM-DD')",
+            },
+            default => match ($groupBy) { // MySQL/MariaDB
+                'hour' => "DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00')",
+                'day' => "DATE_FORMAT(created_at, '%Y-%m-%d')",
+                'week' => "DATE_FORMAT(created_at, '%Y-%u')",
+                'month' => "DATE_FORMAT(created_at, '%Y-%m')",
+                default => "DATE_FORMAT(created_at, '%Y-%m-%d')",
+            },
         };
 
         return AuditLog::query()
             ->where('action', 'like', "{$actionPrefix}%")
             ->whereBetween('created_at', [$from, $to])
             ->select(
-                DB::raw("DATE_FORMAT(created_at, '{$dateFormat}') as period"),
+                DB::raw("{$periodExpression} as period"),
                 DB::raw('COUNT(*) as count')
             )
             ->groupBy('period')
