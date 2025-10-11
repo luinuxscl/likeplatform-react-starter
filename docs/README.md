@@ -20,6 +20,7 @@ Guías prácticas para trabajar con el starter kit:
 - **[Packages - Guía Rápida](guias/packages-rapida.md)** - Inicio rápido con packages
 - **[Internacionalización (i18n)](guias/i18n.md)** - Sistema de traducciones
 - **[Temas](guias/temas.md)** - Personalización de temas
+- **[Configuración de Temas en Packages](guias/package-theme-installation.md)** - Configurar tema durante instalación
 
 ### ⚙️ Sistemas
 
@@ -43,6 +44,7 @@ Documentación de los sistemas principales del starter kit:
 
 Documentación para desarrolladores y contribuidores:
 
+- **[🤖 Referencia para Agentes IA](desarrollo/ai-agent-reference.md)** ⭐ - Guía rápida para agentes de programación
 - **[Laravel Boost Guidelines](desarrollo/laravel-boost-guidelines.md)** - Directrices de Laravel Boost
 - **[Directrices Agentes IA](desarrollo/directrices-agentes-ia.md)** - Guía para agentes de IA
 - **[Estrategia Git - Laravel Boost](desarrollo/estrategia-git-laravel-boost.md)** - Workflow con Laravel Boost
