@@ -10,6 +10,7 @@ use Like\Fcv\Http\Controllers\CourseController;
 use Like\Fcv\Http\Controllers\CourseStudentController;
 use Like\Fcv\Http\Controllers\OrganizationController;
 use Like\Fcv\Http\Controllers\Api\CourseApiController;
+use Like\Fcv\Http\Controllers\FcvAnalyticsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +70,22 @@ Route::middleware(['web', 'auth'])
             Route::put('/{organization}', [OrganizationController::class, 'update'])->name('update');
             Route::delete('/{organization}', [OrganizationController::class, 'destroy'])->name('destroy');
             Route::put('/{organization}/restore', [OrganizationController::class, 'restore'])->name('restore');
+        });
+        
+        // Analytics
+        Route::prefix('analytics')->name('analytics.')->group(function () {
+            Route::get('/stats', [FcvAnalyticsController::class, 'stats'])->name('stats');
+            Route::get('/trends', [FcvAnalyticsController::class, 'trends'])->name('trends');
+            Route::get('/top-persons', [FcvAnalyticsController::class, 'topPersons'])->name('top-persons');
+            Route::get('/denied-reasons', [FcvAnalyticsController::class, 'deniedReasons'])->name('denied-reasons');
+            Route::get('/person/{person}/history', [FcvAnalyticsController::class, 'personHistory'])->name('person-history');
+            Route::get('/hourly-distribution', [FcvAnalyticsController::class, 'hourlyDistribution'])->name('hourly-distribution');
+            Route::get('/weekday-distribution', [FcvAnalyticsController::class, 'weekdayDistribution'])->name('weekday-distribution');
+            Route::get('/complete-report', [FcvAnalyticsController::class, 'completeReport'])->name('complete-report');
+            Route::get('/daily-report', [FcvAnalyticsController::class, 'dailyReport'])->name('daily-report');
+            Route::get('/weekly-report', [FcvAnalyticsController::class, 'weeklyReport'])->name('weekly-report');
+            Route::get('/monthly-report', [FcvAnalyticsController::class, 'monthlyReport'])->name('monthly-report');
+            Route::get('/compare-periods', [FcvAnalyticsController::class, 'comparePeriods'])->name('compare-periods');
         });
         
         // Health check del paquete
