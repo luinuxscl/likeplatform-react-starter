@@ -32,6 +32,11 @@ Route::middleware(['web', 'auth'])
         // Dashboard de la aplicación
         Route::get('/guard', [DashboardController::class, 'index'])->name('guard');
         
+        // Analytics Dashboard
+        Route::get('/analytics', function () {
+            return inertia('FCV/Analytics/Dashboard');
+        })->name('analytics.dashboard');
+        
         // Rutas de verificación y acceso
         Route::post('/verify', [VerificationController::class, 'verify'])->name('verify');
         Route::post('/access', [AccessController::class, 'store'])->name('access.store');
