@@ -2,6 +2,7 @@
 
 namespace Like\Fcv\Models;
 
+use App\Traits\HasAuditLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,8 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, HasAuditLogs, SoftDeletes;
 
     protected $table = 'fcv_courses';
 

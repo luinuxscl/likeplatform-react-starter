@@ -2,6 +2,7 @@
 
 namespace Like\Fcv\Http\Controllers;
 
+use App\Services\Audit\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -10,6 +11,10 @@ use Like\Fcv\Models\Person;
 
 class AccessController extends Controller
 {
+    public function __construct(protected AuditLogger $auditLogger)
+    {
+    }
+
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -39,6 +44,23 @@ class AccessController extends Controller
                 'user_agent' => $request->userAgent(),
             ], $data['meta'] ?? []),
         ]);
+
+        // Registrar en sistema de auditoría global
+        $action = $data['direction'] === 'entrada' 
+            ? 'fcv.access.entry' 
+            : 'fcv.access.exit';
+
+        $this->auditLogger->log(
+            action: $action,
+            model: $person,
+            metadata: [
+                'access_log_id' => $log->id,
+                'direction' => $data['direction'],
+                'status' => $data['status'],
+                'reason' => $data['reason'] ?? null,
+                'gatekeeper_id' => $request->user()?->id,
+            ]
+        );
 
         return response()->json([
             'ok' => true,

@@ -2,13 +2,14 @@
 
 namespace Like\Fcv\Models;
 
+use App\Traits\HasAuditLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Membership extends Model
 {
-    use HasFactory;
+    use HasFactory, HasAuditLogs;
 
     protected $table = 'fcv_memberships';
 

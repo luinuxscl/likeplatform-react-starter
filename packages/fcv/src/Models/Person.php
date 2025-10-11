@@ -2,6 +2,7 @@
 
 namespace Like\Fcv\Models;
 
+use App\Traits\HasAuditLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,7 +11,7 @@ use Like\Fcv\Database\Factories\PersonFactory;
 
 class Person extends Model
 {
-    use HasFactory;
+    use HasFactory, HasAuditLogs;
 
     protected $table = 'fcv_persons';
 
