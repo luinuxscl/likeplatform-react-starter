@@ -47,6 +47,15 @@ return [
             'order' => 40,
             'active' => true,
         ],
+        [
+            'section' => 'operation',
+            'label' => 'Excepciones',
+            'icon' => 'ShieldAlert',  // Lucide icon name
+            'route' => '/fcv/access-exceptions',
+            'permission' => null,
+            'order' => 50,
+            'active' => true,
+        ],
     ],
 
     /*

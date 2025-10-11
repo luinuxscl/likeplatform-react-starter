@@ -76,7 +76,14 @@ class AccessExceptionController extends Controller
      */
     public function create()
     {
-        return inertia('FCV/Exceptions/Create');
+        $persons = Person::query()
+            ->select('id', 'rut', 'name')
+            ->orderBy('name')
+            ->get();
+
+        return inertia('FCV/Exceptions/Create', [
+            'persons' => $persons,
+        ]);
     }
 
     /**
