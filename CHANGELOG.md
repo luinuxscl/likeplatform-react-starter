@@ -4,6 +4,17 @@ Todas las novedades y cambios relevantes del proyecto.
 
 ## [Unreleased]
 
+### Configuración de Temas Durante Instalación de Packages
+- ✅ **Trait ConfiguresTheme** para ServiceProviders y Commands
+- ✅ Método `setDefaultTheme()` para cambiar tema por defecto
+- ✅ Método `registerCustomTheme()` para temas personalizados
+- ✅ Método `askToChangeTheme()` para confirmación interactiva
+- ✅ Actualización automática de `.env`
+- ✅ Opciones `--theme=` y `--no-theme` en comandos de instalación
+- ✅ Package FCV actualizado con soporte de temas
+- ✅ Tests completos (8 tests)
+- ✅ Documentación en `docs/guias/package-theme-installation.md`
+
 ### Sistema de Temas shadcn/ui
 - ✅ **12 temas predefinidos** de shadcn/ui: zinc, slate, stone, gray, neutral, red, rose, orange, green, blue, yellow, violet
 - ✅ Cambio de tema en tiempo real sin reload de página

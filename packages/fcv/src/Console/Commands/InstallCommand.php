@@ -2,6 +2,7 @@
 
 namespace Like\Fcv\Console\Commands;
 
+use App\Traits\ConfiguresTheme;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Artisan;
@@ -12,7 +13,12 @@ use Spatie\Permission\Models\Role;
 
 class InstallCommand extends Command
 {
-    protected $signature = 'fcv:install {--dev : Instala datos de prueba (alumnos, funcionarios, cursos).}';
+    use ConfiguresTheme;
+
+    protected $signature = 'fcv:install 
+                            {--dev : Instala datos de prueba (alumnos, funcionarios, cursos).}
+                            {--theme= : Tema a usar (zinc, slate, rose, orange, green, blue, etc.)}
+                            {--no-theme : No cambiar el tema por defecto}';
 
     protected $description = 'Instala recursos y datos base del paquete FCV. Use --dev para datos de prueba masivos.';
 
@@ -42,9 +48,41 @@ class InstallCommand extends Command
             });
         }
 
+        // Configurar tema si se especificó
+        $this->configureTheme();
+
         $this->components?->info('Instalación FCV finalizada.');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Configura el tema del package
+     */
+    protected function configureTheme(): void
+    {
+        // Si se especificó --no-theme, no hacer nada
+        if ($this->option('no-theme')) {
+            return;
+        }
+
+        // Tema sugerido por el package FCV
+        $suggestedTheme = config('fcv.theme', 'blue');
+
+        // Si se especificó un tema en la opción, usarlo
+        if ($theme = $this->option('theme')) {
+            $this->components?->task("Configurando tema: {$theme}", function () use ($theme) {
+                $this->setDefaultTheme($theme, true);
+            });
+            return;
+        }
+
+        // Preguntar al usuario si desea usar el tema sugerido
+        if ($this->askToChangeTheme($suggestedTheme, 'FCV')) {
+            $this->components?->task("Configurando tema: {$suggestedTheme}", function () use ($suggestedTheme) {
+                $this->setDefaultTheme($suggestedTheme, true);
+            });
+        }
     }
 
     protected function publishConfig(): void

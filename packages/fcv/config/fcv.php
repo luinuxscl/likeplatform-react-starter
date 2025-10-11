@@ -13,4 +13,14 @@ return [
         'enabled' => false,
         'channel_prefix' => 'fcv',
     ],
+
+    // Tema sugerido para este package
+    // Se aplicará durante la instalación si el usuario lo acepta
+    'theme' => env('FCV_THEME', 'blue'),
+
+    // Roles por defecto que se crearán durante la instalación
+    'default_roles' => [
+        'fcv-admin',
+        'fcv-operator',
+    ],
 ];
