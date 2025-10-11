@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import useTheme from '@/hooks/useTheme'
+import { useTheme } from '@/contexts/ThemeContext'
 
 // Mini widget to switch theme in realtime with a smooth global transition.
 // Minimal UI: small colored dots representing themes. Click to apply.

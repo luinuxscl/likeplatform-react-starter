@@ -17,7 +17,7 @@ NUEVOS ARCHIVOS:
 ESTRUCTURA:
 docs/
 ├── guias/                  # 5 archivos - Tutoriales y guías prácticas
-├── sistemas/               # 12 archivos - Documentación técnica de sistemas
+{{ ... }}
 ├── desarrollo/             # 10 archivos - Guidelines y convenciones
 └── implementaciones/       # 7 archivos - Procesos y reportes
 
