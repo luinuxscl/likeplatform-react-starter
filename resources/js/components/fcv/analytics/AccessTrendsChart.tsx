@@ -41,7 +41,18 @@ export function AccessTrendsChart({ dateRange, loading }: AccessTrendsChartProps
         group_by: 'day',
       })
 
-      const response = await fetch(`/fcv/analytics/trends?${params}`)
+      const response = await fetch(`/fcv/analytics/trends?${params}`, {
+        credentials: 'same-origin',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const result = await response.json()
       setData(result.trends || [])
     } catch (error) {

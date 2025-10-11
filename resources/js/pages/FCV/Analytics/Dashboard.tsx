@@ -65,7 +65,18 @@ export default function AnalyticsDashboard() {
         to: dateRange.to.toISOString().split('T')[0],
       })
 
-      const response = await fetch(`/fcv/analytics/complete-report?${params}`)
+      const response = await fetch(`/fcv/analytics/complete-report?${params}`, {
+        credentials: 'same-origin',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const result = await response.json()
       setData(result)
     } catch (error) {
