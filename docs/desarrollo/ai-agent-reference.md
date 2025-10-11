@@ -222,6 +222,159 @@ class MiPackageServiceProvider extends ServiceProvider
 
 ---
 
+## 📊 Sistema de Auditoría y Analytics
+
+### 1. Auditoría Automática (HasAuditLogs)
+
+**SIEMPRE usa el sistema de auditoría del starter kit** para trazabilidad.
+
+**Trait disponible**: `App\Traits\HasAuditLogs`
+
+```php
+<?php
+
+namespace MiVendor\MiPackage\Models;
+
+use App\Traits\HasAuditLogs;
+use Illuminate\Database\Eloquent\Model;
+
+class MiModelo extends Model
+{
+    use HasFactory, HasAuditLogs;  // ✅ Auditoría automática
+}
+```
+
+**Acciones auditadas automáticamente:**
+- `created` - Creación de registro
+- `updated` - Actualización de registro  
+- `deleted` - Eliminación de registro
+- `restored` - Restauración de soft delete
+
+**Todos los cambios se registran en** `audit_logs` con:
+- Usuario que realizó la acción
+- Valores anteriores y nuevos
+- Metadata (IP, user agent, URL)
+- Timestamp
+
+### 2. Registrar Acciones Personalizadas
+
+```php
+use App\Services\Audit\AuditLogger;
+
+// En tu Controller o Service
+app(AuditLogger::class)->log(
+    action: 'mi-package.accion-importante',
+    model: $model,  // Modelo afectado (opcional)
+    metadata: [
+        'key' => 'value',
+        'user_input' => $request->input('data'),
+        // Cualquier metadata relevante
+    ]
+);
+```
+
+**Convención de nombres de acciones:**
+- `mi-package.action` - Formato general
+- `mi-package.resource.action` - Con recurso específico
+- Ejemplos: `fcv.access.verification`, `fcv.access.entry`
+
+### 3. Analytics Service (Reutilizable)
+
+**SIEMPRE usa** `AnalyticsService` para estadísticas basadas en auditoría.
+
+```php
+use App\Services\Analytics\AnalyticsService;
+
+$analytics = app(AnalyticsService::class);
+
+// Estadísticas generales
+$stats = $analytics->getStats('mi-package.action', $from, $to);
+
+// Tendencias por período
+$trends = $analytics->getTrends('mi-package.action', $from, $to, 'day');
+
+// Top usuarios más activos
+$topUsers = $analytics->getTopUsers('mi-package.action', $from, $to, 10);
+
+// Distribución por metadata
+$distribution = $analytics->getMetadataDistribution(
+    'mi-package.action',
+    'metadata_key',
+    $from,
+    $to
+);
+
+// Reportes
+$dailyReport = $analytics->getDailyReport('mi-package.action', $date);
+$weeklyReport = $analytics->getWeeklyReport('mi-package.action', $weekStart);
+$monthlyReport = $analytics->getMonthlyReport('mi-package.action', $year, $month);
+
+// Comparar períodos
+$comparison = $analytics->comparePeriods(
+    'mi-package.action',
+    $period1From, $period1To,
+    $period2From, $period2To
+);
+```
+
+### 4. Crear Analytics Service Específico
+
+```php
+<?php
+
+namespace MiVendor\MiPackage\Services;
+
+use App\Services\Analytics\AnalyticsService;
+use Illuminate\Support\Carbon;
+
+class MiPackageAnalyticsService
+{
+    public function __construct(protected AnalyticsService $analytics) {}
+    
+    public function getStats(Carbon $from, Carbon $to): array
+    {
+        return $this->analytics->getStats('mi-package', $from, $to);
+    }
+    
+    public function getActionTrends(Carbon $from, Carbon $to): array
+    {
+        return $this->analytics->getTrends('mi-package.action', $from, $to, 'day');
+    }
+}
+```
+
+### 5. Consultar Auditoría
+
+**Desde la UI:**
+```
+/admin/audit/logs
+```
+Filtrar por acción: `mi-package.*`
+
+**Desde código:**
+```php
+use App\Models\AuditLog;
+
+// Todas las acciones de tu package
+$logs = AuditLog::query()
+    ->where('action', 'like', 'mi-package.%')
+    ->whereBetween('created_at', [$from, $to])
+    ->get();
+
+// Cambios en un modelo específico
+$changes = AuditLog::query()
+    ->where('auditable_type', MiModelo::class)
+    ->where('auditable_id', $id)
+    ->orderByDesc('created_at')
+    ->get();
+```
+
+**Documentación completa**: 
+- `docs/sistemas/auditoria.md`
+- `docs/guias/fcv-backend-complete.md`
+
+---
+
 ## 🔐 Sistema de Permisos (Spatie)
 
 ### Crear Roles Durante Instalación
