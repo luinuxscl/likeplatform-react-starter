@@ -38,6 +38,15 @@ return [
             'order' => 30,
             'active' => true,
         ],
+        [
+            'section' => 'operation',
+            'label' => 'Analytics',
+            'icon' => 'BarChart3',  // Lucide icon name
+            'route' => '/fcv/analytics',
+            'permission' => null,
+            'order' => 40,
+            'active' => true,
+        ],
     ],
 
     /*
