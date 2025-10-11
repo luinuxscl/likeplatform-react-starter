@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import useTheme from '@/hooks/useTheme'
+import { useTheme } from '@/hooks/useShadcnTheme'
 import { usePage } from '@inertiajs/react'
 
 export default function ThemeSelector() {

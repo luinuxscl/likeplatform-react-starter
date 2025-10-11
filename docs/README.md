@@ -36,7 +36,8 @@ Documentación de los sistemas principales del starter kit:
 - **[Packages - Instalación](sistemas/packages-instalacion-sistema.md)** - Instalación del sistema
 - **[Settings - Completo](sistemas/settings-completo.md)** - Sistema de configuración completo
 - **[Settings - Final](sistemas/settings-final.md)** - Implementación final de settings
-- **[Theme - Implementado](sistemas/theme-implementado.md)** - Sistema de temas implementado
+- **[Temas shadcn/ui](sistemas/shadcn-themes.md)** - 12 temas predefinidos con cambio en tiempo real
+- **[Theme - Implementado](sistemas/theme-implementado.md)** - Sistema de temas implementado (legacy)
 
 ### 🛠️ Desarrollo
 

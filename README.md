@@ -10,7 +10,7 @@ Starter kit moderno con Laravel 12 + React 19 (Inertia v2), Tailwind 4 y shadcn/
 
 - **[Guía rápida de Packages](docs/guias/packages-rapida.md)** - Crear packages de expansión
 - **[Sistema de Packages](docs/sistemas/packages-personalizacion.md)** - Documentación completa
-- **[Guía de Temas](docs/guias/temas.md)** - Personalización de temas
+- **[Sistema de Temas shadcn/ui](docs/sistemas/shadcn-themes.md)** - 12 temas predefinidos
 - **[Sistema de Settings](docs/sistemas/settings-final.md)** - Configuración de packages
 - **[Laravel Boost Guidelines](docs/desarrollo/laravel-boost-guidelines.md)** - Directrices de desarrollo
 
@@ -33,7 +33,7 @@ Starter kit moderno con Laravel 12 + React 19 (Inertia v2), Tailwind 4 y shadcn/
 ### Sistemas Extensibles
 - **Sistema de Packages**: Auto-discovery, menús dinámicos, permisos
 - **Sistema de Settings**: Configuración UI auto-generada desde schemas
-- **Sistema de Temas**: Personalización por package con light/dark mode
+- **Sistema de Temas**: 12 temas shadcn/ui + light/dark mode
 - **Internacionalización**: Soporte multi-idioma (ES/EN)
 
 ### Developer Experience

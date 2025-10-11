@@ -4,6 +4,18 @@ Todas las novedades y cambios relevantes del proyecto.
 
 ## [Unreleased]
 
+### Sistema de Temas shadcn/ui
+- ✅ **12 temas predefinidos** de shadcn/ui: zinc, slate, stone, gray, neutral, red, rose, orange, green, blue, yellow, violet
+- ✅ Cambio de tema en tiempo real sin reload de página
+- ✅ Persistencia de preferencia de tema en sesión
+- ✅ Compatible con sistema dark/light mode existente
+- ✅ CSS variables dinámicas aplicadas selectivamente
+- ✅ Hook `useTheme` con TypeScript completo
+- ✅ Componente `ThemeSelector` con preview de colores
+- ✅ Tests Pest completos (12 tests, 228 assertions)
+- ✅ Configuración declarativa en `config/expansion.php`
+- ✅ Documentación completa en `docs/sistemas/shadcn-themes.md`
+
 ### Documentación
 - Reorganización completa de documentación en `/docs` con estructura de subcarpetas
 - Nuevo índice general en `docs/README.md`
