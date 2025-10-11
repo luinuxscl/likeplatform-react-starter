@@ -3,11 +3,6 @@
 return [
     'version' => '0.1.0',
 
-    'default_roles' => [
-        'guardia',
-        'coordinacion',
-    ],
-
     // Retención de bitácora en meses (24 = 2 años)
     'access_log_retention_months' => 24,
 
@@ -17,5 +12,15 @@ return [
     'broadcast' => [
         'enabled' => false,
         'channel_prefix' => 'fcv',
+    ],
+
+    // Tema sugerido para este package
+    // Se aplicará durante la instalación si el usuario lo acepta
+    'theme' => env('FCV_THEME', 'blue'),
+
+    // Roles por defecto que se crearán durante la instalación
+    'default_roles' => [
+        'fcv-admin',
+        'fcv-operator',
     ],
 ];
