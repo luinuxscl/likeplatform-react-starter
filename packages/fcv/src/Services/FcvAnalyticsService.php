@@ -158,10 +158,20 @@ class FcvAnalyticsService
      */
     public function getAccessDistributionByHour(Carbon $from, Carbon $to): array
     {
+        $driver = DB::connection()->getDriverName();
+        
+        // Usar sintaxis específica según el driver
+        $hourExpression = match($driver) {
+            'sqlite' => "CAST(strftime('%H', occurred_at) AS INTEGER)",
+            'mysql', 'mariadb' => 'HOUR(occurred_at)',
+            'pgsql' => 'EXTRACT(HOUR FROM occurred_at)',
+            default => 'HOUR(occurred_at)',
+        };
+
         $byHour = AccessLog::query()
             ->between($from, $to)
             ->select(
-                DB::raw('HOUR(occurred_at) as hour'),
+                DB::raw("{$hourExpression} as hour"),
                 DB::raw('COUNT(*) as count')
             )
             ->groupBy('hour')
@@ -184,10 +194,22 @@ class FcvAnalyticsService
      */
     public function getAccessDistributionByWeekday(Carbon $from, Carbon $to): array
     {
+        $driver = DB::connection()->getDriverName();
+        
+        // Usar sintaxis específica según el driver
+        // SQLite: strftime('%w') retorna 0=Domingo, 1=Lunes, etc.
+        // MySQL: DAYOFWEEK() retorna 1=Domingo, 2=Lunes, etc.
+        $dayExpression = match($driver) {
+            'sqlite' => "CAST(strftime('%w', occurred_at) AS INTEGER)",
+            'mysql', 'mariadb' => 'DAYOFWEEK(occurred_at) - 1',
+            'pgsql' => 'EXTRACT(DOW FROM occurred_at)',
+            default => 'DAYOFWEEK(occurred_at) - 1',
+        };
+
         $byDay = AccessLog::query()
             ->between($from, $to)
             ->select(
-                DB::raw('DAYOFWEEK(occurred_at) as day'),
+                DB::raw("{$dayExpression} as day"),
                 DB::raw('COUNT(*) as count')
             )
             ->groupBy('day')
@@ -199,8 +221,8 @@ class FcvAnalyticsService
         $weekdays = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         $weekdayData = [];
 
-        for ($i = 1; $i <= 7; $i++) {
-            $weekdayData[$weekdays[$i - 1]] = $byDay[$i] ?? 0;
+        for ($i = 0; $i < 7; $i++) {
+            $weekdayData[$weekdays[$i]] = $byDay[$i] ?? 0;
         }
 
         return $weekdayData;
