@@ -3,6 +3,7 @@
 namespace Like\Fcv\Services;
 
 use Illuminate\Support\Carbon;
+use Like\Fcv\Models\AccessException;
 use Like\Fcv\Models\Course;
 use Like\Fcv\Models\Membership;
 use Like\Fcv\Models\Organization;
@@ -27,6 +28,29 @@ class AccessRuleService
                 'status' => 'denegado',
                 'reason' => 'Persona no registrada',
                 'person' => null,
+            ];
+        }
+
+        // Verificar si existe una excepción activa
+        $activeException = AccessException::query()
+            ->forPerson($person->id)
+            ->active()
+            ->first();
+
+        if ($activeException) {
+            return [
+                'allowed' => true,
+                'status' => 'permitido',
+                'reason' => 'Excepción activa: ' . $activeException->getReasonLabel(),
+                'person' => $person->only(['id', 'rut', 'name']),
+                'exception' => [
+                    'id' => $activeException->id,
+                    'reason' => $activeException->reason,
+                    'reason_label' => $activeException->getReasonLabel(),
+                    'description' => $activeException->description,
+                    'valid_from' => $activeException->valid_from,
+                    'valid_until' => $activeException->valid_until,
+                ],
             ];
         }
 

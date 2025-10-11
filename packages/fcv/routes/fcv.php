@@ -11,6 +11,7 @@ use Like\Fcv\Http\Controllers\CourseStudentController;
 use Like\Fcv\Http\Controllers\OrganizationController;
 use Like\Fcv\Http\Controllers\Api\CourseApiController;
 use Like\Fcv\Http\Controllers\FcvAnalyticsController;
+use Like\Fcv\Http\Controllers\AccessExceptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +87,18 @@ Route::middleware(['web', 'auth'])
             Route::get('/weekly-report', [FcvAnalyticsController::class, 'weeklyReport'])->name('weekly-report');
             Route::get('/monthly-report', [FcvAnalyticsController::class, 'monthlyReport'])->name('monthly-report');
             Route::get('/compare-periods', [FcvAnalyticsController::class, 'comparePeriods'])->name('compare-periods');
+        });
+        
+        // Excepciones de Acceso
+        Route::prefix('access-exceptions')->name('access-exceptions.')->group(function () {
+            Route::get('/', [AccessExceptionController::class, 'index'])->name('index');
+            Route::post('/', [AccessExceptionController::class, 'store'])->name('store');
+            Route::get('/{exception}', [AccessExceptionController::class, 'show'])->name('show');
+            Route::put('/{exception}', [AccessExceptionController::class, 'update'])->name('update');
+            Route::delete('/{exception}', [AccessExceptionController::class, 'destroy'])->name('destroy');
+            Route::post('/{exception}/approve', [AccessExceptionController::class, 'approve'])->name('approve');
+            Route::post('/{exception}/reject', [AccessExceptionController::class, 'reject'])->name('reject');
+            Route::get('/person/{person}/active', [AccessExceptionController::class, 'activeForPerson'])->name('active-for-person');
         });
         
         // Health check del paquete
