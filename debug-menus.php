@@ -88,9 +88,23 @@ if (count($menus['operation']) > 0) {
 echo "5️⃣  INERTIA SHARE (Simulación)\n";
 echo str_repeat("─", 60) . "\n";
 
+// Verificar si se está filtrando por permisos
+$platformNoFilter = $menuService->getMenuItemsForSection('platform', false);
+$adminNoFilter = $menuService->getMenuItemsForSection('admin', false);
+$operationNoFilter = $menuService->getMenuItemsForSection('operation', false);
+
+echo "   Menús SIN filtrar (como debería compartirse):\n";
+echo "     Platform: " . count($platformNoFilter) . " items\n";
+echo "     Admin: " . count($adminNoFilter) . " items\n";
+echo "     Operation: " . count($operationNoFilter) . " items\n\n";
+
 $inertiaData = [
     'packages' => [
-        'menus' => $menus
+        'menus' => [
+            'platform' => $platformNoFilter,
+            'admin' => $adminNoFilter,
+            'operation' => $operationNoFilter,
+        ]
     ]
 ];
 
@@ -98,9 +112,9 @@ echo "   Estructura compartida con Inertia:\n";
 echo "   {\n";
 echo "     packages: {\n";
 echo "       menus: {\n";
-echo "         platform: [" . count($menus['platform']) . " items],\n";
-echo "         admin: [" . count($menus['admin']) . " items],\n";
-echo "         operation: [" . count($menus['operation']) . " items]\n";
+echo "         platform: [" . count($platformNoFilter) . " items],\n";
+echo "         admin: [" . count($adminNoFilter) . " items],\n";
+echo "         operation: [" . count($operationNoFilter) . " items]\n";
 echo "       }\n";
 echo "     }\n";
 echo "   }\n\n";
