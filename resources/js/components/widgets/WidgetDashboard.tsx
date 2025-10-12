@@ -12,6 +12,22 @@ const WelcomeWidget = lazy(() =>
     import('./WelcomeWidget').then((module) => ({ default: module.WelcomeWidget })),
 );
 
+const StatsWidget = lazy(() =>
+    import('./StatsWidget').then((module) => ({ default: module.StatsWidget })),
+);
+
+const ActivityWidget = lazy(() =>
+    import('./ActivityWidget').then((module) => ({ default: module.ActivityWidget })),
+);
+
+const GoalsWidget = lazy(() =>
+    import('./GoalsWidget').then((module) => ({ default: module.GoalsWidget })),
+);
+
+const QuickActionsWidget = lazy(() =>
+    import('./QuickActionsWidget').then((module) => ({ default: module.QuickActionsWidget })),
+);
+
 /**
  * Tipo para componentes de widgets
  */
@@ -22,6 +38,10 @@ type WidgetComponent = ComponentType<{ widget: Widget; onRefresh?: () => void }>
  */
 const WIDGET_COMPONENTS: Record<string, React.LazyExoticComponent<WidgetComponent>> = {
     WelcomeWidget: WelcomeWidget as React.LazyExoticComponent<WidgetComponent>,
+    StatsWidget: StatsWidget as React.LazyExoticComponent<WidgetComponent>,
+    ActivityWidget: ActivityWidget as React.LazyExoticComponent<WidgetComponent>,
+    GoalsWidget: GoalsWidget as React.LazyExoticComponent<WidgetComponent>,
+    QuickActionsWidget: QuickActionsWidget as React.LazyExoticComponent<WidgetComponent>,
 };
 
 /**
