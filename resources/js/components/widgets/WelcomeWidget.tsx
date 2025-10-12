@@ -1,6 +1,7 @@
 import { usePage } from '@inertiajs/react';
 import { BaseWidget } from './BaseWidget';
 import { Sparkles, TrendingUp, Clock, CheckCircle2 } from 'lucide-react';
+import { useI18n } from '@/lib/i18n/I18nProvider';
 import type { Widget, SharedData } from '@/types';
 
 /**
@@ -8,12 +9,13 @@ import type { Widget, SharedData } from '@/types';
  */
 export function WelcomeWidget({ widget, onRefresh }: { widget: Widget; onRefresh?: () => void }) {
     const { auth } = usePage<SharedData>().props;
+    const { t } = useI18n();
 
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 12) return 'Good morning';
-        if (hour < 18) return 'Good afternoon';
-        return 'Good evening';
+        if (hour < 12) return t('Good morning');
+        if (hour < 18) return t('Good afternoon');
+        return t('Good evening');
     };
 
     const getGreetingIcon = () => {
@@ -46,7 +48,7 @@ export function WelcomeWidget({ widget, onRefresh }: { widget: Widget; onRefresh
                             </div>
                         </div>
                         <p className="text-muted-foreground mt-3">
-                            Welcome back to your dashboard. Here's your overview for today.
+                            {t("Welcome back to your dashboard. Here's your overview for today.")}
                         </p>
                     </div>
 
@@ -59,25 +61,25 @@ export function WelcomeWidget({ widget, onRefresh }: { widget: Widget; onRefresh
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <StatCard
                         icon={<Sparkles className="h-5 w-5" />}
-                        label="Quick Actions"
-                        value="Ready"
+                        label={t('Quick Actions')}
+                        value={t('Ready')}
                         color="from-blue-500 to-cyan-500"
                     />
                     <StatCard
                         icon={<TrendingUp className="h-5 w-5" />}
-                        label="Performance"
-                        value="Active"
+                        label={t('Performance')}
+                        value={t('Active')}
                         color="from-green-500 to-emerald-500"
                     />
                     <StatCard
                         icon={<Clock className="h-5 w-5" />}
-                        label="Pending"
+                        label={t('Pending')}
                         value="0"
                         color="from-orange-500 to-amber-500"
                     />
                     <StatCard
                         icon={<CheckCircle2 className="h-5 w-5" />}
-                        label="Completed"
+                        label={t('Completed')}
                         value="12"
                         color="from-purple-500 to-pink-500"
                     />

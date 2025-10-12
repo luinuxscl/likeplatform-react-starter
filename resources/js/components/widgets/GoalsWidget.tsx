@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { BaseWidget } from './BaseWidget';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
-import { Target, Plus, Minus } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, Tooltip } from 'recharts';
 import { Button } from '@/components/ui/button';
+import { Plus, Minus } from 'lucide-react';
+import { useI18n } from '@/lib/i18n/I18nProvider';
 import type { Widget } from '@/types';
 
 interface GoalData {
@@ -21,6 +22,7 @@ export function GoalsWidget({
     widget: Widget;
     onRefresh?: () => void;
 }) {
+    const { t } = useI18n();
     const [data, setData] = useState<GoalData[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [dailyGoal, setDailyGoal] = useState(350);
@@ -28,6 +30,8 @@ export function GoalsWidget({
     useEffect(() => {
         loadData();
     }, [dailyGoal]);
+
+    const weekDays = [t('Mon'), t('Tue'), t('Wed'), t('Thu'), t('Fri'), t('Sat'), t('Sun')];
 
     const loadData = () => {
         setIsLoading(true);
@@ -72,17 +76,10 @@ export function GoalsWidget({
             {data && (
                 <div className="space-y-6">
                     {/* Goal Control */}
-                    <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-full bg-primary/10">
-                                <Target className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                                <div className="text-sm font-medium text-muted-foreground">
-                                    Daily Goal
-                                </div>
-                                <div className="text-2xl font-bold">{dailyGoal}</div>
-                            </div>
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <div className="text-sm text-muted-foreground">{t('Daily Goal')}</div>
+                            <div className="text-2xl font-bold">{dailyGoal}</div>
                         </div>
                         <div className="flex items-center gap-2">
                             <Button
@@ -111,7 +108,7 @@ export function GoalsWidget({
                                 {achievement.toFixed(0)}%
                             </div>
                             <div className="text-xs text-muted-foreground mt-1">
-                                Achievement
+                                {t('Achievement')}
                             </div>
                         </div>
                         <div className="text-center">
@@ -119,7 +116,7 @@ export function GoalsWidget({
                                 {daysAchieved}/{data.length}
                             </div>
                             <div className="text-xs text-muted-foreground mt-1">
-                                Days Achieved
+                                {t('Days Achieved')}
                             </div>
                         </div>
                         <div className="text-center">
@@ -127,7 +124,7 @@ export function GoalsWidget({
                                 {totalValue.toLocaleString()}
                             </div>
                             <div className="text-xs text-muted-foreground mt-1">
-                                Total This Week
+                                {t('Total This Week')}
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 import { BaseWidget } from './BaseWidget';
 import { Link } from '@inertiajs/react';
+import { useI18n } from '@/lib/i18n/I18nProvider';
 import {
     Plus,
     Users,
@@ -30,60 +31,62 @@ export function QuickActionsWidget({
     widget: Widget;
     onRefresh?: () => void;
 }) {
+    const { t } = useI18n();
+    
     const actions: QuickAction[] = [
         {
             icon: <Plus className="h-5 w-5" />,
-            label: 'New User',
-            description: 'Create a new user account',
+            label: t('New User'),
+            description: t('Create a new user account'),
             href: '/admin/users/create',
             color: 'from-blue-500 to-cyan-500',
         },
         {
             icon: <FileText className="h-5 w-5" />,
-            label: 'New Report',
-            description: 'Generate a new report',
+            label: t('New Report'),
+            description: t('Generate a new report'),
             href: '/reports/create',
             color: 'from-purple-500 to-pink-500',
         },
         {
             icon: <Users className="h-5 w-5" />,
-            label: 'Manage Users',
-            description: 'View and edit users',
+            label: t('Manage Users'),
+            description: t('View and edit users'),
             href: '/admin/users',
             color: 'from-green-500 to-emerald-500',
         },
         {
             icon: <BarChart3 className="h-5 w-5" />,
-            label: 'Analytics',
-            description: 'View detailed analytics',
+            label: t('Analytics'),
+            description: t('View detailed analytics'),
             href: '/analytics',
             color: 'from-orange-500 to-red-500',
         },
         {
             icon: <Mail className="h-5 w-5" />,
-            label: 'Send Email',
-            description: 'Send bulk emails',
+            label: t('Send Email'),
+            description: t('Send bulk emails'),
             href: '/emails/compose',
             color: 'from-indigo-500 to-blue-500',
         },
         {
             icon: <Calendar className="h-5 w-5" />,
-            label: 'Schedule',
-            description: 'Manage your schedule',
+            label: t('Schedule'),
+            description: t('Manage your schedule'),
             href: '/calendar',
             color: 'from-pink-500 to-rose-500',
         },
         {
             icon: <Download className="h-5 w-5" />,
-            label: 'Export Data',
-            description: 'Download reports',
+            label: t('Export Data'),
+            description: t('Download reports'),
             href: '/exports',
             color: 'from-teal-500 to-cyan-500',
         },
         {
             icon: <Settings className="h-5 w-5" />,
-            label: 'Settings',
-            description: 'Configure system',
+            label: t('Settings'),
+            description: t('Configure system'),
             href: '/settings',
             color: 'from-gray-500 to-slate-500',
         },

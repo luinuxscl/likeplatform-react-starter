@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useI18n } from '@/lib/i18n/I18nProvider';
 import type { BaseWidgetProps } from '@/types';
 
 /**
@@ -20,6 +21,7 @@ export function BaseWidget({
     children,
     actions,
 }: BaseWidgetProps) {
+    const { t } = useI18n();
     return (
         <Card className="h-full flex flex-col">
             <CardHeader className="flex-none">
@@ -38,7 +40,7 @@ export function BaseWidget({
                                 size="icon"
                                 onClick={onRefresh}
                                 disabled={isLoading}
-                                title="Refresh widget"
+                                title={t('Refresh widget')}
                             >
                                 <RefreshCw
                                     className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}
@@ -82,6 +84,7 @@ function WidgetSkeleton() {
  * Error state
  */
 function WidgetError({ error, onRetry }: { error: string; onRetry?: () => void }) {
+    const { t } = useI18n();
     return (
         <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -89,7 +92,7 @@ function WidgetError({ error, onRetry }: { error: string; onRetry?: () => void }
                 <span>{error}</span>
                 {onRetry && (
                     <Button variant="outline" size="sm" onClick={onRetry}>
-                        Retry
+                        {t('Retry')}
                     </Button>
                 )}
             </AlertDescription>
@@ -101,10 +104,11 @@ function WidgetError({ error, onRetry }: { error: string; onRetry?: () => void }
  * Empty state
  */
 function WidgetEmpty() {
+    const { t } = useI18n();
     return (
         <div className="flex flex-col items-center justify-center h-full text-muted-foreground py-8">
             <Inbox className="h-12 w-12 mb-4 opacity-50" />
-            <p className="text-sm">No data available</p>
+            <p className="text-sm">{t('No data available')}</p>
         </div>
     );
 }

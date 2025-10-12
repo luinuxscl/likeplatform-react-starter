@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, DollarSign, Users, Activity } from 'lucide-react';
 import { BaseWidget } from './BaseWidget';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { useI18n } from '@/lib/i18n/I18nProvider';
 import type { Widget } from '@/types';
 
 interface StatsData {
@@ -35,6 +36,7 @@ export function StatsWidget({
     widget: Widget;
     onRefresh?: () => void;
 }) {
+    const { t } = useI18n();
     const [data, setData] = useState<StatsData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -90,31 +92,31 @@ export function StatsWidget({
                     {/* Revenue Card */}
                     <StatCard
                         icon={<DollarSign className="h-5 w-5" />}
-                        label="Total Revenue"
+                        label={t('Revenue')}
                         value={formatCurrency(data.revenue.current)}
                         change={data.revenue.change}
                         trend={data.revenue.trend}
-                        subtitle={`${formatCurrency(data.revenue.previous)} last month`}
+                        subtitle={`${formatCurrency(data.revenue.previous)} ${t('vs last period')}`}
                     />
 
                     {/* Users Card */}
                     <StatCard
                         icon={<Users className="h-5 w-5" />}
-                        label="Active Users"
+                        label={t('Total Users')}
                         value={formatNumber(data.users.current)}
                         change={data.users.change}
                         trend={data.users.trend}
-                        subtitle={`${formatNumber(data.users.previous)} last month`}
+                        subtitle={`${formatNumber(data.users.previous)} ${t('vs last period')}`}
                     />
 
                     {/* Activity Card */}
                     <StatCard
                         icon={<Activity className="h-5 w-5" />}
-                        label="Total Activity"
+                        label={t('Activity')}
                         value={formatNumber(data.activity.current)}
                         change={data.activity.change}
                         trend={data.activity.trend}
-                        subtitle={`${formatNumber(data.activity.previous)} last month`}
+                        subtitle={`${formatNumber(data.activity.previous)} ${t('vs last period')}`}
                     />
                 </div>
             )}

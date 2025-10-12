@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { BaseWidget } from './BaseWidget';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { Button } from '@/components/ui/button';
+import { useI18n } from '@/lib/i18n/I18nProvider';
 import type { Widget } from '@/types';
 
 interface ActivityData {
@@ -12,13 +14,8 @@ interface ActivityData {
 /**
  * Widget de actividad con gráfico de líneas suave
  */
-export function ActivityWidget({
-    widget,
-    onRefresh,
-}: {
-    widget: Widget;
-    onRefresh?: () => void;
-}) {
+export function ActivityWidget({ widget, onRefresh }: { widget: Widget; onRefresh?: () => void }) {
+    const { t } = useI18n();
     const [data, setData] = useState<ActivityData[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [period, setPeriod] = useState<'week' | 'month'>('week');
@@ -71,27 +68,21 @@ export function ActivityWidget({
             isEmpty={!data}
             onRefresh={handleRefresh}
             actions={
-                <div className="flex gap-1 rounded-md bg-muted p-1">
-                    <button
+                <div className="flex gap-2">
+                    <Button
+                        variant={period === 'week' ? 'default' : 'outline'}
+                        size="sm"
                         onClick={() => setPeriod('week')}
-                        className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
-                            period === 'week'
-                                ? 'bg-background text-foreground shadow-sm'
-                                : 'text-muted-foreground hover:text-foreground'
-                        }`}
                     >
-                        Week
-                    </button>
-                    <button
+                        {t('Week')}
+                    </Button>
+                    <Button
+                        variant={period === 'month' ? 'default' : 'outline'}
+                        size="sm"
                         onClick={() => setPeriod('month')}
-                        className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
-                            period === 'month'
-                                ? 'bg-background text-foreground shadow-sm'
-                                : 'text-muted-foreground hover:text-foreground'
-                        }`}
                     >
-                        Month
-                    </button>
+                        {t('Month')}
+                    </Button>
                 </div>
             }
         >
@@ -108,18 +99,9 @@ export function ActivityWidget({
                             </div>
                         </div>
                         <div className="text-right">
-                            <div
-                                className={`text-lg font-semibold ${
-                                    change >= 0
-                                        ? 'text-green-600 dark:text-green-400'
-                                        : 'text-red-600 dark:text-red-400'
-                                }`}
-                            >
-                                {change >= 0 ? '+' : ''}
-                                {change.toFixed(1)}%
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                                vs last {period}
+                            <div className="text-center">
+                                <div className="text-2xl font-bold">{change > 0 ? '+' : ''}{change.toFixed(1)}%</div>
+                                <div className="text-xs text-muted-foreground">{t('Change')}</div>
                             </div>
                         </div>
                     </div>
@@ -213,12 +195,12 @@ export function ActivityWidget({
                     {/* Legend */}
                     <div className="flex items-center justify-center gap-6 text-sm">
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-primary" />
-                            <span className="text-muted-foreground">Current {period}</span>
+                            <div className="h-3 w-3 rounded-full bg-primary" />
+                            <span className="text-sm text-muted-foreground">{t('Current')}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-muted-foreground/50" />
-                            <span className="text-muted-foreground">Previous {period}</span>
+                            <div className="h-3 w-3 rounded-full bg-muted-foreground/30" />
+                            <span className="text-sm text-muted-foreground">{t('Previous')}</span>
                         </div>
                     </div>
                 </div>
