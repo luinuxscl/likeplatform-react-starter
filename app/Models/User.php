@@ -48,4 +48,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Relación con widgets del usuario
+     */
+    public function widgets()
+    {
+        return $this->hasMany(UserWidget::class);
+    }
 }
