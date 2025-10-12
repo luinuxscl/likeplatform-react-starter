@@ -120,9 +120,9 @@ class CustomizationServiceProvider extends ServiceProvider
 
             return [
                 'menus' => [
-                    'platform' => $menuService->getMenuItemsForSection('platform'),
-                    'admin' => $menuService->getMenuItemsForSection('admin'),
-                    'operation' => $menuService->getMenuItemsForSection('operation'),
+                    'platform' => $menuService->getMenuItemsForSection('platform', false),
+                    'admin' => $menuService->getMenuItemsForSection('admin', false),
+                    'operation' => $menuService->getMenuItemsForSection('operation', false),
                 ],
             ];
         });
