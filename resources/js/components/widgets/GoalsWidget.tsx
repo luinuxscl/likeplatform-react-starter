@@ -33,21 +33,20 @@ export function GoalsWidget({
 
     const weekDays = [t('Mon'), t('Tue'), t('Wed'), t('Thu'), t('Fri'), t('Sat'), t('Sun')];
 
-    const loadData = () => {
+    const loadData = async () => {
         setIsLoading(true);
-        // Simular carga de datos (reemplazar con API real)
-        setTimeout(() => {
-            setData([
-                { day: 'Mon', value: 280, target: dailyGoal },
-                { day: 'Tue', value: 320, target: dailyGoal },
-                { day: 'Wed', value: 380, target: dailyGoal },
-                { day: 'Thu', value: 290, target: dailyGoal },
-                { day: 'Fri', value: 410, target: dailyGoal },
-                { day: 'Sat', value: 360, target: dailyGoal },
-                { day: 'Sun', value: 390, target: dailyGoal },
-            ]);
+        try {
+            const { widgetApi } = await import('@/services/widgetApi');
+            const response = await widgetApi.getGoals(dailyGoal);
+            
+            if (response.success) {
+                setData(response.data);
+            }
+        } catch (error) {
+            console.error('Error loading goals:', error);
+        } finally {
             setIsLoading(false);
-        }, 300);
+        }
     };
 
     const handleRefresh = () => {

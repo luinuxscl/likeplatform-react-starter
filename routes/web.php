@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\I18n\LanguageController;
 use App\Http\Controllers\WidgetController;
+use App\Http\Controllers\WidgetDataController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -27,6 +28,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{key}/refresh', [WidgetController::class, 'refresh'])->name('refresh');
         Route::put('/{key}/config', [WidgetController::class, 'updateConfig'])->name('config.update');
         Route::post('/cache/clear', [WidgetController::class, 'clearCache'])->name('cache.clear')->middleware('role:admin');
+        
+        // Widget data endpoints
+        Route::prefix('data')->name('data.')->group(function () {
+            Route::get('/stats', [WidgetDataController::class, 'stats'])->name('stats');
+            Route::get('/activity', [WidgetDataController::class, 'activity'])->name('activity');
+            Route::get('/goals', [WidgetDataController::class, 'goals'])->name('goals');
+            Route::get('/welcome', [WidgetDataController::class, 'welcome'])->name('welcome');
+            Route::post('/cache/clear', [WidgetDataController::class, 'clearCache'])->name('cache.clear')->middleware('role:admin');
+        });
     });
 });
 

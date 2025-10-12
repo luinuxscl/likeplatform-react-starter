@@ -41,31 +41,24 @@ export function StatsWidget({
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Simular carga de datos (reemplazar con API real)
-        setTimeout(() => {
-            setData({
-                revenue: {
-                    current: 15231.89,
-                    previous: 10156.23,
-                    change: 50.1,
-                    trend: [45, 52, 48, 65, 58, 72, 68, 85, 78, 92, 88, 95],
-                },
-                users: {
-                    current: 2350,
-                    previous: 1987,
-                    change: 18.3,
-                    trend: [20, 25, 22, 30, 28, 35, 32, 40, 38, 45, 42, 48],
-                },
-                activity: {
-                    current: 8542,
-                    previous: 7234,
-                    change: 18.1,
-                    trend: [60, 65, 62, 70, 68, 75, 72, 80, 78, 85, 82, 88],
-                },
-            });
-            setIsLoading(false);
-        }, 500);
+        loadData();
     }, []);
+
+    const loadData = async () => {
+        setIsLoading(true);
+        try {
+            const { widgetApi } = await import('@/services/widgetApi');
+            const response = await widgetApi.getStats();
+            
+            if (response.success) {
+                setData(response.data);
+            }
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('en-US', {
@@ -79,13 +72,18 @@ export function StatsWidget({
         return new Intl.NumberFormat('en-US').format(value);
     };
 
+    const handleRefresh = () => {
+        loadData();
+        onRefresh?.();
+    };
+
     return (
         <BaseWidget
             title={widget.title}
             description={widget.description}
             isLoading={isLoading}
             isEmpty={!data}
-            onRefresh={onRefresh}
+            onRefresh={handleRefresh}
         >
             {data && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

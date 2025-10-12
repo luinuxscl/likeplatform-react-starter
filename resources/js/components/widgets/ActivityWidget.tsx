@@ -24,30 +24,20 @@ export function ActivityWidget({ widget, onRefresh }: { widget: Widget; onRefres
         loadData();
     }, [period]);
 
-    const loadData = () => {
+    const loadData = async () => {
         setIsLoading(true);
-        // Simular carga de datos (reemplazar con API real)
-        setTimeout(() => {
-            const weekData: ActivityData[] = [
-                { date: 'Mon', value: 420, comparison: 380 },
-                { date: 'Tue', value: 380, comparison: 420 },
-                { date: 'Wed', value: 520, comparison: 450 },
-                { date: 'Thu', value: 680, comparison: 520 },
-                { date: 'Fri', value: 580, comparison: 600 },
-                { date: 'Sat', value: 720, comparison: 680 },
-                { date: 'Sun', value: 850, comparison: 720 },
-            ];
-
-            const monthData: ActivityData[] = [
-                { date: 'Week 1', value: 2400, comparison: 2200 },
-                { date: 'Week 2', value: 2800, comparison: 2400 },
-                { date: 'Week 3', value: 3200, comparison: 2800 },
-                { date: 'Week 4', value: 3800, comparison: 3400 },
-            ];
-
-            setData(period === 'week' ? weekData : monthData);
+        try {
+            const { widgetApi } = await import('@/services/widgetApi');
+            const response = await widgetApi.getActivity(period);
+            
+            if (response.success) {
+                setData(response.data);
+            }
+        } catch (error) {
+            console.error('Error loading activity:', error);
+        } finally {
             setIsLoading(false);
-        }, 500);
+        }
     };
 
     const handleRefresh = () => {
