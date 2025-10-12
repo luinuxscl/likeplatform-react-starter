@@ -10,6 +10,11 @@
 /storage/*.key
 /storage/pail
 /vendor
+
+# Packages - Repositorios independientes
+/packages/*
+!/packages/.gitkeep
+!/packages/ejemplo/
 .env
 .env.backup
 .env.production

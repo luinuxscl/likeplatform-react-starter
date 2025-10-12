@@ -1,6 +1,6 @@
 # Makefile de atajos para desarrollo
 
-.PHONY: help dev build test fresh install clear packages-list packages-clear packages-verify theme-compile theme-clear
+.PHONY: help dev build test fresh install clear setup-packages packages-list packages-clear packages-verify theme-compile theme-clear
 
 help:
 	@echo "Targets disponibles:"
@@ -10,6 +10,7 @@ help:
 	@echo "  install          - Instalación estándar (migrate + seed + optimize:clear)"
 	@echo "  fresh            - Instalación de desarrollo (migrate:fresh --seed + optimize:clear)"
 	@echo "  clear            - Limpia cachés de Laravel"
+	@echo "  setup-packages   - Clona packages independientes desde sus repos"
 	@echo "  packages-list    - Lista packages de personalización descubiertos"
 	@echo "  packages-clear   - Limpia caché del sistema de packages"
 	@echo "  packages-verify  - Verifica instalación del sistema de packages"
@@ -33,6 +34,9 @@ fresh:
 
 clear:
 	php artisan optimize:clear
+
+setup-packages:
+	@bash scripts/setup-packages.sh
 
 packages-list:
 	php artisan customization:list-packages

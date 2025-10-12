@@ -45,21 +45,45 @@ Starter kit moderno con Laravel 12 + React 19 (Inertia v2), Tailwind 4 y shadcn/
 
 ## Instalación rápida
 
-1) Dependencias
+### 1) Clonar el repositorio
+
+```bash
+git clone <repo-url>
+cd likeplatform-react-starter
+```
+
+### 2) Setup de packages independientes
+
+**IMPORTANTE**: Los packages en `/packages` son repositorios Git independientes.
+
+```bash
+# Opción A: Script automático (recomendado)
+make setup-packages
+
+# Opción B: Manual
+cd packages
+git clone <fcv-repo-url> fcv
+# Clonar otros packages según necesites
+cd ..
+```
+
+> **Nota**: Edita `scripts/setup-packages.sh` con las URLs reales de tus packages.
+
+### 3) Dependencias
 
 ```bash
 composer install
 npm ci
 ```
 
-2) Entorno
+### 4) Entorno
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-3) Base de datos y assets
+### 5) Base de datos y assets
 
 ```bash
 # Desarrollo (recrea DB, ejecuta seeders base + datos de ejemplo)
@@ -71,11 +95,27 @@ npm run dev   # desarrollo
 npm run build # producción
 ```
 
-4) Tests
+### 6) Tests
 
 ```bash
 vendor/bin/pest
 ```
+
+## Packages Independientes
+
+Este starter kit soporta packages como **repositorios Git independientes** en `/packages`:
+
+- ✅ Cada package tiene su propio repo y versionado
+- ✅ Se instalan vía Composer con `path` repository
+- ✅ Desarrollo local con symlinks automáticos
+- ✅ El starter kit permanece limpio (packages en `.gitignore`)
+
+### Packages disponibles
+
+- **`packages/ejemplo/mi-modulo`** - Package de ejemplo (incluido en el repo)
+- **`packages/fcv`** - FCV Access Control (repo independiente)
+
+Ver [documentación de packages](docs/guias/packages-rapida.md) para crear tus propios packages.
 
 ## Estructura relevante
 
@@ -87,6 +127,9 @@ vendor/bin/pest
   - `resources/js/pages/admin/dashboard/index.tsx` · dashboard estilo shadcn.
   - `resources/js/components/ui/{card.tsx,badge.tsx}` · componentes base extendidos (CardAction/Badge).
   - `resources/js/components/app-sidebar.tsx` · sidebar con secciones y iconografía.
+- Packages
+  - `packages/ejemplo/mi-modulo/` · package de ejemplo incluido
+  - `packages/fcv/` · package FCV (repo independiente, clonar manualmente)
 
 ## Convenciones de UI
 
