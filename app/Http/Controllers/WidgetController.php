@@ -113,7 +113,7 @@ class WidgetController extends Controller
             // Auditar cambio
             $this->auditLogger->log(
                 action: 'widget_layout_updated',
-                auditable: $user,
+                model: $user,
                 metadata: [
                     'widgets_count' => count($validated['widgets']),
                 ]
@@ -149,7 +149,7 @@ class WidgetController extends Controller
             // Auditar cambio
             $this->auditLogger->log(
                 action: 'widget_layout_reset',
-                auditable: $user
+                model: $user
             );
 
             return response()->json([
@@ -189,7 +189,7 @@ class WidgetController extends Controller
             // Auditar cambio
             $this->auditLogger->log(
                 action: 'widget_visibility_toggled',
-                auditable: $user,
+                model: $user,
                 metadata: [
                     'widget_key' => $key,
                     'visible' => $visible,
@@ -243,7 +243,7 @@ class WidgetController extends Controller
             // Auditar refresh
             $this->auditLogger->log(
                 action: 'widget_refreshed',
-                auditable: $user,
+                model: $user,
                 metadata: [
                     'widget_key' => $key,
                 ]
@@ -302,7 +302,7 @@ class WidgetController extends Controller
             // Auditar cambio
             $this->auditLogger->log(
                 action: 'widget_config_updated',
-                auditable: $user,
+                model: $user,
                 metadata: [
                     'widget_key' => $key,
                     'config' => $validated['config'],
@@ -345,7 +345,7 @@ class WidgetController extends Controller
             // Auditar acción
             $this->auditLogger->log(
                 action: 'widget_cache_cleared',
-                auditable: $user
+                model: $user
             );
 
             return response()->json([

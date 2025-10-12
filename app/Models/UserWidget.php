@@ -43,11 +43,14 @@ class UserWidget extends Model
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'config' => 'array',
-        'visible' => 'boolean',
-        'position' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'config' => 'array',
+            'visible' => 'boolean',
+            'position' => 'integer',
+        ];
+    }
 
     /**
      * Relación con el usuario
@@ -144,19 +147,25 @@ class UserWidget extends Model
      */
     public static function toggleVisibility(int $userId, string $widgetKey): bool
     {
-        $widget = static::firstOrCreate(
-            [
+        $widget = static::where('user_id', $userId)
+            ->where('widget_key', $widgetKey)
+            ->first();
+
+        if ($widget) {
+            // Si existe, toggle la visibilidad
+            $newVisibility = $widget->visible === true ? false : true;
+            $widget->update(['visible' => $newVisibility]);
+            return $newVisibility;
+        } else {
+            // Si no existe, crear con visible = false (toggle desde el estado por defecto true)
+            static::create([
                 'user_id' => $userId,
                 'widget_key' => $widgetKey,
-            ],
-            [
-                'visible' => true,
-            ]
-        );
-
-        $widget->visible = !$widget->visible;
-        $widget->save();
-
-        return $widget->visible;
+                'position' => 0,
+                'size' => 'col-span-12',
+                'visible' => false,
+            ]);
+            return false;
+        }
     }
 }

@@ -5,11 +5,12 @@ namespace App\Support;
 use App\Contracts\ConfigurablePackageInterface;
 use App\Contracts\CustomizationPackageInterface;
 use App\Contracts\ThemeablePackageInterface;
+use App\Contracts\WidgetablePackageInterface;
 
 /**
  * Clase base abstracta para facilitar la creación de packages de personalización
  */
-abstract class CustomizationPackage implements ConfigurablePackageInterface, CustomizationPackageInterface, ThemeablePackageInterface
+abstract class CustomizationPackage implements ConfigurablePackageInterface, CustomizationPackageInterface, ThemeablePackageInterface, WidgetablePackageInterface
 {
     /**
      * Path base del package
@@ -205,5 +206,47 @@ abstract class CustomizationPackage implements ConfigurablePackageInterface, Cus
         $settingsPath = $this->basePath.'/config/settings.php';
 
         return file_exists($settingsPath);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWidgets(): array
+    {
+        $widgetsPath = $this->basePath.'/config/widgets.php';
+
+        if (file_exists($widgetsPath)) {
+            $config = require $widgetsPath;
+
+            return $config['widgets'] ?? [];
+        }
+
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasWidgets(): bool
+    {
+        $widgetsPath = $this->basePath.'/config/widgets.php';
+
+        return file_exists($widgetsPath);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function onWidgetRefresh(string $widgetKey, array $data): void
+    {
+        // Hook vacío por defecto
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function onWidgetConfigUpdated(string $widgetKey, array $config): void
+    {
+        // Hook vacío por defecto
     }
 }
