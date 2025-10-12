@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\AuditLog;
-use App\Models\UserSession;
 use App\Models\PersonalAccessToken;
+use App\Models\User;
+use App\Models\UserSession;
 use App\Services\ApiKeys\ApiKeyManager;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -64,7 +64,7 @@ class DevSampleDataSeeder extends Seeder
         // (sin tocar al admin principal ya creado por AdminUserSeeder)
         $adminCandidates = $created->random(min(5, $created->count()));
         foreach ($adminCandidates as $u) {
-            if (!$u->hasRole('admin')) {
+            if (! $u->hasRole('admin')) {
                 $u->assignRole('admin');
             }
         }

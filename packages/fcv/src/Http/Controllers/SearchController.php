@@ -24,7 +24,7 @@ class SearchController extends Controller
             ->when($q !== '', function ($qb) use ($q, $normRut) {
                 $qb->where(function ($w) use ($q, $normRut) {
                     $w->where('name', 'like', "%{$q}%")
-                      ->orWhere('rut', 'like', "%{$normRut}%");
+                        ->orWhere('rut', 'like', "%{$normRut}%");
                 });
             })
             ->limit(10);

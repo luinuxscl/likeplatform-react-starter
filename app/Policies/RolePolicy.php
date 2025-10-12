@@ -32,6 +32,7 @@ class RolePolicy
         if ($role->name === 'admin') {
             return false; // no eliminar rol admin
         }
+
         return $auth->hasRole('admin') || $auth->can('roles.delete');
     }
 }

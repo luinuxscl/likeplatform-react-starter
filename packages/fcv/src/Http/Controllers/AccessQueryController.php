@@ -6,7 +6,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Like\Fcv\Models\AccessLog;
-use Like\Fcv\Models\Person;
 
 class AccessQueryController extends Controller
 {
@@ -21,6 +20,7 @@ class AccessQueryController extends Controller
             ->get()
             ->map(function (AccessLog $log) {
                 $person = $log->person()->select(['id', 'name', 'rut'])->first();
+
                 return [
                     'id' => $log->id,
                     'occurred_at' => $log->occurred_at?->toIso8601String(),

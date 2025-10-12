@@ -11,7 +11,7 @@ use Like\Fcv\Database\Factories\PersonFactory;
 
 class Person extends Model
 {
-    use HasFactory, HasAuditLogs;
+    use HasAuditLogs, HasFactory;
 
     protected $table = 'fcv_persons';
 

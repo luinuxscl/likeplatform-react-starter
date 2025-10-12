@@ -7,8 +7,6 @@ if (! function_exists('package_setting')) {
      * Obtiene un setting de un package
      *
      * @param  string  $key  Format: 'package.key' or just 'key' if package is provided
-     * @param  mixed  $default
-     * @param  string|null  $package
      */
     function package_setting(string $key, mixed $default = null, ?string $package = null): mixed
     {
@@ -30,8 +28,6 @@ if (! function_exists('package_setting')) {
 if (! function_exists('settings')) {
     /**
      * Obtiene todos los settings de un package
-     *
-     * @param  string  $package
      */
     function settings(string $package): array
     {

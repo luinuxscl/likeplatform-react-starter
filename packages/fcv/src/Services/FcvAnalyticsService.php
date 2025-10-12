@@ -7,7 +7,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Like\Fcv\Models\AccessLog;
-use Like\Fcv\Models\Person;
 
 /**
  * Servicio de analytics específico para FCV
@@ -15,9 +14,7 @@ use Like\Fcv\Models\Person;
  */
 class FcvAnalyticsService
 {
-    public function __construct(protected AnalyticsService $analyticsService)
-    {
-    }
+    public function __construct(protected AnalyticsService $analyticsService) {}
 
     /**
      * Obtiene estadísticas generales de verificaciones
@@ -159,9 +156,9 @@ class FcvAnalyticsService
     public function getAccessDistributionByHour(Carbon $from, Carbon $to): array
     {
         $driver = DB::connection()->getDriverName();
-        
+
         // Usar sintaxis específica según el driver
-        $hourExpression = match($driver) {
+        $hourExpression = match ($driver) {
             'sqlite' => "CAST(strftime('%H', occurred_at) AS INTEGER)",
             'mysql', 'mariadb' => 'HOUR(occurred_at)',
             'pgsql' => 'EXTRACT(HOUR FROM occurred_at)',
@@ -195,11 +192,11 @@ class FcvAnalyticsService
     public function getAccessDistributionByWeekday(Carbon $from, Carbon $to): array
     {
         $driver = DB::connection()->getDriverName();
-        
+
         // Usar sintaxis específica según el driver
         // SQLite: strftime('%w') retorna 0=Domingo, 1=Lunes, etc.
         // MySQL: DAYOFWEEK() retorna 1=Domingo, 2=Lunes, etc.
-        $dayExpression = match($driver) {
+        $dayExpression = match ($driver) {
             'sqlite' => "CAST(strftime('%w', occurred_at) AS INTEGER)",
             'mysql', 'mariadb' => 'DAYOFWEEK(occurred_at) - 1',
             'pgsql' => 'EXTRACT(DOW FROM occurred_at)',

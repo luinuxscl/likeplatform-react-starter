@@ -14,8 +14,7 @@ class VerificationController extends Controller
     public function __construct(
         protected AccessRuleService $service,
         protected AuditLogger $auditLogger
-    ) {
-    }
+    ) {}
 
     public function verify(Request $request): JsonResponse
     {
@@ -26,8 +25,8 @@ class VerificationController extends Controller
         $decision = $this->service->check($data['rut']);
 
         // Registrar verificación en sistema de auditoría
-        $person = isset($decision['person']['id']) 
-            ? Person::find($decision['person']['id']) 
+        $person = isset($decision['person']['id'])
+            ? Person::find($decision['person']['id'])
             : null;
 
         $this->auditLogger->log(

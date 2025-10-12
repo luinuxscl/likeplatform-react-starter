@@ -86,6 +86,7 @@ class PackageDiscoveryService
             $package = $this->loadPackage($directory);
             if ($package !== null) {
                 $packages[$package->getName()] = $package;
+
                 continue;
             }
 

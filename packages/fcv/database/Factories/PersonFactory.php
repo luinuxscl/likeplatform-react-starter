@@ -24,7 +24,7 @@ class PersonFactory extends Factory
         $name = sprintf('%s %s %s %s', $first, $second, $last1, $last2);
 
         return [
-            'rut' => strtolower($rutNumber . $dv),
+            'rut' => strtolower($rutNumber.$dv),
             'name' => $name,
             'photo_path' => null,
             'contact_info' => [
@@ -59,6 +59,7 @@ class PersonFactory extends Factory
         $normalized = collect($parts)
             ->map(function ($part) {
                 $slug = strtolower(str_replace(['ñ', 'Ñ'], 'n', $part));
+
                 return preg_replace('/[^a-z]/', '', $slug ?? '');
             })
             ->filter()

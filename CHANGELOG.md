@@ -4,6 +4,15 @@ Todas las novedades y cambios relevantes del proyecto.
 
 ## [Unreleased]
 
+### Limpieza y Optimización (2025-10-12)
+- 🧹 Eliminación de archivos temporales de debug y documentos de implementación
+- 🐛 Corrección de tests fallidos en `PackageDiscoveryTest` y `VerifyTest`
+- ✨ Mejora en seeder FCV: vinculación de alumno Cruz de los Andes a curso
+- 🎨 Formateo completo del código con Laravel Pint (110 archivos)
+- 🗑️ Eliminación de directorio duplicado `packages/fcv/database/seeders/`
+- ✅ Suite de tests completa: **110 tests pasando con 540 assertions**
+- ⚡ Optimización de cachés (config, routes)
+
 ### Configuración de Temas Durante Instalación de Packages
 - ✅ **Trait ConfiguresTheme** para ServiceProviders y Commands
 - ✅ Método `setDefaultTheme()` para cambiar tema por defecto

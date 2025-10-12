@@ -1,9 +1,9 @@
 <?php
 
+use App\Models\User;
 use Database\Seeders\FcvPackageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 uses(RefreshDatabase::class);
 
@@ -12,7 +12,8 @@ beforeEach(function () {
     $this->seed(FcvPackageSeeder::class);
 });
 
-function makeAuthUser(): User {
+function makeAuthUser(): User
+{
     return User::factory()->create([
         'email_verified_at' => now(),
         'password' => Hash::make('password'),

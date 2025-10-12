@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\UsersController;
-use App\Http\Controllers\Admin\RolesController;
-use App\Http\Controllers\Admin\PermissionsController;
-use App\Http\Controllers\Admin\OptionsController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\ApiKeysController;
 use App\Http\Controllers\Admin\AuditLogsController;
 use App\Http\Controllers\Admin\AuditSessionsController;
-use App\Http\Controllers\Admin\ApiKeysController;
+use App\Http\Controllers\Admin\OptionsController;
+use App\Http\Controllers\Admin\PermissionsController;
+use App\Http\Controllers\Admin\RolesController;
+use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 

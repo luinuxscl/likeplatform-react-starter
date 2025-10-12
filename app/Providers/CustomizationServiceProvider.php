@@ -35,7 +35,7 @@ class CustomizationServiceProvider extends ServiceProvider
             __DIR__.'/../../config/customization.php',
             'customization'
         );
-        
+
         $this->mergeConfigFrom(
             __DIR__.'/../../config/themes.php',
             'themes'
@@ -51,7 +51,7 @@ class CustomizationServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../config/customization.php' => config_path('customization.php'),
         ], 'customization-config');
-        
+
         $this->publishes([
             __DIR__.'/../../config/themes.php' => config_path('themes.php'),
         ], 'themes-config');
@@ -61,7 +61,7 @@ class CustomizationServiceProvider extends ServiceProvider
 
         // Compartir menús con Inertia
         $this->shareMenusWithInertia();
-        
+
         // Compartir themes con Inertia
         $this->shareThemesWithInertia();
     }

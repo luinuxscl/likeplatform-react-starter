@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\I18n\LanguageController;
 use App\Http\Controllers\ChangelogController;
+use App\Http\Controllers\I18n\LanguageController;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {

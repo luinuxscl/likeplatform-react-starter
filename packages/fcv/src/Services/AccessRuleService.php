@@ -41,7 +41,7 @@ class AccessRuleService
             return [
                 'allowed' => true,
                 'status' => 'permitido',
-                'reason' => 'Excepción activa: ' . $activeException->getReasonLabel(),
+                'reason' => 'Excepción activa: '.$activeException->getReasonLabel(),
                 'person' => $person->only(['id', 'rut', 'name']),
                 'exception' => [
                     'id' => $activeException->id,
@@ -151,6 +151,7 @@ class AccessRuleService
     {
         $rut = preg_replace('/[^0-9kK]/', '', $rut) ?? $rut;
         $rut = strtolower($rut);
+
         return $rut;
     }
 

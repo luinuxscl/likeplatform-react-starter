@@ -11,9 +11,7 @@ use Like\Fcv\Models\Person;
 
 class AccessController extends Controller
 {
-    public function __construct(protected AuditLogger $auditLogger)
-    {
-    }
+    public function __construct(protected AuditLogger $auditLogger) {}
 
     public function store(Request $request): JsonResponse
     {
@@ -46,8 +44,8 @@ class AccessController extends Controller
         ]);
 
         // Registrar en sistema de auditoría global
-        $action = $data['direction'] === 'entrada' 
-            ? 'fcv.access.entry' 
+        $action = $data['direction'] === 'entrada'
+            ? 'fcv.access.entry'
             : 'fcv.access.exit';
 
         $this->auditLogger->log(

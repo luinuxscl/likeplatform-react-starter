@@ -4,8 +4,6 @@ namespace Like\Fcv\Console\Commands;
 
 use App\Traits\ConfiguresTheme;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Process;
 use Like\Fcv\Database\Seeders\FcvBaseSeeder;
 use Like\Fcv\Database\Seeders\FcvDemoSeeder;
@@ -74,6 +72,7 @@ class InstallCommand extends Command
             $this->components?->task("Configurando tema: {$theme}", function () use ($theme) {
                 $this->setDefaultTheme($theme, true);
             });
+
             return;
         }
 

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreRoleRequest;
+use App\Http\Requests\Admin\UpdateRoleRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Http\Requests\Admin\StoreRoleRequest;
-use App\Http\Requests\Admin\UpdateRoleRequest;
+use Spatie\Permission\Models\Role;
 
 class RolesController extends Controller
 {
@@ -19,7 +19,7 @@ class RolesController extends Controller
         $perPage = (int) $request->integer('perPage', 10);
 
         $roles = Role::query()
-            ->when($search !== '', fn($q) => $q->where('name', 'like', "%{$search}%"))
+            ->when($search !== '', fn ($q) => $q->where('name', 'like', "%{$search}%"))
             ->orderBy('name')
             ->paginate($perPage)
             ->withQueryString()
@@ -43,6 +43,7 @@ class RolesController extends Controller
     public function create(): Response
     {
         $permissions = Permission::orderBy('name')->pluck('name');
+
         return Inertia::render('admin/roles/create', [
             'permissions' => $permissions,
         ]);
@@ -53,12 +54,14 @@ class RolesController extends Controller
         $data = $request->validated();
         $role = Role::create(['name' => $data['name'], 'guard_name' => 'web']);
         $role->syncPermissions($data['permissions'] ?? []);
+
         return redirect()->route('admin.roles.index')->with('success', __('Rol creado correctamente'));
     }
 
     public function edit(Role $role): Response
     {
         $permissions = Permission::orderBy('name')->pluck('name');
+
         return Inertia::render('admin/roles/edit', [
             'role' => [
                 'id' => $role->id,
@@ -75,6 +78,7 @@ class RolesController extends Controller
         $role->name = $data['name'];
         $role->save();
         $role->syncPermissions($data['permissions'] ?? []);
+
         return redirect()->route('admin.roles.index')->with('success', __('Rol actualizado correctamente'));
     }
 
@@ -85,6 +89,7 @@ class RolesController extends Controller
             return back()->with('error', __('No puedes eliminar el rol administrador.'));
         }
         $role->delete();
+
         return redirect()->route('admin.roles.index')->with('success', __('Rol eliminado correctamente'));
     }
 }

@@ -69,7 +69,7 @@ class AnalyticsService
     public function getTrends(string $actionPrefix, Carbon $from, Carbon $to, string $groupBy = 'day'): Collection
     {
         $driver = DB::connection()->getDriverName();
-        
+
         // Formato de fecha según el driver
         $periodExpression = match ($driver) {
             'sqlite' => match ($groupBy) {
@@ -294,8 +294,8 @@ class AnalyticsService
             ->count();
 
         $difference = $period1Count - $period2Count;
-        $percentageChange = $period2Count > 0 
-            ? (($difference / $period2Count) * 100) 
+        $percentageChange = $period2Count > 0
+            ? (($difference / $period2Count) * 100)
             : 0;
 
         return [

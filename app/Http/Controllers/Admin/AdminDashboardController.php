@@ -16,7 +16,7 @@ class AdminDashboardController extends Controller
     {
         $data = Cache::remember('admin:dashboard:kpis', now()->addSeconds(90), function () {
             $totalUsers = User::count();
-            $recentUsers = User::query()->orderByDesc('created_at')->limit(5)->get(['id','name','email','created_at','email_verified_at']);
+            $recentUsers = User::query()->orderByDesc('created_at')->limit(5)->get(['id', 'name', 'email', 'created_at', 'email_verified_at']);
             $newUsers7d = User::where('created_at', '>=', now()->subDays(7))->count();
             $verifiedUsers = User::whereNotNull('email_verified_at')->count();
             $rolesCount = Role::count();

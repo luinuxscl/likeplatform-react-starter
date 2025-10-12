@@ -143,7 +143,7 @@ class AccessExceptionController extends Controller
      */
     public function edit(AccessException $exception)
     {
-        if (!$exception->isPending()) {
+        if (! $exception->isPending()) {
             return redirect()->route('fcv.access-exceptions.index')
                 ->with('error', 'Solo se pueden editar excepciones pendientes');
         }
@@ -170,12 +170,13 @@ class AccessExceptionController extends Controller
      */
     public function update(Request $request, AccessException $exception)
     {
-        if (!$exception->isPending()) {
+        if (! $exception->isPending()) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'message' => 'Solo se pueden editar excepciones pendientes',
                 ], 422);
             }
+
             return redirect()->route('fcv.access-exceptions.index')
                 ->with('error', 'Solo se pueden editar excepciones pendientes');
         }
@@ -214,12 +215,13 @@ class AccessExceptionController extends Controller
      */
     public function destroy(AccessException $exception)
     {
-        if (!$exception->isPending()) {
+        if (! $exception->isPending()) {
             if (request()->wantsJson()) {
                 return response()->json([
                     'message' => 'Solo se pueden eliminar excepciones pendientes',
                 ], 422);
             }
+
             return redirect()->route('fcv.access-exceptions.index')
                 ->with('error', 'Solo se pueden eliminar excepciones pendientes');
         }
@@ -241,12 +243,13 @@ class AccessExceptionController extends Controller
      */
     public function approve(Request $request, AccessException $exception)
     {
-        if (!$exception->isPending()) {
+        if (! $exception->isPending()) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'message' => 'Solo se pueden aprobar excepciones pendientes',
                 ], 422);
             }
+
             return redirect()->route('fcv.access-exceptions.index')
                 ->with('error', 'Solo se pueden aprobar excepciones pendientes');
         }
@@ -270,12 +273,13 @@ class AccessExceptionController extends Controller
      */
     public function reject(Request $request, AccessException $exception)
     {
-        if (!$exception->isPending()) {
+        if (! $exception->isPending()) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'message' => 'Solo se pueden rechazar excepciones pendientes',
                 ], 422);
             }
+
             return redirect()->route('fcv.access-exceptions.index')
                 ->with('error', 'Solo se pueden rechazar excepciones pendientes');
         }

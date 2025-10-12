@@ -34,7 +34,7 @@ class SettingsController extends Controller
     public function show(string $packageName)
     {
         $schema = $this->settingsService->getPackageSchema($packageName);
-        
+
         if (! $schema) {
             return response()->json([
                 'message' => 'Package not found or not configurable',

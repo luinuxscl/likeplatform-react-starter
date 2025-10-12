@@ -2,8 +2,8 @@
 
 namespace Like\Fcv\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use Like\Fcv\Console\Commands\InstallCommand;
 
@@ -24,16 +24,16 @@ class FcvServiceProvider extends ServiceProvider
     {
         // Cargar rutas
         $this->loadRoutesFrom(__DIR__.'/../../routes/fcv.php');
-        
+
         // Cargar migraciones
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
-        
+
         // Cargar traducciones
         $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'fcv');
-        
+
         // Cargar vistas Blade (si existen)
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'fcv');
-        
+
         // Publicar configuración
         $this->publishes([
             __DIR__.'/../../config/fcv.php' => config_path('fcv.php'),

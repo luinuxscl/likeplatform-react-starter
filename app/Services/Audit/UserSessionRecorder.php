@@ -63,7 +63,7 @@ class UserSessionRecorder
         ];
 
         foreach ($platforms as $name => $pattern) {
-            if (preg_match('/'. $pattern .'/i', $ua)) {
+            if (preg_match('/'.$pattern.'/i', $ua)) {
                 $platform = $name;
                 break;
             }
@@ -84,7 +84,7 @@ class UserSessionRecorder
         ];
 
         foreach ($browsers as $name => $pattern) {
-            if (preg_match('/'. $pattern .'/i', $ua)) {
+            if (preg_match('/'.$pattern.'/i', $ua)) {
                 $browser = $name;
                 break;
             }

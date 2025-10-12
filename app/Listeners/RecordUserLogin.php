@@ -7,9 +7,7 @@ use Illuminate\Auth\Events\Login;
 
 class RecordUserLogin
 {
-    public function __construct(protected UserSessionRecorder $recorder)
-    {
-    }
+    public function __construct(protected UserSessionRecorder $recorder) {}
 
     public function handle(Login $event): void
     {

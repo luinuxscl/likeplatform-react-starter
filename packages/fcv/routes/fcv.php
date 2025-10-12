@@ -1,17 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Like\Fcv\Http\Controllers\VerificationController;
 use Like\Fcv\Http\Controllers\AccessController;
-use Like\Fcv\Http\Controllers\Guard\DashboardController;
-use Like\Fcv\Http\Controllers\SearchController;
+use Like\Fcv\Http\Controllers\AccessExceptionController;
 use Like\Fcv\Http\Controllers\AccessQueryController;
+use Like\Fcv\Http\Controllers\Api\CourseApiController;
 use Like\Fcv\Http\Controllers\CourseController;
 use Like\Fcv\Http\Controllers\CourseStudentController;
-use Like\Fcv\Http\Controllers\OrganizationController;
-use Like\Fcv\Http\Controllers\Api\CourseApiController;
 use Like\Fcv\Http\Controllers\FcvAnalyticsController;
-use Like\Fcv\Http\Controllers\AccessExceptionController;
+use Like\Fcv\Http\Controllers\Guard\DashboardController;
+use Like\Fcv\Http\Controllers\OrganizationController;
+use Like\Fcv\Http\Controllers\SearchController;
+use Like\Fcv\Http\Controllers\VerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,22 +31,22 @@ Route::middleware(['web', 'auth'])
     ->group(function () {
         // Dashboard de la aplicación
         Route::get('/guard', [DashboardController::class, 'index'])->name('guard');
-        
+
         // Analytics Dashboard
         Route::get('/analytics', function () {
             return inertia('FCV/Analytics/Dashboard');
         })->name('analytics.dashboard');
-        
+
         // Rutas de verificación y acceso
         Route::post('/verify', [VerificationController::class, 'verify'])->name('verify');
         Route::post('/access', [AccessController::class, 'store'])->name('access.store');
-        
+
         // Búsquedas
         Route::get('/search', [SearchController::class, 'search'])->name('search');
-        
+
         // Accesos recientes
         Route::get('/access/recent', [AccessQueryController::class, 'recent'])->name('access.recent');
-        
+
         // Rutas de Cursos (API)
         Route::prefix('courses')->name('courses.')->group(function () {
             // Rutas web (Inertia)
@@ -55,20 +55,20 @@ Route::middleware(['web', 'auth'])
             Route::get('/{course}', [CourseController::class, 'show'])->name('show');
             Route::put('/{course}', [CourseController::class, 'update'])->name('update');
             Route::delete('/{course}', [CourseController::class, 'destroy'])->name('destroy');
-            
+
             // Rutas de API
             Route::prefix('api')->name('api.')->group(function () {
                 Route::get('/{course}/stats', [CourseApiController::class, 'stats'])->name('stats');
                 Route::put('/{course}/schedules', [CourseApiController::class, 'updateSchedules'])->name('schedules.update');
                 Route::put('/{course}/restore', [CourseApiController::class, 'restore'])->name('restore');
             });
-            
+
             // Estudiantes del curso
             Route::post('/{course}/students/import', [CourseStudentController::class, 'import'])->name('students.import');
             Route::post('/{course}/students/{person}', [CourseStudentController::class, 'attach'])->name('students.attach');
             Route::delete('/{course}/students/{person}', [CourseStudentController::class, 'detach'])->name('students.detach');
         });
-        
+
         // Organizaciones
         Route::prefix('organizations')->name('organizations.')->group(function () {
             Route::get('/', [OrganizationController::class, 'index'])->name('index');
@@ -77,7 +77,7 @@ Route::middleware(['web', 'auth'])
             Route::delete('/{organization}', [OrganizationController::class, 'destroy'])->name('destroy');
             Route::put('/{organization}/restore', [OrganizationController::class, 'restore'])->name('restore');
         });
-        
+
         // Analytics
         Route::prefix('analytics')->name('analytics.')->group(function () {
             Route::get('/stats', [FcvAnalyticsController::class, 'stats'])->name('stats');
@@ -93,7 +93,7 @@ Route::middleware(['web', 'auth'])
             Route::get('/monthly-report', [FcvAnalyticsController::class, 'monthlyReport'])->name('monthly-report');
             Route::get('/compare-periods', [FcvAnalyticsController::class, 'comparePeriods'])->name('compare-periods');
         });
-        
+
         // Excepciones de Acceso
         Route::prefix('access-exceptions')->name('access-exceptions.')->group(function () {
             Route::get('/', [AccessExceptionController::class, 'index'])->name('index');
@@ -107,14 +107,14 @@ Route::middleware(['web', 'auth'])
             Route::post('/{exception}/reject', [AccessExceptionController::class, 'reject'])->name('reject');
             Route::get('/person/{person}/active', [AccessExceptionController::class, 'activeForPerson'])->name('active-for-person');
         });
-        
+
         // Health check del paquete
         Route::get('/health', function () {
             return response()->json([
                 'ok' => true,
                 'package' => 'like/fcv',
                 'version' => config('fcv.version', '1.0.0'),
-                'status' => 'operational'
+                'status' => 'operational',
             ]);
         })->name('health');
     });

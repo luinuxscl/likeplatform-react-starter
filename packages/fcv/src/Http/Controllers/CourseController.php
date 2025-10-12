@@ -3,10 +3,6 @@
 namespace Like\Fcv\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -32,10 +28,9 @@ class CourseController extends Controller
     {
         $this->statsService = $statsService;
     }
+
     /**
      * Muestra la lista de cursos
-     *
-     * @return \Inertia\Response
      */
     public function index(): Response
     {
@@ -45,7 +40,7 @@ class CourseController extends Controller
             ->withTrashed()
             ->with([
                 'organization:id,name,acronym',
-                'schedules:id,scheduleable_id,scheduleable_type,day_of_week,start_time,end_time'
+                'schedules:id,scheduleable_id,scheduleable_type,day_of_week,start_time,end_time',
             ])
             ->withCount('students')
             ->orderByDesc('created_at')
@@ -84,7 +79,6 @@ class CourseController extends Controller
     /**
      * Almacena un nuevo curso en la base de datos
      *
-     * @param  \Like\Fcv\Http\Requests\CourseRequest  $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function store(CourseRequest $request)
@@ -100,7 +94,7 @@ class CourseController extends Controller
             $course = Course::query()->create($data);
 
             // Crear horarios si se proporcionan
-            if (!empty($schedules)) {
+            if (! empty($schedules)) {
                 $this->createCourseSchedules($course, $schedules);
             }
 
@@ -113,8 +107,8 @@ class CourseController extends Controller
             );
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error al crear curso: ' . $e->getMessage());
-            
+            \Log::error('Error al crear curso: '.$e->getMessage());
+
             return $this->errorResponse(
                 'Error al crear el curso. Por favor, inténtelo de nuevo.'
             );
@@ -133,7 +127,7 @@ class CourseController extends Controller
             $course->update($data);
             $course->schedules()->delete();
 
-            if (!empty($schedules)) {
+            if (! empty($schedules)) {
                 $this->createCourseSchedules($course, $schedules);
             }
 
@@ -146,8 +140,8 @@ class CourseController extends Controller
             );
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error al actualizar curso: ' . $e->getMessage());
-            
+            \Log::error('Error al actualizar curso: '.$e->getMessage());
+
             return $this->errorResponse(
                 'Error al actualizar el curso. Por favor, inténtelo de nuevo.'
             );
@@ -172,7 +166,8 @@ class CourseController extends Controller
 
             return $this->successResponse($message, $data, route('fcv.courses.index'));
         } catch (\Exception $e) {
-            \Log::error('Error al eliminar curso: ' . $e->getMessage());
+            \Log::error('Error al eliminar curso: '.$e->getMessage());
+
             return $this->errorResponse('Error al eliminar el curso. Por favor, inténtelo de nuevo.');
         }
     }
@@ -189,7 +184,8 @@ class CourseController extends Controller
                 route('fcv.courses.show', $course->id)
             );
         } catch (\Exception $e) {
-            \Log::error('Error al restaurar curso: ' . $e->getMessage());
+            \Log::error('Error al restaurar curso: '.$e->getMessage());
+
             return $this->errorResponse('Error al restaurar el curso. Por favor, inténtelo de nuevo.');
         }
     }
@@ -281,9 +277,11 @@ class CourseController extends Controller
     {
         try {
             $stats = $this->statsService->getStats($course);
+
             return $this->successResponse('Estadísticas obtenidas correctamente', $stats);
         } catch (\Exception $e) {
-            \Log::error('Error al obtener estadísticas: ' . $e->getMessage());
+            \Log::error('Error al obtener estadísticas: '.$e->getMessage());
+
             return $this->errorResponse('Error al obtener las estadísticas del curso.');
         }
     }
@@ -299,26 +297,27 @@ class CourseController extends Controller
 
         try {
             DB::beginTransaction();
-            
+
             $course->schedules()->delete();
-            
-            if (!empty($validated['schedules'])) {
+
+            if (! empty($validated['schedules'])) {
                 $this->createCourseSchedules($course, $validated['schedules']);
             }
-            
+
             DB::commit();
-            
+
             return $this->successResponse(
                 'Horarios actualizados correctamente',
                 ['course' => $this->formatCourseForDisplay($course)]
             );
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error al actualizar horarios: ' . $e->getMessage());
+            \Log::error('Error al actualizar horarios: '.$e->getMessage());
+
             return $this->errorResponse('Error al actualizar los horarios del curso.');
         }
     }
-    
+
     /**
      * Formatea un curso para su visualización
      */
@@ -359,7 +358,7 @@ class CourseController extends Controller
             'deleted_at' => $course->deleted_at?->toIso8601String(),
         ];
     }
-    
+
     /**
      * Crea los horarios para un curso
      */
@@ -373,7 +372,7 @@ class CourseController extends Controller
             ];
         }, $schedules));
     }
-    
+
     /**
      * Obtiene las opciones de tolerancia
      */
@@ -390,7 +389,7 @@ class CourseController extends Controller
             ['value' => '120', 'label' => '2 horas'],
         ];
     }
-    
+
     /**
      * Devuelve una respuesta de éxito estandarizada
      */
@@ -401,14 +400,14 @@ class CourseController extends Controller
             'message' => $message,
             'data' => $data,
         ];
-        
+
         if ($redirect) {
             return redirect($redirect)->with('flash.success', $message);
         }
-        
+
         return response()->json($response);
     }
-    
+
     /**
      * Devuelve una respuesta de error estandarizada
      */
@@ -418,11 +417,11 @@ class CourseController extends Controller
             'success' => false,
             'message' => $message,
         ];
-        
+
         if ($redirect) {
             return redirect($redirect)->with('flash.error', $message);
         }
-        
+
         return response()->json($response, $status);
     }
 }

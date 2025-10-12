@@ -55,11 +55,13 @@ class CourseStudentImportService
 
                 if (empty($rut) || empty($name)) {
                     $errors[] = ['row' => $rowNumber, 'message' => 'RUT o nombre vacío'];
+
                     continue;
                 }
 
                 if (! $this->isValidRut($rut)) {
                     $errors[] = ['row' => $rowNumber, 'message' => "RUT inválido: $rut"];
+
                     continue;
                 }
 

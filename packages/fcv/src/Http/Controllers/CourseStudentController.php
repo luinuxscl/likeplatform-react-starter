@@ -18,7 +18,7 @@ class CourseStudentController extends Controller
     public function import(CourseStudentImportRequest $request, Course $course): JsonResponse
     {
         $file = $request->file('file');
-        
+
         $result = $this->importService->import($course, $file);
 
         return response()->json([

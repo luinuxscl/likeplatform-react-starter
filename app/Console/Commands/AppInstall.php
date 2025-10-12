@@ -28,6 +28,7 @@ class AppInstall extends Command
         // Limpieza previa
         $this->components->task('Limpieza previa (optimize:clear)', function () {
             $this->call('optimize:clear');
+
             return true;
         });
 
@@ -46,6 +47,7 @@ class AppInstall extends Command
                         '--class' => \Database\Seeders\DevSampleDataSeeder::class,
                         '--force' => true,
                     ]);
+
                     return true;
                 });
             } else {
@@ -59,6 +61,7 @@ class AppInstall extends Command
                         '--class' => \Database\Seeders\DevSampleDataSeeder::class,
                         '--force' => true,
                     ]);
+
                     return true;
                 });
             }
@@ -68,6 +71,7 @@ class AppInstall extends Command
                 $this->call('migrate', [
                     '--force' => true,
                 ]);
+
                 return true;
             });
 
@@ -75,14 +79,16 @@ class AppInstall extends Command
                 $this->call('db:seed', [
                     '--force' => true,
                 ]);
+
                 return true;
             });
         }
 
         // Enlaces y tareas adicionales comunes
-        if (!app()->runningUnitTests()) {
+        if (! app()->runningUnitTests()) {
             $this->components->task('Creando enlace de almacenamiento (storage:link)', function () {
                 $this->call('storage:link');
+
                 return true;
             });
         } else {
@@ -91,10 +97,12 @@ class AppInstall extends Command
 
         $this->components->task('Limpieza final (optimize:clear)', function () {
             $this->call('optimize:clear');
+
             return true;
         });
 
         $this->components->info('Instalación finalizada correctamente.');
+
         return self::SUCCESS;
     }
 }

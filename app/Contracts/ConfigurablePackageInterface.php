@@ -45,7 +45,6 @@ interface ConfigurablePackageInterface
      * Valida un conjunto de settings según el schema
      *
      * @param  array<string, mixed>  $settings
-     * @return bool
      */
     public function validateSettings(array $settings): bool;
 

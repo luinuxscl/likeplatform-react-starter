@@ -11,9 +11,7 @@ use Illuminate\Support\Str;
 
 class ApiKeyManager
 {
-    public function __construct(protected AuditLogger $auditLogger)
-    {
-    }
+    public function __construct(protected AuditLogger $auditLogger) {}
 
     public function listForUser(User $user): Collection
     {

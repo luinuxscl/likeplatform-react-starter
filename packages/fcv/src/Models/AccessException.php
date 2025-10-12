@@ -13,7 +13,7 @@ use Like\Fcv\Database\Factories\AccessExceptionFactory;
 
 class AccessException extends Model
 {
-    use HasFactory, HasAuditLogs;
+    use HasAuditLogs, HasFactory;
 
     protected static function newFactory(): AccessExceptionFactory
     {
@@ -59,6 +59,7 @@ class AccessException extends Model
     public function scopeActive(Builder $query): Builder
     {
         $now = Carbon::now();
+
         return $query->where('status', 'approved')
             ->where('valid_from', '<=', $now)
             ->where('valid_until', '>=', $now);
@@ -94,6 +95,7 @@ class AccessException extends Model
     public function isActive(): bool
     {
         $now = Carbon::now();
+
         return $this->status === 'approved'
             && $this->valid_from <= $now
             && $this->valid_until >= $now;
@@ -123,6 +125,7 @@ class AccessException extends Model
     {
         $this->status = 'approved';
         $this->approved_by = $user->id;
+
         return $this->save();
     }
 
@@ -131,6 +134,7 @@ class AccessException extends Model
         $this->status = 'rejected';
         $this->approved_by = $user->id;
         $this->rejection_reason = $reason;
+
         return $this->save();
     }
 

@@ -9,9 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TrackUserActivity
 {
-    public function __construct(protected UserSessionRecorder $recorder)
-    {
-    }
+    public function __construct(protected UserSessionRecorder $recorder) {}
 
     public function handle(Request $request, Closure $next): Response
     {

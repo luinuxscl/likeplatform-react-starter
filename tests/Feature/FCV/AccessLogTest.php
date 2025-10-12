@@ -13,7 +13,8 @@ beforeEach(function () {
     $this->seed(FcvPackageSeeder::class);
 });
 
-function makeAuthUserFcv(): User {
+function makeAuthUserFcv(): User
+{
     return User::factory()->create([
         'email_verified_at' => now(),
         'password' => Hash::make('password'),

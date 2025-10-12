@@ -9,10 +9,7 @@ use App\Contracts\ThemeablePackageInterface;
 /**
  * Clase base abstracta para facilitar la creación de packages de personalización
  */
-abstract class CustomizationPackage implements 
-    CustomizationPackageInterface,
-    ThemeablePackageInterface,
-    ConfigurablePackageInterface
+abstract class CustomizationPackage implements ConfigurablePackageInterface, CustomizationPackageInterface, ThemeablePackageInterface
 {
     /**
      * Path base del package
@@ -124,7 +121,7 @@ abstract class CustomizationPackage implements
     public function getTheme(): array
     {
         $themePath = $this->basePath.'/config/theme.php';
-        
+
         if (file_exists($themePath)) {
             return require $themePath;
         }

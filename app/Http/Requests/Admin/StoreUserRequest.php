@@ -9,7 +9,10 @@ class StoreUserRequest extends FormRequest
     public function authorize(): bool
     {
         $user = $this->user();
-        if (! $user) return false;
+        if (! $user) {
+            return false;
+        }
+
         return $user->hasRole('admin') || $user->can('users.create');
     }
 

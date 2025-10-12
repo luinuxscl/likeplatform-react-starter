@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Option;
 use App\Services\Options;
 use Illuminate\Http\Request;
 use Inertia\Inertia;

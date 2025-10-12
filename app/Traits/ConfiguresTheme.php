@@ -13,17 +13,17 @@ trait ConfiguresTheme
     /**
      * Configura el tema por defecto de la aplicación
      *
-     * @param string $theme Nombre del tema (zinc, slate, rose, etc.)
-     * @param bool $updateEnv Si debe actualizar el archivo .env
-     * @return bool
+     * @param  string  $theme  Nombre del tema (zinc, slate, rose, etc.)
+     * @param  bool  $updateEnv  Si debe actualizar el archivo .env
      */
     protected function setDefaultTheme(string $theme, bool $updateEnv = true): bool
     {
         // Validar que el tema existe
         $availableThemes = array_keys(config('expansion.themes.available_themes', []));
-        
-        if (!in_array($theme, $availableThemes)) {
-            $this->logWarn("Theme '{$theme}' is not available. Available themes: " . implode(', ', $availableThemes));
+
+        if (! in_array($theme, $availableThemes)) {
+            $this->logWarn("Theme '{$theme}' is not available. Available themes: ".implode(', ', $availableThemes));
+
             return false;
         }
 
@@ -36,40 +36,36 @@ trait ConfiguresTheme
         }
 
         $this->logInfo("✓ Default theme set to: {$theme}");
-        
+
         return true;
     }
 
     /**
      * Registra un tema personalizado del package
      *
-     * @param string $key Clave del tema
-     * @param array $config Configuración del tema
-     * @return void
+     * @param  string  $key  Clave del tema
+     * @param  array  $config  Configuración del tema
      */
     protected function registerCustomTheme(string $key, array $config): void
     {
         $customThemes = config('expansion.themes.custom_themes', []);
         $customThemes[$key] = $config;
-        
+
         config(['expansion.themes.custom_themes' => $customThemes]);
-        
+
         $this->logInfo("✓ Custom theme registered: {$key}");
     }
 
     /**
      * Actualiza una variable en el archivo .env
-     *
-     * @param string $key
-     * @param string $value
-     * @return void
      */
     protected function updateEnvFile(string $key, string $value): void
     {
         $envPath = base_path('.env');
 
-        if (!File::exists($envPath)) {
+        if (! File::exists($envPath)) {
             $this->logWarn('.env file not found');
+
             return;
         }
 
@@ -94,19 +90,15 @@ trait ConfiguresTheme
 
     /**
      * Pregunta al usuario si desea cambiar el tema
-     *
-     * @param string $suggestedTheme
-     * @param string $packageName
-     * @return bool
      */
     protected function askToChangeTheme(string $suggestedTheme, string $packageName): bool
     {
-        if (!$this->hasCommand()) {
+        if (! $this->hasCommand()) {
             return false;
         }
 
         $currentTheme = config('expansion.themes.default_theme', 'zinc');
-        
+
         $message = "The {$packageName} package suggests using the '{$suggestedTheme}' theme.";
         $message .= "\nCurrent theme: {$currentTheme}";
         $message .= "\nDo you want to change the default theme?";
@@ -116,8 +108,6 @@ trait ConfiguresTheme
 
     /**
      * Verifica si estamos en contexto de comando
-     *
-     * @return bool
      */
     protected function hasCommand(): bool
     {
@@ -126,9 +116,6 @@ trait ConfiguresTheme
 
     /**
      * Muestra información (compatible con Command y ServiceProvider)
-     *
-     * @param string $message
-     * @return void
      */
     protected function logInfo(string $message): void
     {
@@ -139,9 +126,6 @@ trait ConfiguresTheme
 
     /**
      * Muestra advertencia (compatible con Command y ServiceProvider)
-     *
-     * @param string $message
-     * @return void
      */
     protected function logWarn(string $message): void
     {

@@ -199,5 +199,15 @@ class FcvBaseSeeder extends Seeder
         if ($foundationCourse) {
             $foundationCourse->students()->syncWithoutDetaching([$alumnoFcv->id]);
         }
+
+        // Vincular alumno Cruz de los Andes a un curso para pruebas
+        $cruzCourse = Course::query()
+            ->where('organization_id', $organizations['cruz_andes']->id ?? null)
+            ->orderBy('name')
+            ->first();
+
+        if ($cruzCourse) {
+            $cruzCourse->students()->syncWithoutDetaching([$alumnoCruz->id]);
+        }
     }
 }

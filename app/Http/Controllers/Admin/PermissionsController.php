@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StorePermissionRequest;
+use App\Http\Requests\Admin\UpdatePermissionRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Permission;
-use App\Http\Requests\Admin\StorePermissionRequest;
-use App\Http\Requests\Admin\UpdatePermissionRequest;
 
 class PermissionsController extends Controller
 {
@@ -18,7 +18,7 @@ class PermissionsController extends Controller
         $perPage = (int) $request->integer('perPage', 10);
 
         $permissions = Permission::query()
-            ->when($search !== '', fn($q) => $q->where('name', 'like', "%{$search}%"))
+            ->when($search !== '', fn ($q) => $q->where('name', 'like', "%{$search}%"))
             ->orderBy('name')
             ->paginate($perPage)
             ->withQueryString()
@@ -47,6 +47,7 @@ class PermissionsController extends Controller
     {
         $data = $request->validated();
         Permission::create(['name' => $data['name'], 'guard_name' => 'web']);
+
         return redirect()->route('admin.permissions.index')->with('success', __('Permiso creado correctamente'));
     }
 
@@ -65,12 +66,14 @@ class PermissionsController extends Controller
         $data = $request->validated();
         $permission->name = $data['name'];
         $permission->save();
+
         return redirect()->route('admin.permissions.index')->with('success', __('Permiso actualizado correctamente'));
     }
 
     public function destroy(Permission $permission)
     {
         $permission->delete();
+
         return redirect()->route('admin.permissions.index')->with('success', __('Permiso eliminado correctamente'));
     }
 }

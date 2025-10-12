@@ -13,7 +13,7 @@ use Like\Fcv\Database\Factories\CourseFactory;
 
 class Course extends Model
 {
-    use HasFactory, HasAuditLogs, SoftDeletes;
+    use HasAuditLogs, HasFactory, SoftDeletes;
 
     protected static function newFactory(): CourseFactory
     {

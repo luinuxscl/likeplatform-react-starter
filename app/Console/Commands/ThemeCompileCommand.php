@@ -56,7 +56,7 @@ class ThemeCompileCommand extends Command
         );
 
         $this->newLine();
-        $this->line("CSS generado: ".strlen($css).' bytes');
+        $this->line('CSS generado: '.strlen($css).' bytes');
 
         return self::SUCCESS;
     }

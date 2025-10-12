@@ -15,9 +15,7 @@ use Inertia\Response;
 
 class ApiKeysController extends Controller
 {
-    public function __construct(protected ApiKeyManager $manager)
-    {
-    }
+    public function __construct(protected ApiKeyManager $manager) {}
 
     public function index(Request $request): Response
     {

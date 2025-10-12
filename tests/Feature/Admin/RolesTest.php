@@ -11,12 +11,14 @@ beforeEach(function () {
     $this->seed(AdminRoleSeeder::class);
 });
 
-function makeAdmin(): User {
+function makeAdmin(): User
+{
     $user = User::factory()->create([
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
     ]);
     $user->assignRole('admin');
+
     return $user;
 }
 

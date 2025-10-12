@@ -10,16 +10,19 @@ beforeEach(function () {
     $this->seed(AdminRoleSeeder::class);
 });
 
-function makeAdminUser(): User {
+function makeAdminUser(): User
+{
     $user = User::factory()->create([
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
     ]);
     $user->assignRole('admin');
+
     return $user;
 }
 
-function makeRegularUser(): User {
+function makeRegularUser(): User
+{
     return User::factory()->create([
         'email_verified_at' => now(),
         'password' => Hash::make('password'),

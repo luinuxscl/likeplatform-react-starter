@@ -31,6 +31,7 @@ class UserPolicy
         if ($auth->id === $user->id) {
             return false; // no self-delete
         }
+
         return $auth->hasRole('admin') || $auth->can('users.delete');
     }
 }

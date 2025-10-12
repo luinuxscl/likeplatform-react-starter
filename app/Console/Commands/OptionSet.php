@@ -3,13 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Services\Options;
-use Illuminate\Console\Command;
 use Illuminate\Console\Attributes\AsCommand;
+use Illuminate\Console\Command;
 
 #[AsCommand(name: 'option:set', description: 'Establece el valor de una opción y actualiza la caché')]
 class OptionSet extends Command
 {
     protected $signature = 'option:set {key : Option key} {value : Value} {--type=} {--group=} {--description=}';
+
     protected $description = 'Establece el valor de una opción y actualiza la caché';
 
     public function handle(Options $options): int
@@ -27,12 +28,14 @@ class OptionSet extends Command
                 $value = $decoded;
             } else {
                 $this->error('El valor JSON es inválido.');
+
                 return self::INVALID;
             }
         }
 
         $options->set($key, $value, $type, $group, $description);
         $this->info("Opción '{$key}' actualizada.");
+
         return self::SUCCESS;
     }
 }

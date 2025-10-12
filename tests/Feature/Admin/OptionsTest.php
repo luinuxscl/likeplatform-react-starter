@@ -10,16 +10,19 @@ beforeEach(function () {
     $this->seed(AdminRoleSeeder::class);
 });
 
-function makeAdminWithOptionsPerms(): User {
+function makeAdminWithOptionsPerms(): User
+{
     $user = User::factory()->create([
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
     ]);
     $user->assignRole('admin'); // admin ya tiene todos los permisos por seeder
+
     return $user;
 }
 
-function makeRegularNoAdmin(): User {
+function makeRegularNoAdmin(): User
+{
     return User::factory()->create([
         'email_verified_at' => now(),
         'password' => Hash::make('password'),

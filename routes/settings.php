@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\Expansion\ThemeController;
+use App\Http\Controllers\Settings\ApiKeysController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
-use App\Http\Controllers\Settings\ApiKeysController;
-use App\Http\Controllers\Expansion\ThemeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 

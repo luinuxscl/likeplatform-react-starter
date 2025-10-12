@@ -10,9 +10,7 @@ use Like\Fcv\Services\FcvAnalyticsService;
 
 class FcvAnalyticsController extends Controller
 {
-    public function __construct(protected FcvAnalyticsService $analyticsService)
-    {
-    }
+    public function __construct(protected FcvAnalyticsService $analyticsService) {}
 
     /**
      * Obtiene estadísticas generales

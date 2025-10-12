@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Membership extends Model
 {
-    use HasFactory, HasAuditLogs;
+    use HasAuditLogs, HasFactory;
 
     protected $table = 'fcv_memberships';
 

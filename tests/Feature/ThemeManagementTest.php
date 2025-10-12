@@ -53,15 +53,15 @@ it('injects SSR safe theme variables for first paint', function () {
 
 it('has all 12 shadcn themes configured', function () {
     $themes = config('expansion.themes.available_themes');
-    
+
     $expectedThemes = [
         'zinc', 'slate', 'stone', 'gray', 'neutral',
-        'red', 'rose', 'orange', 'green', 'blue', 'yellow', 'violet'
+        'red', 'rose', 'orange', 'green', 'blue', 'yellow', 'violet',
     ];
-    
+
     expect($themes)->toBeArray();
     expect(array_keys($themes))->toHaveCount(12);
-    
+
     foreach ($expectedThemes as $theme) {
         expect($themes)->toHaveKey($theme);
         expect($themes[$theme])->toHaveKey('name');
@@ -73,11 +73,11 @@ it('has all 12 shadcn themes configured', function () {
 it('can switch between all 12 themes', function () {
     $user = User::factory()->create();
     $themes = ['zinc', 'slate', 'stone', 'gray', 'neutral', 'red', 'rose', 'orange', 'green', 'blue', 'yellow', 'violet'];
-    
+
     foreach ($themes as $theme) {
         $response = $this->actingAs($user)
             ->patch('/expansion/themes', ['theme' => $theme]);
-        
+
         $response->assertRedirect();
         expect(session('expansion.theme'))->toBe($theme);
     }
@@ -85,26 +85,26 @@ it('can switch between all 12 themes', function () {
 
 it('requires authentication to change theme', function () {
     $response = $this->patch('/expansion/themes', ['theme' => 'blue']);
-    
+
     $response->assertRedirect('/login');
 });
 
 it('validates theme parameter is required', function () {
     $user = User::factory()->create();
-    
+
     $response = $this->actingAs($user)
         ->patch('/expansion/themes', []);
-    
+
     $response->assertSessionHasErrors('theme');
 });
 
 it('each theme has required color tokens', function () {
     $themes = config('expansion.themes.available_themes');
     $requiredTokens = ['primary', 'primary-foreground', 'accent', 'accent-foreground', 'ring'];
-    
+
     foreach ($themes as $themeKey => $themeConfig) {
         $colors = $themeConfig['colors'];
-        
+
         foreach ($requiredTokens as $token) {
             expect($colors)->toHaveKey($token)
                 ->and($colors[$token])->not->toBeEmpty();
@@ -114,12 +114,12 @@ it('each theme has required color tokens', function () {
 
 it('theme config has correct structure', function () {
     $config = config('expansion.themes');
-    
+
     expect($config)->toHaveKey('enabled');
     expect($config)->toHaveKey('default_theme');
     expect($config)->toHaveKey('available_themes');
     expect($config)->toHaveKey('custom_themes');
-    
+
     expect($config['enabled'])->toBeBool();
     expect($config['default_theme'])->toBeString();
     expect($config['available_themes'])->toBeArray();
@@ -129,16 +129,16 @@ it('theme config has correct structure', function () {
 it('default theme exists in available themes', function () {
     $defaultTheme = config('expansion.themes.default_theme');
     $availableThemes = config('expansion.themes.available_themes');
-    
+
     expect($availableThemes)->toHaveKey($defaultTheme);
 });
 
 it('preserves scroll and state when changing theme', function () {
     $user = User::factory()->create();
-    
+
     $response = $this->actingAs($user)
         ->patch('/expansion/themes', ['theme' => 'rose']);
-    
+
     // Inertia should preserve scroll and state
     $response->assertRedirect();
     $response->assertSessionHas('expansion.theme', 'rose');

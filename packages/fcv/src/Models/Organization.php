@@ -12,7 +12,7 @@ use Like\Fcv\Database\Factories\OrganizationFactory;
 
 class Organization extends Model
 {
-    use HasFactory, HasAuditLogs, SoftDeletes;
+    use HasAuditLogs, HasFactory, SoftDeletes;
 
     protected static function newFactory(): OrganizationFactory
     {
