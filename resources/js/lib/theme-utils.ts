@@ -5,9 +5,7 @@ import type { PackageTheme, ThemeMode } from '@/types/theme';
  */
 export function detectActivePackage(pathname: string): string | null {
     // Detectar packages conocidos desde la URL
-    const packagePatterns = [
-        { pattern: /^\/fcv\//, name: 'fcv-access' },
-        { pattern: /^\/mi-modulo\//, name: 'mi-modulo' },
+    const packagePatterns: Array<{ pattern: RegExp; name: string }> = [
         // Agregar más patterns según sea necesario
     ];
 

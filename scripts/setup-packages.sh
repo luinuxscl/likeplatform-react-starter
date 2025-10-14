@@ -26,37 +26,10 @@ fi
 
 cd "$PACKAGES_DIR"
 
-# ============================================
-# FCV Package
-# ============================================
 echo ""
-echo "📦 FCV Package"
-echo "-------------"
-
-if [ -d "fcv" ]; then
-    echo -e "${YELLOW}⚠${NC}  FCV ya existe. Actualizando..."
-    cd fcv
-    git pull
-    cd ..
-else
-    echo "Clonando FCV package..."
-    # TODO: Reemplazar con la URL real del repositorio FCV
-    # git clone git@github.com:tu-org/fcv.git fcv
-    echo -e "${YELLOW}⚠${NC}  Necesitas configurar la URL del repositorio FCV"
-    echo "   Edita: scripts/setup-packages.sh"
-    echo "   Descomenta y actualiza la línea git clone"
-fi
-
-# ============================================
-# Otros Packages (agregar según necesites)
-# ============================================
-# echo ""
-# echo "📦 Otro Package"
-# echo "-------------"
-# if [ ! -d "otro-package" ]; then
-#     git clone git@github.com:tu-org/otro-package.git otro-package
-#     echo -e "${GREEN}✓${NC} Otro Package clonado"
-# fi
+echo "ℹ️  No se clona ningún package por defecto."
+echo "    Agrega tus propios repositorios dentro de packages/ según sea necesario."
+echo ""
 
 cd ..
 
@@ -118,7 +91,7 @@ echo -e "${GREEN}✅ Setup completado${NC}"
 echo ""
 echo "Próximos pasos:"
 echo "1. Configura los path repositories en composer.json (ver arriba)"
-echo "2. Ejecuta: composer require like/fcv-access:@dev (o el package que necesites)"
+echo "2. Añade tus packages a composer.json (por ejemplo: composer require vendor/paquete:@dev)"
 echo "3. Configura tu archivo .env"
 echo "4. Ejecuta: php artisan migrate"
 echo "5. Ejecuta: npm install && npm run dev"

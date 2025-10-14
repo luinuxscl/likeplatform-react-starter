@@ -76,7 +76,10 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "like/crm",
+                "like/fcv"
+            ]
         }
     },
     "config": {

@@ -22,8 +22,6 @@ app/
 └── ...
 
 packages/                # Packages personalizados
-├── fcv/
-├── ejemplo/
 └── [tu-package]/
 
 resources/js/

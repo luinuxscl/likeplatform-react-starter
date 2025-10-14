@@ -52,22 +52,9 @@ git clone <repo-url>
 cd likeplatform-react-starter
 ```
 
-### 2) Setup de packages independientes
+### 2) Setup opcional de packages independientes
 
-**IMPORTANTE**: Los packages en `/packages` son repositorios Git independientes.
-
-```bash
-# Opción A: Script automático (recomendado)
-make setup-packages
-
-# Opción B: Manual
-cd packages
-git clone <fcv-repo-url> fcv
-# Clonar otros packages según necesites
-cd ..
-```
-
-> **Nota**: Edita `scripts/setup-packages.sh` con las URLs reales de tus packages.
+El directorio `packages/` está disponible para que agregues tus propios módulos como repositorios Git independientes cuando lo necesites. Si aún no trabajas con packages personalizados puedes omitir este paso y continuar con la instalación base.
 
 ### 3) Dependencias
 
@@ -103,19 +90,14 @@ vendor/bin/pest
 
 ## Packages Independientes
 
-Este starter kit soporta packages como **repositorios Git independientes** en `/packages`:
+Este starter kit está preparado para trabajar con packages personalizados ubicados en `/packages/`, manteniéndolos como repositorios Git independientes:
 
-- ✅ Cada package tiene su propio repo y versionado
+- ✅ Cada package puede tener su propio repo y versionado
 - ✅ Se instalan vía Composer con `path` repository
 - ✅ Desarrollo local con symlinks automáticos
 - ✅ El starter kit permanece limpio (packages en `.gitignore`)
 
-### Packages disponibles
-
-- **`packages/ejemplo/mi-modulo`** - Package de ejemplo (incluido en el repo)
-- **`packages/fcv`** - FCV Access Control (repo independiente)
-
-Ver [documentación de packages](docs/guias/packages-rapida.md) para crear tus propios packages.
+Consulta [documentación de packages](docs/guias/packages-rapida.md) cuando quieras crear tus propios módulos.
 
 ## Estructura relevante
 
@@ -128,8 +110,7 @@ Ver [documentación de packages](docs/guias/packages-rapida.md) para crear tus p
   - `resources/js/components/ui/{card.tsx,badge.tsx}` · componentes base extendidos (CardAction/Badge).
   - `resources/js/components/app-sidebar.tsx` · sidebar con secciones y iconografía.
 - Packages
-  - `packages/ejemplo/mi-modulo/` · package de ejemplo incluido
-  - `packages/fcv/` · package FCV (repo independiente, clonar manualmente)
+  - `packages/` · espacio reservado para packages personalizados (vacío por defecto)
 
 ## Convenciones de UI
 
