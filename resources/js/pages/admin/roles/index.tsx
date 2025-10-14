@@ -112,17 +112,22 @@ export default function AdminRolesIndex() {
                                         <td className="px-4 py-3">{r.permissions.join(', ')}</td>
                                         <td className="px-4 py-3 text-right">
                                             <div className="flex items-center justify-end gap-2">
-                                                <Link href={`/admin/roles/${r.id}/edit`}>
-                                                    <Button variant="default" size="sm">{t('Editar')}</Button>
-                                                </Link>
-                                                <Link
-                                                    href={`/admin/roles/${r.id}`}
-                                                    method="delete"
-                                                    as="button"
-                                                    onBefore={() => confirm(t('¿Confirmas eliminar este rol?'))}
-                                                >
-                                                    <Button variant="destructive" size="sm">{t('Eliminar')}</Button>
-                                                </Link>
+                                                <Button asChild variant="default" size="sm">
+                                                    <Link href={`/admin/roles/${r.id}/edit`}>
+                                                        {t('Editar')}
+                                                    </Link>
+                                                </Button>
+                                                <Button asChild variant="destructive" size="sm">
+                                                    <Link
+                                                        href={`/admin/roles/${r.id}`}
+                                                        method="delete"
+                                                        as="button"
+                                                        type="button"
+                                                        onBefore={() => confirm(t('¿Confirmas eliminar este rol?'))}
+                                                    >
+                                                        {t('Eliminar')}
+                                                    </Link>
+                                                </Button>
                                             </div>
                                         </td>
                                     </tr>

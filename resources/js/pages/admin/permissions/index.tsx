@@ -109,17 +109,22 @@ export default function AdminPermissionsIndex() {
                                         <td className="px-4 py-3">{p.name}</td>
                                         <td className="px-4 py-3 text-right">
                                             <div className="flex items-center justify-end gap-2">
-                                                <Link href={`/admin/permissions/${p.id}/edit`}>
-                                                    <Button variant="default" size="sm">{t('Editar')}</Button>
-                                                </Link>
-                                                <Link
-                                                    href={`/admin/permissions/${p.id}`}
-                                                    method="delete"
-                                                    as="button"
-                                                    onBefore={() => confirm(t('¿Confirmas eliminar este permiso?'))}
-                                                >
-                                                    <Button variant="destructive" size="sm">{t('Eliminar')}</Button>
-                                                </Link>
+                                                <Button asChild variant="default" size="sm">
+                                                    <Link href={`/admin/permissions/${p.id}/edit`}>
+                                                        {t('Editar')}
+                                                    </Link>
+                                                </Button>
+                                                <Button asChild variant="destructive" size="sm">
+                                                    <Link
+                                                        href={`/admin/permissions/${p.id}`}
+                                                        method="delete"
+                                                        as="button"
+                                                        type="button"
+                                                        onBefore={() => confirm(t('¿Confirmas eliminar este permiso?'))}
+                                                    >
+                                                        {t('Eliminar')}
+                                                    </Link>
+                                                </Button>
                                             </div>
                                         </td>
                                     </tr>

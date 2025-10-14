@@ -24,6 +24,16 @@ const applyTheme = (appearance: Appearance) => {
 
     document.documentElement.classList.toggle('dark', isDark);
     document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    if (appearance === 'system') {
+        window.localStorage.removeItem('theme-mode');
+    } else {
+        window.localStorage.setItem('theme-mode', appearance);
+    }
 };
 
 const mediaQuery = () => {
