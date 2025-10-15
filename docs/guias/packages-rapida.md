@@ -205,6 +205,23 @@ php artisan mi-solucion:install
 php artisan customization:clear-cache
 ```
 
+### 9.1 Requerir packages locales en paralelo
+
+```bash
+# Dentro del proyecto principal (demo1)
+composer require mi-empresa/mi-solucion:*
+
+# Composer detecta el package en ../packages/ y crea un symlink en vendor/
+ls -l vendor/mi-empresa/mi-solucion
+
+# Opcional: forzar actualización del symlink
+composer update mi-empresa/mi-solucion --prefer-source
+```
+
+- **Repositorio path**: `composer.json` ya declara `../packages/*` con `"symlink": true`, por lo que no es necesario publicar ni copiar archivos al proyecto base.
+- **Hot reload**: al ejecutar `npm run dev`, Vite sigue los symlinks y recompila cada vez que edites `../packages/mi-empresa/mi-solucion/resources/js`.
+- **Imports React**: importa componentes con `import Widget from '@mi-solucion/components/widget';` gracias al alias `@mi-solucion` definido en `vite.config.ts`.
+
 ### 10. Verificar
 
 ```bash
