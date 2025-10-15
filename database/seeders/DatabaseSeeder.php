@@ -2,10 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,21 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Usuario de prueba existente
-        User::firstOrCreate(
-            ['email' => 'user@demo.com'],
-            [
-                'name' => 'Test User',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]
-        );
-
-        // Permisos y Rol admin
         $this->call([
             PermissionSeeder::class,
             AdminRoleSeeder::class,
-            AdminUserSeeder::class,
             OptionSeeder::class,
         ]);
     }
