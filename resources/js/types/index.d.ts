@@ -25,6 +25,7 @@ export interface NavItem {
     permission?: string | null;
     order?: number;
     active?: boolean;
+    items?: NavItem[]; // Support for sub-items
 }
 
 export interface PackageMenus {

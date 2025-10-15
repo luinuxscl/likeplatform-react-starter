@@ -1,11 +1,12 @@
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
+import { NavMainCollapsible } from '@/components/nav-main-collapsible';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, Info, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2, ClipboardList, ActivitySquare, KeySquare, Package } from 'lucide-react';
+import { BookOpen, Folder, Info, LayoutGrid, LayoutDashboard, Users, BadgeCheck, KeyRound, Settings2, ClipboardList, ActivitySquare, KeySquare, Package, Shield } from 'lucide-react';
 import admin from '@/routes/admin';
 import AppLogo from './app-logo';
 import { AboutDialog } from '@/components/about-dialog';
@@ -45,12 +46,16 @@ export function AppSidebar() {
     const baseAdminItems: NavItem[] = [];
     if (Array.isArray(roles) && roles.includes('admin')) {
         const perms: string[] | undefined = (page.props as any)?.auth?.permissions;
-        baseAdminItems.push(
-            {
-                title: t('Dashboard'),
-                href: '/admin/dashboard',
-                icon: LayoutDashboard,
-            },
+        
+        // Dashboard siempre visible
+        baseAdminItems.push({
+            title: t('Dashboard'),
+            href: '/admin/dashboard',
+            icon: LayoutDashboard,
+        });
+
+        // Gestión de Accesos (collapsible)
+        const accessManagementItems: NavItem[] = [
             {
                 title: t('Users'),
                 href: admin.users.index(),
@@ -66,37 +71,62 @@ export function AppSidebar() {
                 href: admin.permissions.index(),
                 icon: KeyRound,
             },
-        );
-        if (Array.isArray(perms) && perms.includes('options.view')) {
-            baseAdminItems.push({
-                title: t('Options'),
-                href: '/admin/options',
-                icon: Settings2,
-            });
-        }
+        ];
 
-        baseAdminItems.push(
+        baseAdminItems.push({
+            title: t('Gestión de Accesos'),
+            href: admin.users.index(),
+            icon: Shield,
+            items: accessManagementItems,
+        });
+
+        // Monitoreo (collapsible)
+        baseAdminItems.push({
+            title: t('Monitoreo'),
+            href: '/admin/audit/logs',
+            icon: ActivitySquare,
+            items: [
+                {
+                    title: t('Registros'),
+                    href: '/admin/audit/logs',
+                    icon: ClipboardList,
+                },
+                {
+                    title: t('Sesiones'),
+                    href: '/admin/audit/sessions',
+                    icon: ActivitySquare,
+                },
+            ],
+        });
+
+        // Configuración (collapsible)
+        const configItems: NavItem[] = [
             {
                 title: t('Package Settings'),
                 href: '/admin/package-settings',
                 icon: Package,
             },
             {
-                title: t('Auditoría - Registros'),
-                href: '/admin/audit/logs',
-                icon: ClipboardList,
-            },
-            {
-                title: t('Auditoría - Sesiones'),
-                href: '/admin/audit/sessions',
-                icon: ActivitySquare,
-            },
-            {
                 title: t('API Keys'),
                 href: '/admin/api-keys',
                 icon: KeySquare,
             },
-        );
+        ];
+
+        if (Array.isArray(perms) && perms.includes('options.view')) {
+            configItems.unshift({
+                title: t('Options'),
+                href: '/admin/options',
+                icon: Settings2,
+            });
+        }
+
+        baseAdminItems.push({
+            title: t('Configuración'),
+            href: '/admin/options',
+            icon: Settings2,
+            items: configItems,
+        });
     }
 
     // Combinar items de admin base con items de packages
@@ -137,7 +167,7 @@ export function AppSidebar() {
                     <NavMain items={extensionItems} label={t('Extensiones')} />
                 )}
                 {adminItems.length > 0 && (
-                    <NavMain items={adminItems} label={t('Administración')} />
+                    <NavMainCollapsible items={adminItems} label={t('Administración')} />
                 )}
             </SidebarContent>
 

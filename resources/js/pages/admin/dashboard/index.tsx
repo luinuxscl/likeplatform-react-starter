@@ -6,7 +6,8 @@ import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader,
 import { Button } from '@/components/ui/button'
 import ThemeSwitcherMini from '@/components/theme/theme-switcher-mini'
 import { Badge } from '@/components/ui/badge'
-import { ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ArrowUpRight, ArrowDownRight, Users as UsersIcon, UserCheck, Shield, Settings, Package, KeySquare } from 'lucide-react'
 
 type RecentUser = {
   id: number
@@ -30,6 +31,7 @@ export default function AdminDashboardIndex() {
   const { t } = useI18n()
   const page = usePage<{ props: DashboardProps }>()
   const { kpis, recent_users } = page.props as unknown as DashboardProps
+  const user = (page.props as any)?.auth?.user
 
   const formatNumber = (n: number) => new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(n)
   const trends = (page.props as any)?.trends as
@@ -46,17 +48,39 @@ export default function AdminDashboardIndex() {
       <Head title={t('Administración - Dashboard')} />
 
       <div className="flex flex-col gap-6 p-4">
-        <div className="flex items-center justify-between">
-          <div />
-          <ThemeSwitcherMini />
+        {/* Hero Section */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 shadow-sm border border-primary/10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16 border-2 border-primary/20">
+                <AvatarImage src={user?.avatar} alt={user?.name} />
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
+                  {user?.name?.charAt(0)?.toUpperCase() || 'A'}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h1 className="text-2xl font-bold">{t('Hola')}, {user?.name || 'Admin'}</h1>
+                <div className="flex items-center gap-2 mt-1">
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                    <Shield className="h-3 w-3 mr-1" />
+                    {t('Administrador')}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+            <ThemeSwitcherMini />
+          </div>
         </div>
         {/* KPIs (shadcn example pattern) */}
         <div className="*:data-[slot=card]:from-primary/3 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="@container/card rounded-2xl">
+          <Card className="@container/card rounded-2xl border-l-4 border-l-primary hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="flex items-baseline gap-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
-                  <CardDescription>{t('Usuarios totales')}</CardDescription>
+                  <div className="flex items-center gap-2">
+                    <UsersIcon className="h-4 w-4 text-primary" />
+                    <CardDescription>{t('Usuarios totales')}</CardDescription>
+                  </div>
                   <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{formatNumber(kpis.total_users)}</CardTitle>
                 </div>
                 <CardAction className="self-start">
@@ -75,11 +99,14 @@ export default function AdminDashboardIndex() {
             </CardFooter>
           </Card>
 
-          <Card className="@container/card rounded-2xl">
+          <Card className="@container/card rounded-2xl border-l-4 border-l-blue-500 hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="flex items-baseline gap-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
-                  <CardDescription>{t('Nuevos 7 días')}</CardDescription>
+                  <div className="flex items-center gap-2">
+                    <UserCheck className="h-4 w-4 text-blue-500" />
+                    <CardDescription>{t('Nuevos 7 días')}</CardDescription>
+                  </div>
                   <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{formatNumber(kpis.new_users_7d)}</CardTitle>
                 </div>
                 <CardAction className="self-start">
@@ -98,11 +125,14 @@ export default function AdminDashboardIndex() {
             </CardFooter>
           </Card>
 
-          <Card className="@container/card rounded-2xl">
+          <Card className="@container/card rounded-2xl border-l-4 border-l-green-500 hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="flex items-baseline gap-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
-                  <CardDescription>{t('Verificados')}</CardDescription>
+                  <div className="flex items-center gap-2">
+                    <UserCheck className="h-4 w-4 text-green-500" />
+                    <CardDescription>{t('Verificados')}</CardDescription>
+                  </div>
                   <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{formatNumber(kpis.verified_users)}</CardTitle>
                 </div>
                 <CardAction className="self-start">
@@ -121,11 +151,14 @@ export default function AdminDashboardIndex() {
             </CardFooter>
           </Card>
 
-          <Card className="@container/card rounded-2xl">
+          <Card className="@container/card rounded-2xl border-l-4 border-l-purple-500 hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="flex items-baseline gap-2">
                 <div className="flex min-w-0 flex-col gap-1.5">
-                  <CardDescription>{t('Roles')}</CardDescription>
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-purple-500" />
+                    <CardDescription>{t('Roles')}</CardDescription>
+                  </div>
                   <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{formatNumber(kpis.roles_count)}</CardTitle>
                 </div>
                 <CardAction className="self-start">
@@ -142,13 +175,99 @@ export default function AdminDashboardIndex() {
           </Card>
         </div>
 
-        {/* Accesos rápidos */}
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Link href="/admin/users"><Button className="w-full" variant="default">{t('Gestionar usuarios')}</Button></Link>
-          <Link href="/admin/roles"><Button className="w-full" variant="default">{t('Gestionar roles')}</Button></Link>
-          <Link href="/admin/permissions"><Button className="w-full" variant="default">{t('Gestionar permisos')}</Button></Link>
-          <Link href="/admin/options"><Button className="w-full" variant="default">{t('Opciones de la app')}</Button></Link>
+        {/* Quick Actions */}
+        <div>
+          <h2 className="text-lg font-semibold mb-3">{t('Acciones Rápidas')}</h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Link href="/admin/users">
+              <Card className="group hover:border-primary/50 hover:shadow-md transition-all cursor-pointer h-full">
+                <CardHeader className="pb-3">
+                  <UsersIcon className="h-8 w-8 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                  <CardTitle className="text-sm">{t('Gestionar usuarios')}</CardTitle>
+                  <CardDescription className="text-xs">{t('Ver y editar usuarios')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button size="sm" variant="ghost" className="w-full group-hover:bg-primary/10">
+                    {t('Acceder')} →
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/admin/roles">
+              <Card className="group hover:border-primary/50 hover:shadow-md transition-all cursor-pointer h-full">
+                <CardHeader className="pb-3">
+                  <Shield className="h-8 w-8 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                  <CardTitle className="text-sm">{t('Gestionar roles')}</CardTitle>
+                  <CardDescription className="text-xs">{t('Configurar roles y permisos')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button size="sm" variant="ghost" className="w-full group-hover:bg-primary/10">
+                    {t('Acceder')} →
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/admin/package-settings">
+              <Card className="group hover:border-primary/50 hover:shadow-md transition-all cursor-pointer h-full">
+                <CardHeader className="pb-3">
+                  <Package className="h-8 w-8 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                  <CardTitle className="text-sm">{t('Configurar paquetes')}</CardTitle>
+                  <CardDescription className="text-xs">{t('Gestionar extensiones')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button size="sm" variant="ghost" className="w-full group-hover:bg-primary/10">
+                    {t('Acceder')} →
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/admin/api-keys">
+              <Card className="group hover:border-primary/50 hover:shadow-md transition-all cursor-pointer h-full">
+                <CardHeader className="pb-3">
+                  <KeySquare className="h-8 w-8 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                  <CardTitle className="text-sm">{t('API Keys')}</CardTitle>
+                  <CardDescription className="text-xs">{t('Gestionar claves de API')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button size="sm" variant="ghost" className="w-full group-hover:bg-primary/10">
+                    {t('Acceder')} →
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
         </div>
+
+        {/* Actividad Reciente */}
+        <Card className="border-l-2 border-l-primary/30">
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              {t('Actividad Reciente')}
+            </CardTitle>
+            <CardDescription>{t('Últimas acciones administrativas')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {recent_users.slice(0, 5).map((user, idx) => (
+                <div key={user.id} className="flex items-start gap-3 border-l-2 border-l-primary/30 pl-3 py-2 hover:bg-accent/50 rounded-r transition-colors">
+                  <div className="flex-shrink-0">
+                    <Badge variant="outline" className="text-xs">
+                      {t('Usuario')}
+                    </Badge>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{user.name} {t('se registró')}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                    {new Date(user.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Usuarios recientes */}
         <Card>
