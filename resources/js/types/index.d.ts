@@ -74,3 +74,28 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export type NotificationType = 'info' | 'success' | 'warning' | 'error';
+
+export interface Notification {
+    id: string;
+    type: string;
+    notifiable_type: string;
+    notifiable_id: number;
+    data: {
+        title: string;
+        message: string;
+        type: NotificationType;
+        action_url?: string | null;
+        action_text?: string | null;
+    };
+    read_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface NotificationResponse {
+    notifications: Notification[];
+    unread_count: number;
+    has_more: boolean;
+}
