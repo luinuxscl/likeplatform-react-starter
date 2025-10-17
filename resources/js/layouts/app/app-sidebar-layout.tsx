@@ -6,8 +6,12 @@ import { type BreadcrumbItem } from '@/types';
 import { type PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import Toasts from '@/components/toasts';
 import { Toaster } from 'sonner';
+import { useRealtimeNotifications } from '@/hooks/use-realtime-notifications';
 
 export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
+    // Inicializar notificaciones en tiempo real
+    useRealtimeNotifications();
+
     const [themeMode, setThemeMode] = useState<'light' | 'dark'>(() =>
         document.documentElement.classList.contains('dark') ? 'dark' : 'light'
     )

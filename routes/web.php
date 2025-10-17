@@ -12,6 +12,22 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+// Email preview (solo en desarrollo)
+if (app()->environment('local')) {
+    Route::get('/email-preview/{type?}', function ($type = 'info') {
+        $user = \App\Models\User::first();
+        
+        return (new \App\Notifications\GeneralNotification(
+            title: 'Título de Prueba',
+            message: 'Este es un mensaje de prueba para ver cómo se ve el email en tu bandeja de entrada.',
+            type: $type,
+            actionUrl: '/dashboard',
+            actionText: 'Ver Dashboard',
+            sendEmail: true
+        ))->toMail($user);
+    })->name('email.preview');
+}
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
